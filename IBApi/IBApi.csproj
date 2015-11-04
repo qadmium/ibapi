@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{590CFCE4-E99E-4ED5-8F6E-701530FAF422}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IBApi</RootNamespace>
+    <AssemblyName>IBApi</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <CodeContractsAssemblyMode>1</CodeContractsAssemblyMode>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>DoNotBuild</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
+    <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
+    <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
+    <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
+    <CodeContractsRuntimeSkipQuantifiers>False</CodeContractsRuntimeSkipQuantifiers>
+    <CodeContractsRunCodeAnalysis>False</CodeContractsRunCodeAnalysis>
+    <CodeContractsNonNullObligations>True</CodeContractsNonNullObligations>
+    <CodeContractsBoundsObligations>True</CodeContractsBoundsObligations>
+    <CodeContractsArithmeticObligations>False</CodeContractsArithmeticObligations>
+    <CodeContractsEnumObligations>False</CodeContractsEnumObligations>
+    <CodeContractsRedundantAssumptions>False</CodeContractsRedundantAssumptions>
+    <CodeContractsMissingPublicRequiresAsWarnings>True</CodeContractsMissingPublicRequiresAsWarnings>
+    <CodeContractsInferRequires>True</CodeContractsInferRequires>
+    <CodeContractsInferEnsures>False</CodeContractsInferEnsures>
+    <CodeContractsInferObjectInvariants>False</CodeContractsInferObjectInvariants>
+    <CodeContractsSuggestAssumptions>False</CodeContractsSuggestAssumptions>
+    <CodeContractsSuggestRequires>True</CodeContractsSuggestRequires>
+    <CodeContractsSuggestObjectInvariants>False</CodeContractsSuggestObjectInvariants>
+    <CodeContractsRunInBackground>True</CodeContractsRunInBackground>
+    <CodeContractsShowSquigglies>True</CodeContractsShowSquigglies>
+    <CodeContractsUseBaseLine>False</CodeContractsUseBaseLine>
+    <CodeContractsEmitXMLDocs>False</CodeContractsEmitXMLDocs>
+    <CodeContractsCustomRewriterAssembly />
+    <CodeContractsCustomRewriterClass />
+    <CodeContractsLibPaths />
+    <CodeContractsExtraRewriteOptions />
+    <CodeContractsExtraAnalysisOptions />
+    <CodeContractsSQLServerOption />
+    <CodeContractsBaseLineFile />
+    <CodeContractsCacheAnalysisResults>True</CodeContractsCacheAnalysisResults>
+    <CodeContractsFailBuildOnWarnings>False</CodeContractsFailBuildOnWarnings>
+    <CodeContractsRuntimeCheckingLevel>Full</CodeContractsRuntimeCheckingLevel>
+    <CodeContractsReferenceAssembly>%28none%29</CodeContractsReferenceAssembly>
+    <CodeContractsAnalysisWarningLevel>0</CodeContractsAnalysisWarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Accounts\Account.cs" />
+    <Compile Include="Accounts\AccountFields.cs" />
+    <Compile Include="Accounts\AccountsStorage.cs" />
+    <Compile Include="Accounts\IAccountInternal.cs" />
+    <Compile Include="Accounts\IAccountsStorage.cs" />
+    <Compile Include="Accounts\AccountValue.cs" />
+    <Compile Include="Accounts\IAccountStorageContract.cs" />
+    <Compile Include="Connection\IConnectionContract.cs" />
+    <Compile Include="Connection\ISubscription.cs" />
+    <Compile Include="Connection\Subscriptions.cs" />
+    <Compile Include="Connection\Subscription.cs" />
+    <Compile Include="Executions\Execution.cs" />
+    <Compile Include="Executions\IExecutionStorageInternal.cs" />
+    <Compile Include="Connection\ImmediateScheduler.cs" />
+    <Compile Include="IObjectWithDelayedInitialization.cs" />
+    <Compile Include="Messages\Server\OpenOrderEndMessage.cs" />
+    <Compile Include="Orders\OrderAction.cs" />
+    <Compile Include="Orders\OrderState.cs" />
+    <Compile Include="Messages\Server\OrderStatusMessage.cs" />
+    <Compile Include="ConnectionFactory.cs" />
+    <Compile Include="Executions\ExecutionsStorage.cs" />
+    <Compile Include="Executions\IExecutionsStorage.cs" />
+    <Compile Include="Messages\Server\ExecutionDataEndMessage.cs" />
+    <Compile Include="Messages\Server\ExecutionDataMessage.cs" />
+    <Compile Include="Operations\ConnectOperation.cs" />
+    <Compile Include="ConnectionParams.cs" />
+    <Compile Include="Contracts\AsyncFindContractOperation.cs" />
+    <Compile Include="Contracts\ContractSearchException.cs" />
+    <Compile Include="Contracts\ContractSearchTimeoutException.cs" />
+    <Compile Include="Contracts\SearchRequest.cs" />
+    <Compile Include="Contracts\SyncFindContractOperation.cs" />
+    <Compile Include="Errors\Error.cs" />
+    <Compile Include="Errors\ErrorCodes.cs" />
+    <Compile Include="Accounts\IAccount.cs" />
+    <Compile Include="Exceptions\IBException.cs" />
+    <Compile Include="Exceptions\BlockedConnectionException.cs" />
+    <Compile Include="Contracts\IBagLeg.cs" />
+    <Compile Include="Contracts\Contract.cs" />
+    <Compile Include="IClient.cs" />
+    <Compile Include="IClientContract.cs" />
+    <Compile Include="IMarketDepthObserver.cs" />
+    <Compile Include="Connection\IConnection.cs" />
+    <Compile Include="IQuoteObserver.cs" />
+    <Compile Include="MarketDepthUpdate.cs" />
+    <Compile Include="MarketDepth\MarketDepthSubscription.cs" />
+    <Compile Include="MarketDepth\MarketDepthUpdatesDispatcher.cs" />
+    <Compile Include="Connection\ConnectionExtensions.cs" />
+    <Compile Include="Messages\Client\MessagesHelperExtensions\MessagesHelperExtensions.cs" />
+    <Compile Include="Messages\Client\RequestCancelMarketData.cs" />
+    <Compile Include="Messages\Client\RequestCancelMarketDepth.cs" />
+    <Compile Include="Messages\Client\RequestMarketDepthMessage.cs" />
+    <Compile Include="Messages\Server\ContractDataEndMessage.cs" />
+    <Compile Include="Messages\Server\ContractDataMessage.cs" />
+    <Compile Include="Messages\Server\MarketDepthL2Message.cs" />
+    <Compile Include="Messages\Server\MarketDepthMessage.cs" />
+    <Compile Include="Messages\Server\PortfolioValueMessage.cs" />
+    <Compile Include="Messages\Server\TickPriceMessage.cs" />
+    <Compile Include="Messages\Server\TickSizeMessage.cs" />
+    <Compile Include="Messages\Server\TickStringMessage.cs" />
+    <Compile Include="Operations\AbstractOperation.cs" />
+    <Compile Include="Operations\AbstractOperationContract.cs" />
+    <Compile Include="Operations\IOperation.cs" />
+    <Compile Include="IApiObjectsFactory.cs" />
+    <Compile Include="Operations\IReceiveManagedAccountsListOperation.cs" />
+    <Compile Include="ApiObjectsFactory.cs" />
+    <Compile Include="Operations\ReceiveManagedAccountsListOperation.cs" />
+    <Compile Include="Operations\WaitForMarketConnectedOperation.cs" />
+    <Compile Include="Orders\Order.cs" />
+    <Compile Include="Orders\IOrder.cs" />
+    <Compile Include="Connection\Connection.cs" />
+    <Compile Include="Messages\Client\RequestExecutionsMessage.cs" />
+    <Compile Include="Messages\Client\RequestManagedAccountsListMessage.cs" />
+    <Compile Include="Messages\Server\AccountDownloadEndMessage.cs" />
+    <Compile Include="Messages\Server\AccountUpdateTimeMessage.cs" />
+    <Compile Include="Messages\Server\AccountValueMessage.cs" />
+    <Compile Include="Messages\Server\OpenOrderMessage.cs" />
+    <Compile Include="Orders\IOrdersStorage.cs" />
+    <Compile Include="Orders\IOrdersStorageInternal.cs" />
+    <Compile Include="Orders\OrdersStorage.cs" />
+    <Compile Include="Orders\OrderStateExtensions\ConvertingExtensions.cs" />
+    <Compile Include="Orders\OrderType.cs" />
+    <Compile Include="Positions\IPosition.cs" />
+    <Compile Include="Positions\IPositionsStorage.cs" />
+    <Compile Include="Positions\IPositionsStorageInternal.cs" />
+    <Compile Include="Positions\Position.cs" />
+    <Compile Include="Positions\PositionsStorage.cs" />
+    <Compile Include="Quotes\Quote.cs" />
+    <Compile Include="Quotes\QuoteSubscription.cs" />
+    <Compile Include="Messages\Client\IdMessage.cs" />
+    <Compile Include="Messages\Client\RequestAccountUpdatesMessage.cs" />
+    <Compile Include="Messages\Client\RequestAutoOpenOrdersMessage.cs" />
+    <Compile Include="Messages\Client\RequestMarketDataMessage.cs" />
+    <Compile Include="Messages\Client\VersionMessage.cs" />
+    <Compile Include="Serialization\IBSerializationAttributes.cs" />
+    <Compile Include="Serialization\IBSerializer.cs" />
+    <Compile Include="Messages\Client\IClientMessage.cs" />
+    <Compile Include="Messages\IMessage.cs" />
+    <Compile Include="Messages\Server\IServerMessage.cs" />
+    <Compile Include="Messages\Server\ErrorMessage.cs" />
+    <Compile Include="Messages\Server\ManagedAccountsListMessage.cs" />
+    <Compile Include="Messages\Server\NextValidIdMessage.cs" />
+    <Compile Include="Messages\Client\RequestContractDetailsMessage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Messages\Server\AcknowledgementMessage.cs" />
+    <Compile Include="Messages\Server\TimeMessage.cs" />
+    <Compile Include="Client.cs" />
+    <Compile Include="Contracts\SecurityType.cs" />
+    <Compile Include="Serialization\IIBSerializer.cs" />
+    <Compile Include="Serialization\IIBSerializerContract.cs" />
+    <Compile Include="Serialization\SerializerExtensions\TypeSerializtionHelperExtensions.cs" />
+    <Compile Include="Serialization\SerializerExtensions\SerializationExtensions.cs" />
+    <Compile Include="Serialization\SerializerExtensions\DeserializationExtensions.cs" />
+    <Compile Include="SubscriptionsExtensions.cs" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
