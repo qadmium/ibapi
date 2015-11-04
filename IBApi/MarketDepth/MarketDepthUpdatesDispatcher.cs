@@ -8,7 +8,7 @@ namespace IBApi.MarketDepth
     {
         public MarketDepthUpdatesDispatcher(IMarketDepthObserver observer)
         {
-            CodeContract.Requires<ArgumentNullException>(observer != null);
+            CodeContract.Requires(observer != null);
             this.observer = observer;
         }
 

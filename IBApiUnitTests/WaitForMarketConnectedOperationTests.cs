@@ -21,7 +21,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOperationCompletedOnMarketConnected()
+        public void EnsureThatOperationCompletedOnMarketConnected()
         {
             var operation = new WaitForMarketConnectedOperation();
             operation.Execute(connectionHelper.Connection());
@@ -34,7 +34,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOperationFailedOnMarketConnected()
+        public void EnsureThatOperationFailedOnMarketConnected()
         {
             var operation = new WaitForMarketConnectedOperation();
             operation.Execute(connectionHelper.Connection());

@@ -25,7 +25,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOrdersStorageInitializedAfterReceivingAccounts()
+        public void EnsureThatOrdersStorageInitializedAfterReceivingAccounts()
         {
             var initCallback = new Mock<InitializedEventHandler>();
             ordersStorage.Initialized += initCallback.Object;
@@ -39,7 +39,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOrdersStorageRaisesEventOnlyOnNewPosition()
+        public void EnsureThatOrdersStorageRaisesEventOnlyOnNewPosition()
         {
             factoryMock.Setup(factory => factory.CreateOrder(It.IsAny<int>())).Returns(new Order(0, connectionHelper.Connection()));
 

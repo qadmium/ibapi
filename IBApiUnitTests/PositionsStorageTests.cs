@@ -25,7 +25,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatPositionsStorageInitializedAfterReceivingAccounts()
+        public void EnsureThatPositionsStorageInitializedAfterReceivingAccounts()
         {
             var initCallback = new Mock<InitializedEventHandler>();
             positionStorage.Initialized += initCallback.Object;
@@ -39,7 +39,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatPositionsStorageRaisesEventOnlyOnNewPosition()
+        public void EnsureThatPositionsStorageRaisesEventOnlyOnNewPosition()
         {
             factoryMock.Setup(factory => factory.CreatePosition()).Returns(new Position());
 

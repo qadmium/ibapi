@@ -18,8 +18,8 @@ namespace IBApi.Accounts
     {
         public Account(string name, IConnection connection, IApiObjectsFactory objectsFactory)
         {
-            CodeContract.Requires<ArgumentNullException>(!string.IsNullOrEmpty(name));
-            CodeContract.Requires<ArgumentNullException>(connection != null);
+            CodeContract.Requires(!string.IsNullOrEmpty(name));
+            CodeContract.Requires(connection != null);
 
             AccountName = name;
             AccountId = name;

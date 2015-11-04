@@ -16,6 +16,7 @@ namespace IBApiUnitTests
         public void Init()
         {
             connectionHelper = new ConnectionHelper();
+            connectionHelper.Connection().Run();
             observerMock = new Mock<IQuoteObserver>();
         }
 
@@ -26,7 +27,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatSubscriptionWorks()
+        public void EnsureThatSubscriptionWorks()
         {
             var quoteSucription = CreateQuoteSubscription();
 
@@ -89,7 +90,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatSubscriptionWorksWithErrors()
+        public void EnsureThatSubscriptionWorksWithErrors()
         {
             var quoteSucription = CreateQuoteSubscription();
 
@@ -114,14 +115,14 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatSubscriptionSendsUnsubscribeOnlyOnceOnDisposing()
+        public void EnsureThatSubscriptionSendsUnsubscribeOnlyOnceOnDisposing()
         {
             var quoteSucription = CreateQuoteSubscription();
 
             quoteSucription.Dispose();
             quoteSucription.Dispose();
 
-            connectionHelper.EnsureWhatMessageSended(
+            connectionHelper.EnsureThatMessageSended(
                 (RequestCancelMarketData message) => message.RequestId == ConnectionHelper.RequestId,
                 Times.Once);
         }

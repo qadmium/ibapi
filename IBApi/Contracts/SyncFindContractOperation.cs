@@ -13,7 +13,7 @@ namespace IBApi.Contracts
     {
         public SyncFindContractOperation(IConnection connection)
         {
-            CodeContract.Requires<ArgumentNullException>(connection != null);
+            CodeContract.Requires(connection != null);
             this.connection = connection;
         }
 

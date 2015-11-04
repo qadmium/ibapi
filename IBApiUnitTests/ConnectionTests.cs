@@ -85,6 +85,7 @@ namespace IBApiUnitTests
             SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
 
             streamMock = new Mock<Stream>();
+            streamMock.Setup(stream => stream.CanRead).Returns(true);
             serializerMock = new IBSerializerMock();
             connection = new Connection(streamMock.Object, serializerMock);
         }
@@ -98,7 +99,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatConnectionSendsMessages()
+        public void EnsureThatConnectionSendsMessages()
         {
             connection.Run();
             
@@ -109,7 +110,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatConnectionWillNotSendsMessagesAfterDisposing()
+        public void EnsureThatConnectionWillNotSendsMessagesAfterDisposing()
         {
             connection.Run();
             connection.Dispose();
@@ -120,7 +121,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatSubscriptionWorks()
+        public void EnsureThatSubscriptionWorks()
         {
             var messageCallback = new Mock<Action<ErrorMessage>>();
 

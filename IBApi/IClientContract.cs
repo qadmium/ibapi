@@ -30,21 +30,21 @@ namespace IBApi
 
         public IDisposable FindContracts(IObserver<Contract> contractsObserver, SearchRequest request)
         {
-            CodeContract.Requires<ArgumentNullException>(contractsObserver != null);
+            CodeContract.Requires(contractsObserver != null);
             CodeContract.Ensures(CodeContract.Result<IDisposable>() != null);
             return null;
         }
 
         public IDisposable SubscribeQuote(IQuoteObserver observer, Contract contract)
         {
-            CodeContract.Requires<ArgumentNullException>(observer != null);
+            CodeContract.Requires(observer != null);
             CodeContract.Ensures(CodeContract.Result<IDisposable>() != null);
             return null;
         }
 
         public IDisposable SubscribeMarketDepth(IMarketDepthObserver observer, Contract contract)
         {
-            CodeContract.Requires<ArgumentNullException>(observer != null);
+            CodeContract.Requires(observer != null);
             CodeContract.Ensures(CodeContract.Result<IDisposable>() != null);
             return null;
         }

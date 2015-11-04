@@ -13,6 +13,7 @@ namespace IBApiUnitTests
         public void Init()
         {
             connectionHelper = new ConnectionHelper();
+            connectionHelper.Connection().Run();
         }
 
         [TestCleanup]
@@ -22,7 +23,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatExecutionsStorageInitializedOnExecutionDataEndMessage()
+        public void EnsureThatExecutionsStorageInitializedOnExecutionDataEndMessage()
         {
             var executionsStorage = new ExecutionsStorage(connectionHelper.Connection(), "testaccount");
 
@@ -41,7 +42,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatStorageCreatesExecutionsOnExecutionDataMessage()
+        public void EnsureThatStorageCreatesExecutionsOnExecutionDataMessage()
         {
             var executionsStorage = new ExecutionsStorage(connectionHelper.Connection(), "testaccount");
 

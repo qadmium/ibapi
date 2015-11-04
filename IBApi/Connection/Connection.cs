@@ -14,8 +14,8 @@ namespace IBApi.Connection
     {
         public Connection(Stream stream, IIBSerializer serializer)
         {
-            Contract.Requires<ArgumentNullException>(stream != null);
-            Contract.Requires<ArgumentNullException>(serializer != null);
+            Contract.Requires(stream != null);
+            Contract.Requires(serializer != null);
             this.stream = stream;
             this.serializer = serializer;
             currentScheduler = TaskScheduler.FromCurrentSynchronizationContext();

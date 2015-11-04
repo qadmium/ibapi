@@ -18,7 +18,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOnBidUpdateWillBeCalledOnInsertOnBidSide()
+        public void EnsureThatOnBidUpdateWillBeCalledOnInsertOnBidSide()
         {
             var update = new MarketDepthMessage
             {
@@ -33,7 +33,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOnAskUpdateWillBeCalledOnInsertOnAskSide()
+        public void EnsureThatOnAskUpdateWillBeCalledOnInsertOnAskSide()
         {
             var update = new MarketDepthMessage
             {
@@ -48,7 +48,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOnBidUpdateWillBeCalledOnUpdateOnBidSide()
+        public void EnsureThatOnBidUpdateWillBeCalledOnUpdateOnBidSide()
         {
             var update = new MarketDepthMessage
             {
@@ -63,7 +63,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOnAskUpdateWillBeCalledOnUpdateOnAskSide()
+        public void EnsureThatOnAskUpdateWillBeCalledOnUpdateOnAskSide()
         {
             var update = new MarketDepthMessage
             {
@@ -78,7 +78,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOnBidRemoveWillBeCalledOnDeleteOnBidSide()
+        public void EnsureThatOnBidRemoveWillBeCalledOnDeleteOnBidSide()
         {
             var update = new MarketDepthMessage
             {
@@ -93,7 +93,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOnAskRemoveWillBeCalledOnDeleteOnAskSide()
+        public void EnsureThatOnAskRemoveWillBeCalledOnDeleteOnAskSide()
         {
             var update = new MarketDepthMessage
             {
@@ -109,7 +109,7 @@ namespace IBApiUnitTests
 
         [TestMethod]
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
-        public void EnsureWhatExceptionWillBeTrownOnInvalidUpdateType()
+        public void EnsureThatExceptionWillBeTrownOnInvalidUpdateType()
         {
             var update = new MarketDepthMessage
             {

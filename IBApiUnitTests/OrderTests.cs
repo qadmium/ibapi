@@ -23,7 +23,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOrderRaisesChangeEventOnOpenOrderMessage()
+        public void EnsureThatOrderRaisesChangeEventOnOpenOrderMessage()
         {
             var callbackMock = new Mock<OrderChangedEventHandler>();
             order.OrderChanged += callbackMock.Object;
@@ -40,7 +40,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOrderRaisesChangeEventOnOrderStatusMessage()
+        public void EnsureThatOrderRaisesChangeEventOnOrderStatusMessage()
         {
             var callbackMock = new Mock<OrderChangedEventHandler>();
             order.OrderChanged += callbackMock.Object;

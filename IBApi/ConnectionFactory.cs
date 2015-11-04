@@ -17,11 +17,11 @@ namespace IBApi
         public static IDisposable Connect(ConnectionParams connectionParams, Action<IClient> onSucessCallback,
             Action<Error> onErrorCallback)
         {
-            CodeContract.Requires<InvalidOperationException>(SynchronizationContext.Current != null,
+            CodeContract.Requires(SynchronizationContext.Current != null,
                 "API need SynchronizationContext.Current to be not null");
 
-            CodeContract.Requires<ArgumentNullException>(onSucessCallback != null);
-            CodeContract.Requires<ArgumentNullException>(onErrorCallback != null);
+            CodeContract.Requires(onSucessCallback != null);
+            CodeContract.Requires(onErrorCallback != null);
 
             var stream = SetupConnection(connectionParams.HostName, connectionParams.Port);
             var serializer = new IBSerializer();

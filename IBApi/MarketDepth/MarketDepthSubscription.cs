@@ -14,7 +14,7 @@ namespace IBApi.MarketDepth
     {
         public MarketDepthSubscription(IConnection connection, IMarketDepthObserver observer, Contract contract)
         {
-            CodeContract.Requires<ArgumentNullException>(connection != null);
+            CodeContract.Requires(connection != null);
 
             this.connection = connection;
             this.observer = observer;

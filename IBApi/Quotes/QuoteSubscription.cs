@@ -14,8 +14,8 @@ namespace IBApi.Quotes
     {
         public QuoteSubscription(IConnection connection, IQuoteObserver observer, Contract contract)
         {
-            CodeContract.Requires<ArgumentNullException>(connection != null);
-            CodeContract.Requires<ArgumentNullException>(observer != null);
+            CodeContract.Requires(connection != null);
+            CodeContract.Requires(observer != null);
 
             this.connection = connection;
             this.observer = observer;

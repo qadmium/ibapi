@@ -9,7 +9,7 @@ namespace IBApiUnitTests
     public class PositionTests
     {
         [TestMethod]
-        public void EnsureWhatPositionChangedRaisedOnUpdate()
+        public void EnsureThatPositionChangedRaisedOnUpdate()
         {
             var position = new Position();
             var callback = new Mock<PositionChangedEventHandler>();

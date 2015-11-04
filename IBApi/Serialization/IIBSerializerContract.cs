@@ -13,8 +13,8 @@ namespace IBApi.Serialization
 
         public IMessage ReadServerMessage(Stream stream)
         {
-            Contract.Requires<ArgumentNullException>(stream != null);
-            Contract.Requires<ArgumentException>(stream.CanRead);
+            Contract.Requires(stream != null);
+            Contract.Requires(stream.CanRead);
             
             Contract.Ensures(Contract.Result<IMessage>() != null);
 

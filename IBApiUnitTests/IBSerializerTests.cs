@@ -311,7 +311,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatStaticaPropertiesNotSerialized()
+        public void EnsureThatStaticaPropertiesNotSerialized()
         {
             var message = new MessageWithStaticProperty();
             

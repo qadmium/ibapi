@@ -55,7 +55,7 @@ namespace IBApiUnitTests
             subscriptions.DispatchMessage(message);
         }
 
-        public void EnsureWhatClientSentMessage<TValue>(Expression<Func<TValue, bool>> match, Func<Times> times)
+        public void EnsureThatClientSentMessage<TValue>(Expression<Func<TValue, bool>> match, Func<Times> times)
             where TValue : IClientMessage
         {
             sendMessageVerifier.Verify(action => action(It.Is(match)), times);
@@ -77,9 +77,9 @@ namespace IBApiUnitTests
             connectionMock.SendMessageToClient(message);
         }
 
-        public void EnsureWhatMessageSended<TValue>(Expression<Func<TValue, bool>> match, Func<Times> times) where TValue : IClientMessage
+        public void EnsureThatMessageSended<TValue>(Expression<Func<TValue, bool>> match, Func<Times> times) where TValue : IClientMessage
         {
-            connectionMock.EnsureWhatClientSentMessage(match, times);
+            connectionMock.EnsureThatClientSentMessage(match, times);
         }
 
         public const int RequestId = 1;

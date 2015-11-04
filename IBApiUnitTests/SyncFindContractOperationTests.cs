@@ -15,6 +15,7 @@ namespace IBApiUnitTests
         public void Init()
         {
             connectionHelper = new ConnectionHelper();
+            connectionHelper.Connection().Run();
             syncFindContractOperation = new SyncFindContractOperation(connectionHelper.Connection());
         }
 
@@ -26,7 +27,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatContractWillBeReturnedOnValidMessage()
+        public void EnsureThatContractWillBeReturnedOnValidMessage()
         {
             var request = new SearchRequest();
 
@@ -46,7 +47,7 @@ namespace IBApiUnitTests
 
         [TestMethod]
         [ExpectedException(typeof(ContractSearchTimeoutException))]
-        public void EnsureWhatExceptionThrownOnTimeout()
+        public void EnsureThatExceptionThrownOnTimeout()
         {
             var request = new SearchRequest();
 
@@ -58,7 +59,7 @@ namespace IBApiUnitTests
 
         [TestMethod]
         [ExpectedException(typeof(ContractSearchException), "Nothing found")]
-        public void EnsureWhatExceptionWillBeThrownOnNothingFound()
+        public void EnsureThatExceptionWillBeThrownOnNothingFound()
         {
             var request = new SearchRequest();
 
@@ -79,7 +80,7 @@ namespace IBApiUnitTests
 
         [TestMethod]
         [ExpectedException(typeof(ContractSearchException), "Test Error")]
-        public void EnsureWhatExceptionWillBeThrownOnErrorMessage()
+        public void EnsureThatExceptionWillBeThrownOnErrorMessage()
         {
             var request = new SearchRequest();
 

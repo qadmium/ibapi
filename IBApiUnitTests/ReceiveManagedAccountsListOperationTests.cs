@@ -20,7 +20,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatOperationCompletedOnAccountListReceived()
+        public void EnsureThatOperationCompletedOnAccountListReceived()
         {
             var operation = new ReceiveManagedAccountsListOperation();
             operation.Execute(connectionHelper.Connection());

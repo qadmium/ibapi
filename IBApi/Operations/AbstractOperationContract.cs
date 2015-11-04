@@ -9,7 +9,7 @@ namespace IBApi.Operations
     {
         public override void Execute(IConnection connection)
         {
-            Contract.Requires<ArgumentNullException>(connection != null);
+            Contract.Requires(connection != null);
         }
     }
 }

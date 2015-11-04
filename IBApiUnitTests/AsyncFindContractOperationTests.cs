@@ -14,6 +14,7 @@ namespace IBApiUnitTests
         public void Init()
         {
             connectionHelper = new ConnectionHelper();
+            connectionHelper.Connection().Run();
             observerMock = new Mock<IObserver<Contract>>();
             operation = CreateOperation();
         }
@@ -26,7 +27,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatObserverReceivesErrorOnErrorMessage()
+        public void EnsureThatObserverReceivesErrorOnErrorMessage()
         {
             var error = new ErrorMessage
             {
@@ -48,7 +49,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatObserverReceivesCompletedOnContractDataEndMessage()
+        public void EnsureThatObserverReceivesCompletedOnContractDataEndMessage()
         {
             var message = new ContractDataEndMessage
             {
@@ -61,7 +62,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatObserverReceivesContractOnContractDataMessage()
+        public void EnsureThatObserverReceivesContractOnContractDataMessage()
         {
             var message = new ContractDataMessage
             {

@@ -15,7 +15,7 @@ namespace IBApi.Accounts
         {
             get
             {
-                Contract.Requires<InvalidOperationException>(IsInitialized);
+                Contract.Requires(IsInitialized);
                 Contract.Ensures(Contract.Result<ReadOnlyCollection<IAccount>>() != null);
                 return null;
             }

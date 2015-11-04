@@ -16,6 +16,7 @@ namespace IBApiUnitTests
         public void Init()
         {
             connectionHelper = new ConnectionHelper();
+            connectionHelper.Connection().Run();
             observerMock = new Mock<IMarketDepthObserver>();
         }
         
@@ -26,12 +27,12 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatSubscriptionSendsRightUpdates()
+        public void EnsureThatSubscriptionSendsRightUpdates()
         {
         }
 
         [TestMethod]
-        public void EnsureWhatSubscriptionWorksWithErrors()
+        public void EnsureThatSubscriptionWorksWithErrors()
         {
             var marketDepthSubscription = CreateMarketDepthSubscription();
 
@@ -56,14 +57,14 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatSubscriptionSendsUnsubscribeOnlyOnceOnDisposing()
+        public void EnsureThatSubscriptionSendsUnsubscribeOnlyOnceOnDisposing()
         {
             var marketDepthSubscription = CreateMarketDepthSubscription();
 
             marketDepthSubscription.Dispose();
             marketDepthSubscription.Dispose();
 
-            connectionHelper.EnsureWhatMessageSended(
+            connectionHelper.EnsureThatMessageSended(
                 (RequestCancelMarketDepth message) => message.RequestId == ConnectionHelper.RequestId,
                 Times.Once);
         }

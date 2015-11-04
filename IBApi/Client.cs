@@ -13,10 +13,10 @@ namespace IBApi
     {
         public Client(IApiObjectsFactory objectsFactory, IConnection connection, IAccountsStorage accountsStorage)
         {
-            CodeContract.Requires<ArgumentNullException>(objectsFactory != null);
-            CodeContract.Requires<ArgumentNullException>(connection != null);
-            CodeContract.Requires<ArgumentNullException>(accountsStorage != null);
-            CodeContract.Requires<ArgumentOutOfRangeException>(accountsStorage.Accounts.Count() != 0);
+            CodeContract.Requires(objectsFactory != null);
+            CodeContract.Requires(connection != null);
+            CodeContract.Requires(accountsStorage != null);
+            CodeContract.Requires(accountsStorage.Accounts.Count() != 0);
 
             this.objectsFactory = objectsFactory;
             this.connection = connection;

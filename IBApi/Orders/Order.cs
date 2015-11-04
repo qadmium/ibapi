@@ -42,7 +42,7 @@ namespace IBApi.Orders
 
         public void Update(OpenOrderMessage message)
         {
-            CodeContract.Requires<InvalidOperationException>(message.OrderId == Id);
+            CodeContract.Requires(message.OrderId == Id);
 
             State = message.Status.ToOrderState();
             Action = message.OrderAction.ToOrderAction();
@@ -67,7 +67,7 @@ namespace IBApi.Orders
 
         private void OnStatusUpdate(OrderStatusMessage message)
         {
-            CodeContract.Requires<InvalidOperationException>(message.OrderId == Id);
+            CodeContract.Requires(message.OrderId == Id);
 
             State = message.Status.ToOrderState();
             FilledQuantity = message.Filled;

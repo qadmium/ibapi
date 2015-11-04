@@ -12,15 +12,15 @@ namespace IBApi.Contracts
     {
         public AsyncFindContractOperation(IConnection connection)
         {
-            CodeContract.Requires<ArgumentNullException>(connection != null);
+            CodeContract.Requires(connection != null);
 
             this.connection = connection;
         }
 
         public void Start(IObserver<Contract> contractObserver, SearchRequest request)
         {
-            CodeContract.Requires<ArgumentNullException>(contractObserver != null);
-            CodeContract.Requires<InvalidOperationException>(Started == false);
+            CodeContract.Requires(contractObserver != null);
+            CodeContract.Requires(Started == false);
             CodeContract.Ensures(Started == true);
 
             observer = contractObserver;

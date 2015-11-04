@@ -11,9 +11,9 @@ namespace IBApi.Operations
     {
         public ConnectOperation(IApiObjectsFactory objectsFactory, IConnection connection, Action<IClient> onSucessCallback, Action<Error> onErrorCallback)
         {
-            Contract.Requires<ArgumentNullException>(connection != null);
-            Contract.Requires<ArgumentNullException>(onSucessCallback != null);
-            Contract.Requires<ArgumentNullException>(onErrorCallback != null);
+            Contract.Requires(connection != null);
+            Contract.Requires(onSucessCallback != null);
+            Contract.Requires(onErrorCallback != null);
 
             this.onSucessCallback = onSucessCallback;
             this.onErrorCallback = onErrorCallback;

@@ -8,7 +8,7 @@ namespace IBApiUnitTests
     public class ErrorCodeExtensionsTests
     {
         [TestMethod]
-        public void EnsureWhatConnectionStatusRelatedWorks()
+        public void EnsureThatConnectionStatusRelatedWorks()
         {
             Assert.IsTrue(ErrorCode.MarketFarmConnected.ConnectionStatusRelated());
             Assert.IsTrue(ErrorCode.DataFarmConnected.ConnectionStatusRelated());

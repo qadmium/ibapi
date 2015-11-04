@@ -32,6 +32,7 @@ namespace IBApiUnitTests
             factoryMock.Setup(factory => factory.CreateOrdersStorage(It.IsAny<string>()))
                 .Returns(ordersStorageMock.Object);
 
+            connectionHelper.Connection().Run();
             account = new Account("testaccount", connectionHelper.Connection(), factoryMock.Object);
         }
 
@@ -43,7 +44,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatBaseCurrencyMapsOnAccountFields()
+        public void EnsureThatBaseCurrencyMapsOnAccountFields()
         {
             Assert.AreEqual(0, account.Currencies.Length);
 
@@ -69,7 +70,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatNotBaseCurrencyMapsOnCurrencyAccountFields()
+        public void EnsureThatNotBaseCurrencyMapsOnCurrencyAccountFields()
         {
             Assert.AreEqual(0, account.Currencies.Length);
 
@@ -85,7 +86,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatAccountInitializedOnAllChildStoragesInitialized()
+        public void EnsureThatAccountInitializedOnAllChildStoragesInitialized()
         {
             var initializationCallback = new Mock<InitializedEventHandler>();
 

@@ -8,9 +8,9 @@ namespace IBApi.Connection
     {
         public Subscription(Func<T, bool> condition, Action<T> callback, Subscriptions subscriptions)
         {
-            CodeContract.Requires<ArgumentNullException>(condition != null);
-            CodeContract.Requires<ArgumentNullException>(callback != null);
-            CodeContract.Requires<ArgumentNullException>(subscriptions != null);
+            CodeContract.Requires(condition != null);
+            CodeContract.Requires(callback != null);
+            CodeContract.Requires(subscriptions != null);
 
             this.condition = condition;
             this.callback = callback;

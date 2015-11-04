@@ -8,7 +8,7 @@ namespace IBApiUnitTests
     public class MessagesHelperExtensionsTests
     {
         [TestMethod]
-        public void EnsureWhatToRightStringReturnsEmptyStringOnNull()
+        public void EnsureThatToRightStringReturnsEmptyStringOnNull()
         {
             var result = ((bool?) null).ToRightString();
 
@@ -16,7 +16,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatToRightStringReturnsCOnCall()
+        public void EnsureThatToRightStringReturnsCOnCall()
         {
             var result = ((bool?)true).ToRightString();
 
@@ -24,7 +24,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatToRightStringReturnsPOnCall()
+        public void EnsureThatToRightStringReturnsPOnCall()
         {
             var result = ((bool?)false).ToRightString();
 

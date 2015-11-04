@@ -12,6 +12,7 @@ namespace IBApiUnitTests
         public void Init()
         {
             connectionHelper = new ConnectionHelper();
+            connectionHelper.Connection().Run();
             account1 = new Mock<IAccountInternal>();
             account2 = new Mock<IAccountInternal>();
             factoryMock = new Mock<IApiObjectsFactory>();
@@ -27,7 +28,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public void EnsureWhatAccountsStorageInitializedWhenAllAccountsInitialized()
+        public void EnsureThatAccountsStorageInitializedWhenAllAccountsInitialized()
         {
             var accountsStorage = new AccountsStorage(new[] {"account1", "account2"}, connectionHelper.Connection(),
                 factoryMock.Object);
