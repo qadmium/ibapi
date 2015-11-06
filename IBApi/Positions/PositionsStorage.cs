@@ -10,44 +10,43 @@ namespace IBApi.Positions
 {
     internal sealed class PositionsStorage : IPositionsStorageInternal
     {
+        private readonly string accountName;
+
+        private readonly IApiObjectsFactory objectsFactory;
+        private readonly IDictionary<Contract, Position> positions = new Dictionary<Contract, Position>();
+        private IDisposable subscription;
+
+        public PositionsStorage(IConnection connection, IApiObjectsFactory objectsFactory, string accountName)
+        {
+            System.Diagnostics.Contracts.Contract.Requires(connection != null);
+            System.Diagnostics.Contracts.Contract.Requires(objectsFactory != null);
+            System.Diagnostics.Contracts.Contract.Requires(accountName != null);
+            this.objectsFactory = objectsFactory;
+            this.accountName = accountName;
+            this.Subscribe(connection);
+        }
+
         public event PositionAddedEventHandler PositionAdded = delegate { };
 
         public ReadOnlyCollection<IPosition> Positions
         {
             get
             {
-                var castedPositions = positions.Values.Select<Position, IPosition>(position => position).ToList();
-                return new ReadOnlyCollection<IPosition>(castedPositions);
+                var castedPositions = this.positions.Values.Select<Position, IPosition>(position => position).ToList();
+                return castedPositions.AsReadOnly();
             }
-        }
-        
-        public event InitializedEventHandler Initialized = delegate { };
-        
-        public bool IsInitialized { get; private set; }
-
-        public PositionsStorage(IConnection connection, IApiObjectsFactory objectsFactory, string accountName)
-        {
-            this.objectsFactory = objectsFactory;
-            this.accountName = accountName;
-
-            Subscribe(connection);
-        }
-
-        public void AccountsReceived()
-        {
-            IsInitialized = true;
-            Initialized();
         }
 
         public void Dispose()
         {
-            subscription.Dispose();
+            this.subscription.Dispose();
         }
 
         private void Subscribe(IConnection connection)
         {
-            subscription = connection.Subscribe((PortfolioValueMessage message) => message.AccountName == accountName,
-                OnPositionUpdate);
+            this.subscription =
+                connection.Subscribe((PortfolioValueMessage message) => message.AccountName == this.accountName,
+                    this.OnPositionUpdate);
         }
 
         private void OnPositionUpdate(PortfolioValueMessage message)
@@ -56,21 +55,16 @@ namespace IBApi.Positions
 
             Position position;
 
-            if (positions.TryGetValue(positionContract, out position))
+            if (this.positions.TryGetValue(positionContract, out position))
             {
-                position.Update(message);  
+                position.Update(message);
                 return;
             }
 
-            position = objectsFactory.CreatePosition();
+            position = this.objectsFactory.CreatePosition();
             position.Update(message);
-            positions[positionContract] = position;
-            PositionAdded(position);
+            this.positions[positionContract] = position;
+            this.PositionAdded(position);
         }
-
-        private readonly IApiObjectsFactory objectsFactory;
-        private readonly string accountName;
-        private IDisposable subscription;
-        private readonly IDictionary<Contract, Position> positions = new Dictionary<Contract, Position>();
     }
 }

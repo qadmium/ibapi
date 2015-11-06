@@ -14,9 +14,9 @@ using Moq;
 
 namespace IBApiUnitTests
 {
-    internal class IBSerializerMock : IIBSerializer, IDisposable
+    internal class IbSerializerMock : IIbSerializer, IDisposable
     {
-        public IBSerializerMock()
+        public IbSerializerMock()
         {
             WritedMessages = new List<IMessage>();
         }
@@ -86,7 +86,7 @@ namespace IBApiUnitTests
 
             streamMock = new Mock<Stream>();
             streamMock.Setup(stream => stream.CanRead).Returns(true);
-            serializerMock = new IBSerializerMock();
+            serializerMock = new IbSerializerMock();
             connection = new Connection(streamMock.Object, serializerMock);
         }
 
@@ -153,7 +153,7 @@ namespace IBApiUnitTests
 
         private Mock<Stream> streamMock;
         private Connection connection;
-        private IBSerializerMock serializerMock;
+        private IbSerializerMock serializerMock;
         private SynchronizationContext oldSynchronizationContext;
     }
 }

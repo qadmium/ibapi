@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Accounts;
 using IBApi.Contracts;
 using IBApi.Executions;
-using IBApi.Messages.Server;
-using IBApi.Operations;
 using IBApi.Orders;
 using IBApi.Positions;
 
@@ -11,16 +12,20 @@ namespace IBApi
 {
     internal interface IApiObjectsFactory
     {
-        IReceiveManagedAccountsListOperation CreateReceiveManagedAccountsListOperation();
-        IAccountsStorage CreateAccountStorage(string[] managedAccountsList);
-        IAccountInternal CreateAccount(string accountName);
-        IOperation CreateWaitForMarketConnectedOperation();
+        Task<string[]> CreateReceiveManagedAccountsListOperation(CancellationToken cancellationToken);
+        Task<IAccountsStorage> CreateAccountStorageOperation(string[] managedAccountsList, CancellationToken cancellationToken);
+        IAccountsStorage CreateAccountStorage(List<IAccountInternal> accounts);
+        Task<IAccountInternal> CreateAccountOperation(string account, CancellationToken cancellationToken);
+        IAccountInternal CreateAccount(string accountName, IExecutionStorageInternal executionStorage,
+            IPositionsStorageInternal positionsStorage, IOrdersStorageInternal ordersStorage,
+            AccountCurrenciesFields accountCurrenciesFields);
+        Task CreateWaitForMarketConnectedOperation(CancellationToken cancellationToken);
         IClient CreateClient(IAccountsStorage accountsStorage);
-        SyncFindContractOperation CreateSyncFindContractOperation();
-        AsyncFindContractOperation CreateAsyncFindContractOperation();
+        Task<IReadOnlyCollection<Contract>> CreateAsyncFindContractOperation(SearchRequest searchRequest, CancellationToken cancellationToken);
         IDisposable CreateQuoteSubscription(IQuoteObserver observer, Contract contract);
         IDisposable CreateMarketDepthSubscription(IMarketDepthObserver observer, Contract contract);
-        IExecutionStorageInternal CreateExecutionStorage(string accountName);
+        Task<IExecutionStorageInternal> CreateExecutionStorageOperation(string accountName, CancellationToken cancellationToken);
+        IExecutionStorageInternal CreateExecutionStorage(string accountName, List<Execution> executions);
         IPositionsStorageInternal CreatePositionStorage(string accountName);
         IOrdersStorageInternal CreateOrdersStorage(string accountName);
         Position CreatePosition();

@@ -3,97 +3,81 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace IBApi.Serialization.SerializerExtensions
 {
     internal static class DeserializationExtensions
     {
-        public static int ReadTypeIdFromStream(this Stream stream)
+        public static async Task<int> ReadTypeIdFromStream(this FieldsStream stream, CancellationToken cancellationToken)
         {
-            var typeIdString = stream.ReadUntilNull();
+            var typeIdString = await stream.ReadNextField(cancellationToken);
 
             var typeId = int.Parse(typeIdString, CultureInfo.InvariantCulture);
             return typeId;
         }
 
-        public static object ReadObject(this Stream stream, Type type)
+        public static async Task<object> ReadObject(this FieldsStream stream, Type type,
+            CancellationToken cancellationToken)
         {
             if (type.IsPrimitive)
             {
-                return stream.ReadPrimitive(type);
+                return await stream.ReadPrimitive(type, cancellationToken);
             }
 
             var result = Activator.CreateInstance(type);
 
-            foreach (var serializableField in type.GetSerializableFields())
+            foreach (
+                var serializableField in
+                    type.GetSerializableFields()
+                        .Where(serializableField => serializableField.ShouldSerializeForThisObject(result)))
             {
-                if (serializableField.ShouldSerializeForThisObject(result))
-                {
-                    var propertyValue = stream.ReadFieldValue(serializableField);
-                    serializableField.SetValue(result, propertyValue);   
-                }
+                var propertyValue = await stream.ReadFieldValue(serializableField, cancellationToken);
+                serializableField.SetValue(result, propertyValue);
             }
 
             return result;
         }
 
-        private static string ReadUntilNull(this Stream stream)
+        private static async Task<object> ReadPrimitive(this FieldsStream stream, Type what,
+            CancellationToken cancellationToken)
         {
-            var bytes = new List<byte>();
-            var ch = stream.ReadByte();
-
-            while (ch != 0)
-            {
-                if (ch == -1)
-                {
-                    throw new IOException("End of stream");
-                }
-
-                bytes.Add((byte)ch);
-                ch = stream.ReadByte();
-            }
-
-            return Encoding.ASCII.GetString(bytes.ToArray());
-        }
-
-        private static object ReadPrimitive(this Stream stream, Type what)
-        {
-            var str = stream.ReadUntilNull();
+            var str = await stream.ReadNextField(cancellationToken);
             return TypeDescriptor.GetConverter(what).ConvertFromString(null, CultureInfo.InvariantCulture, str);
         }
 
-        private static object ReadFieldValue(this Stream stream, FieldInfo field)
+        private static async Task<object> ReadFieldValue(this FieldsStream stream, FieldInfo field,
+            CancellationToken cancellationToken)
         {
             if (field.ShouldSerializeAsEnumerable())
             {
-                return stream.ReadEnumerable(field.FieldType.GetGenericArguments().Single());
+                return await stream.ReadEnumerable(field.FieldType.GetGenericArguments().Single(), cancellationToken);
             }
 
             if (field.ShouldSerializeAsBool())
             {
-                return stream.ReadBool();
+                return await stream.ReadBool(cancellationToken);
             }
-            
+
             if (field.ShouldSerializeAsDateTime())
             {
-                return stream.ReadDateTime();
+                return await stream.ReadDateTime(cancellationToken);
             }
 
             if (field.ShouldSerializeAsEnum())
             {
-                return stream.ReadEnum(field.FieldType);
+                return await stream.ReadEnum(field.FieldType, cancellationToken);
             }
 
-            return stream.ReadPrimitive(field.FieldType);
+            return await stream.ReadPrimitive(field.FieldType, cancellationToken);
         }
 
-        private static object ReadDateTime(this Stream stream)
+        private static async Task<object> ReadDateTime(this FieldsStream stream, CancellationToken cancellationToken)
         {
-            var fieldValue = stream.ReadUntilNull();
+            var fieldValue = await stream.ReadNextField(cancellationToken);
 
             if (string.IsNullOrEmpty(fieldValue))
             {
@@ -103,26 +87,28 @@ namespace IBApi.Serialization.SerializerExtensions
             return DateTime.ParseExact(fieldValue, "yyyyMMdd", CultureInfo.InvariantCulture);
         }
 
-        private static object ReadBool(this Stream stream)
+        private static async Task<bool?> ReadBool(this FieldsStream stream, CancellationToken cancellationToken)
         {
-            var fieldValue = stream.ReadUntilNull();
+            var fieldValue = await stream.ReadNextField(cancellationToken);
 
-            return fieldValue == "0" ? false : fieldValue == "1" ? true : (bool?)null;
+            return fieldValue == "0" ? false : fieldValue == "1" ? true : (bool?) null;
         }
 
-        private static object ReadEnum(this Stream stream, Type type)
+        private static async Task<object> ReadEnum(this FieldsStream stream, Type type,
+            CancellationToken cancellationToken)
         {
-            return Enum.ToObject(type, stream.ReadPrimitive(typeof (int)));
+            return Enum.ToObject(type, await stream.ReadPrimitive(typeof (int), cancellationToken));
         }
 
-        private static object ReadEnumerable(this Stream stream, Type enumerableType)
+        private static async Task<object> ReadEnumerable(this FieldsStream stream, Type enumerableType,
+            CancellationToken cancellationToken)
         {
-            var size = int.Parse(stream.ReadUntilNull(), CultureInfo.InvariantCulture);
-            var result = (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(enumerableType));
+            var size = int.Parse(await stream.ReadNextField(cancellationToken), CultureInfo.InvariantCulture);
+            var result = (IList) Activator.CreateInstance(typeof (List<>).MakeGenericType(enumerableType));
 
             for (var i = 0; i < size; i++)
             {
-                result.Add(stream.ReadObject(enumerableType));
+                result.Add(stream.ReadObject(enumerableType, cancellationToken));
             }
 
             return result;

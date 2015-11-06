@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
 using IBApi.Messages.Client;
 using IBApi.Messages.Server;
 using IBApi.Serialization;
@@ -12,32 +12,66 @@ namespace IBApi.Connection
 {
     internal sealed class Connection : IConnection
     {
-        public Connection(Stream stream, IIBSerializer serializer)
+        private readonly CancellationTokenSource cts;
+        private readonly IIbSerializer serializer;
+
+        private readonly FieldsStream stream;
+
+        private readonly HashSet<ISubscription> subscriptions = new HashSet<ISubscription>();
+        private int nextRequestId;
+
+        public Connection(FieldsStream stream, IIbSerializer serializer)
         {
             Contract.Requires(stream != null);
             Contract.Requires(serializer != null);
             this.stream = stream;
             this.serializer = serializer;
-            currentScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            this.cts = new CancellationTokenSource();
         }
 
-        public void Run()
+        public void SendMessage(IClientMessage message)
         {
-            Running = true;
-            //pass cancellationToken to prevent running task on main thread
-            Task.Factory.StartNew(ReadMessagesAndDispatch, new CancellationToken());
+            if (this.cts.Token.IsCancellationRequested)
+            {
+                return;
+            }
+
+            Trace.TraceInformation("Sending message: {0}", message);
+            this.serializer.Write(message, this.stream, this.cts.Token);
         }
 
-        public bool Running { get; private set; }
+        public int NextRequestId()
+        {
+            return this.nextRequestId++;
+        }
 
-        private void ReadMessagesAndDispatch()
+        public IDisposable Subscribe<T>(Func<T, bool> condition, Action<T> callback)
+        {
+            var subscription = new Subscription<T>(condition, callback, this.subscriptions);
+            this.subscriptions.Add(subscription);
+            return subscription;
+        }
+
+        public IDisposable Subscribe<T>(Action<T> callback)
+        {
+            return this.Subscribe(message => true, callback);
+        }
+
+        public void Dispose()
+        {
+            this.cts.Cancel();
+            this.stream.Dispose();
+        }
+
+        public async void ReadMessagesAndDispatch()
         {
             try
             {
-                while (!disposed)
+                var token = this.cts.Token;
+                while (!token.IsCancellationRequested)
                 {
-                    var message = serializer.ReadServerMessage(stream) as IServerMessage;
-                    subscriptions.DispatchMessage(message);
+                    var message = await this.serializer.ReadServerMessage(this.stream, token) as IServerMessage;
+                    this.DispatchMessage(message);
 
                     Trace.TraceInformation("Received message {0}", message);
                 }
@@ -59,58 +93,16 @@ namespace IBApi.Connection
             Trace.TraceInformation("Messages reader exited");
         }
 
-        public void SendMessage(IClientMessage message)
+        private void DispatchMessage(IServerMessage message)
         {
-            if (disposed)
+            foreach (var subscription in this.subscriptions)
             {
-                return;
+                subscription.OnMessage(message);
             }
-
-            Trace.TraceInformation("Sending message: {0}", message);
-            serializer.Write(message, stream);
         }
 
-        public int NextRequestId()
+        private static void RethrowIfUnexpectedException(Exception e)
         {
-            return nextRequestId++;
-        }
-
-        public IDisposable Subscribe<T>(Func<T, bool> condition, Action<T> callback, TaskScheduler scheduler)
-        {
-            var subscription = new Subscription<T>(condition, callback, subscriptions);
-            subscriptions.Add(subscription, scheduler);
-            return subscription;
-        }
-
-        public IDisposable Subscribe<T>(Func<T, bool> condition, Action<T> callback)
-        {
-            return Subscribe(condition, callback, currentScheduler);
-        }
-
-        public IDisposable Subscribe<T>(Action<T> callback)
-        {
-            return Subscribe(message => true, callback, currentScheduler);
-        }
-
-        public void Dispose()
-        {
-            if (disposed)
-            {
-                return;
-            }
-
-            disposed = true;
-            stream.Dispose();
-            subscriptions.Dispose();
-        }
-
-        private void RethrowIfUnexpectedException(Exception e)
-        {
-            if (disposed)
-            {
-                return;
-            }
-
             Trace.TraceError("Unexpected exception: {0}", e);
             throw e;
         }
@@ -118,15 +110,8 @@ namespace IBApi.Connection
         [ContractInvariantMethod]
         private void ObjectInvariant()
         {
-            Contract.Invariant(stream != null);
-            Contract.Invariant(serializer != null);
+            Contract.Invariant(this.stream != null);
+            Contract.Invariant(this.serializer != null);
         }
-
-        private readonly Stream stream;
-        private readonly IIBSerializer serializer;
-        private readonly Subscriptions subscriptions = new Subscriptions();
-        private int nextRequestId;
-        private volatile bool disposed;
-        private readonly TaskScheduler currentScheduler;
     }
 }

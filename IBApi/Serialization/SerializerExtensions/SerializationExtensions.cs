@@ -2,23 +2,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Messages;
 
 namespace IBApi.Serialization.SerializerExtensions
 {
     internal static class SerializationExtensions
     {
-        public static void Serialize(this IMessage message, Stream stream)
+        public static async Task Serialize(this IMessage message, FieldsStream stream, CancellationToken cancellationToken)
         {
-            var buffer = message.SerializeObject().ToArray();
-            stream.Write(buffer, 0, buffer.Count());
+            await stream.Write(message.SerializeObject(), cancellationToken);
         }
 
-        private static IEnumerable<byte> SerializeObject(this object obj)
+        private static byte[] SerializeObject(this object obj)
         {
             if (obj.GetType().IsPrimitive)
             {
@@ -28,10 +28,9 @@ namespace IBApi.Serialization.SerializerExtensions
             return obj.SerializeTypeId().Concat(
                 obj.GetType().GetSerializableFields()
                     .Where(field => field.ShouldSerializeForThisObject(obj))
-                    .SelectMany(field => field.SerializeField(obj)));
+                    .SelectMany(field => field.SerializeField(obj))).ToArray();
         }
-
-        private static IEnumerable<byte> SerializePrimitive(this object obj)
+        private static byte[] SerializePrimitive(this object obj)
         {
             if (obj == null)
             {
@@ -41,7 +40,7 @@ namespace IBApi.Serialization.SerializerExtensions
             return Encoding.ASCII.GetBytes(string.Format(CultureInfo.InvariantCulture, "{0}", obj) + char.MinValue);
         }
 
-        private static IEnumerable<byte> SerializeTypeId(this object obj)
+        private static byte[] SerializeTypeId(this object obj)
         {
             if (!Attribute.IsDefined(obj.GetType(), typeof(IBSerializable)))
             {
@@ -53,7 +52,7 @@ namespace IBApi.Serialization.SerializerExtensions
             return buffer;
         }
 
-        private static IEnumerable<byte> SerializeField(this FieldInfo field, object obj)
+        private static byte[] SerializeField(this FieldInfo field, object obj)
         {
             if (field.ShouldSerializeAsEnumerable())
             {
@@ -78,12 +77,12 @@ namespace IBApi.Serialization.SerializerExtensions
             return SerializePrimitive(field.GetValue(obj));
         }
 
-        private static IEnumerable<byte> SerializeAsEnum(object value)
+        private static byte[] SerializeAsEnum(object value)
         {
             return SerializePrimitive((int) value);
         }
 
-        private static IEnumerable<byte> SerializeEnumerable(object value)
+        private static byte[] SerializeEnumerable(object value)
         {
             IEnumerable<byte> result = new List<byte>();
 
@@ -97,10 +96,10 @@ namespace IBApi.Serialization.SerializerExtensions
                 count++;
             }
 
-            return count.SerializePrimitive().Concat(result);
+            return count.SerializePrimitive().Concat(result).ToArray();
         }
 
-        private static IEnumerable<byte> SerializeAsBool(object value)
+        private static byte[] SerializeAsBool(object value)
         {
             if (value == null)
             {
@@ -110,7 +109,7 @@ namespace IBApi.Serialization.SerializerExtensions
             return (bool)value ? SerializePrimitive("1") : SerializePrimitive("0");
         }
 
-        private static IEnumerable<byte> SerializeAsDateTime(object value)
+        private static byte[] SerializeAsDateTime(object value)
         {
             if (value == null)
             {
@@ -122,12 +121,12 @@ namespace IBApi.Serialization.SerializerExtensions
             return SerializePrimitive(dateTimValue.ToString("yyyyMMdd"));
         }
 
-        private static IEnumerable<byte> EmptyString()
+        private static byte[] EmptyString()
         {
             return Encoding.ASCII.GetBytes(string.Format("{0}", char.MinValue));
         }
 
-        private static IEnumerable<byte> NoValue()
+        private static byte[] NoValue()
         {
             return new byte[]{};
         }

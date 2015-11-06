@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IBApi</RootNamespace>
     <AssemblyName>IBApi</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <CodeContractsAssemblyMode>0</CodeContractsAssemblyMode>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -66,6 +67,7 @@
     <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
     <CodeContractsSkipAnalysisIfCannotConnectToCache>False</CodeContractsSkipAnalysisIfCannotConnectToCache>
     <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -117,6 +119,7 @@
     <CodeContractsSuggestReadonly>True</CodeContractsSuggestReadonly>
     <CodeContractsSkipAnalysisIfCannotConnectToCache>False</CodeContractsSkipAnalysisIfCannotConnectToCache>
     <CodeContractsBeingOptimisticOnExternal>True</CodeContractsBeingOptimisticOnExternal>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -129,23 +132,26 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Accounts\Account.cs" />
+    <Compile Include="Accounts\AccountCurrenciesFields.cs" />
     <Compile Include="Accounts\AccountFields.cs" />
     <Compile Include="Accounts\AccountsStorage.cs" />
     <Compile Include="Accounts\IAccountInternal.cs" />
     <Compile Include="Accounts\IAccountsStorage.cs" />
     <Compile Include="Accounts\AccountValue.cs" />
     <Compile Include="Accounts\IAccountStorageContract.cs" />
+    <Compile Include="Operations\CreateAccountOperation.cs" />
+    <Compile Include="Operations\CreateAccountStorageOperation.cs" />
+    <Compile Include="Operations\CreateExecutionsStorageOperation.cs" />
+    <Compile Include="Serialization\FieldsStream.cs" />
     <Compile Include="Connection\IConnectionContract.cs" />
     <Compile Include="Connection\ISubscription.cs" />
-    <Compile Include="Connection\Subscriptions.cs" />
     <Compile Include="Connection\Subscription.cs" />
     <Compile Include="Executions\Execution.cs" />
     <Compile Include="Executions\IExecutionStorageInternal.cs" />
-    <Compile Include="Connection\ImmediateScheduler.cs" />
-    <Compile Include="IObjectWithDelayedInitialization.cs" />
     <Compile Include="Messages\Server\OpenOrderEndMessage.cs" />
     <Compile Include="Orders\OrderAction.cs" />
     <Compile Include="Orders\OrderState.cs" />
@@ -155,13 +161,11 @@
     <Compile Include="Executions\IExecutionsStorage.cs" />
     <Compile Include="Messages\Server\ExecutionDataEndMessage.cs" />
     <Compile Include="Messages\Server\ExecutionDataMessage.cs" />
-    <Compile Include="Operations\ConnectOperation.cs" />
     <Compile Include="ConnectionParams.cs" />
     <Compile Include="Contracts\AsyncFindContractOperation.cs" />
     <Compile Include="Contracts\ContractSearchException.cs" />
     <Compile Include="Contracts\ContractSearchTimeoutException.cs" />
     <Compile Include="Contracts\SearchRequest.cs" />
-    <Compile Include="Contracts\SyncFindContractOperation.cs" />
     <Compile Include="Errors\Error.cs" />
     <Compile Include="Errors\ErrorCodes.cs" />
     <Compile Include="Accounts\IAccount.cs" />
@@ -194,7 +198,6 @@
     <Compile Include="Operations\AbstractOperationContract.cs" />
     <Compile Include="Operations\IOperation.cs" />
     <Compile Include="IApiObjectsFactory.cs" />
-    <Compile Include="Operations\IReceiveManagedAccountsListOperation.cs" />
     <Compile Include="ApiObjectsFactory.cs" />
     <Compile Include="Operations\ReceiveManagedAccountsListOperation.cs" />
     <Compile Include="Operations\WaitForMarketConnectedOperation.cs" />

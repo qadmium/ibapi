@@ -1,27 +1,24 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.IO;
+﻿using System.Diagnostics.Contracts;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Messages;
 
 namespace IBApi.Serialization
 {
     // ReSharper disable once InconsistentNaming
-    [ContractClassFor(typeof(IIBSerializer))]
-    internal abstract class IIBSerializerContract : IIBSerializer
+    [ContractClassFor(typeof(IIbSerializer))]
+    internal abstract class IIbSerializerContract : IIbSerializer
     {
-        public abstract T ReadMessageWithoutId<T>(Stream stream) where T : IMessage, new();
+        public abstract Task<T> ReadMessageWithoutId<T>(FieldsStream stream, CancellationToken cancellationToken) where T : IMessage, new();
 
-        public IMessage ReadServerMessage(Stream stream)
+        public Task<IMessage> ReadServerMessage(FieldsStream stream, CancellationToken cancellationToken)
         {
-            Contract.Requires(stream != null);
-            Contract.Requires(stream.CanRead);
-            
+            Contract.Requires(stream != null);           
             Contract.Ensures(Contract.Result<IMessage>() != null);
 
             return null;
         }
-
-        public abstract IMessage ReadClientMessage(Stream stream);
-        public abstract void Write(IMessage message, Stream stream);
+        public abstract Task<IMessage> ReadClientMessage(FieldsStream stream, CancellationToken cancellationToken);
+        public abstract Task Write(IMessage message, FieldsStream stream, CancellationToken cancellationToken);
     }
 }

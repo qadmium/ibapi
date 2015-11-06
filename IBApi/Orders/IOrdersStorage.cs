@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace IBApi.Orders
 {
@@ -8,6 +8,6 @@ namespace IBApi.Orders
     {
         event OrderAddedEventHandler OrderAdded;
 
-        ReadOnlyCollection<IOrder> Orders { get; }  
+        IReadOnlyCollection<IOrder> Orders { get; }  
     }
 }

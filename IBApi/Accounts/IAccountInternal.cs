@@ -1,6 +1,8 @@
-﻿namespace IBApi.Accounts
+﻿using System;
+
+namespace IBApi.Accounts
 {
-    internal interface IAccountInternal : IAccount, IObjectWithDelayedInitialization
+    internal interface IAccountInternal : IAccount, IDisposable
     {
     }
 }

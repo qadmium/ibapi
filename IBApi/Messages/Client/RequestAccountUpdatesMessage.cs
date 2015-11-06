@@ -12,8 +12,8 @@ namespace IBApi.Messages.Client
             Subscribe = true;
         }
 
-        public int Version;
-        public bool Subscribe;
-        public string AccountCode;
+        public readonly int Version;
+        public readonly bool Subscribe;
+        public readonly string AccountCode;
     }
 }

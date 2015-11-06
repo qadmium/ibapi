@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 
 namespace IBApi.Accounts
@@ -7,9 +7,6 @@ namespace IBApi.Accounts
     [ContractClass(typeof(IAccountStorageContract))]
     internal interface IAccountsStorage : IDisposable
     {
-        event InitializedEventHandler Initialized;
-        bool IsInitialized { get; }
-
-        ReadOnlyCollection<IAccount> Accounts { get; }
+        IReadOnlyCollection<IAccount> Accounts { get; }
     }
 }

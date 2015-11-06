@@ -23,13 +23,13 @@ namespace IBApiUnitTests
 
             factoryMock = new Mock<IApiObjectsFactory>();
 
-            factoryMock.Setup(factory => factory.CreateReceiveManagedAccountsListOperation())
+            factoryMock.Setup(factory => factory.CreateReceiveManagedAccountsListOperation(TODO))
                 .Returns(receiveManagedAccountsListOperationMock.Object);
 
-            factoryMock.Setup(factory => factory.CreateWaitForMarketConnectedOperation())
+            factoryMock.Setup(factory => factory.CreateWaitForMarketConnectedOperation(TODO))
                 .Returns(waitForMarketConnectedOperationMock.Object);
 
-            factoryMock.Setup(factory => factory.CreateAccountStorage(It.IsAny<string[]>()))
+            factoryMock.Setup(factory => factory.CreateAccountStorageOperation(It.IsAny<string[]>()))
                 .Returns(accountStorageMock.Object);
 
             factoryMock.Setup(factory => factory.CreateClient(It.IsAny<IAccountsStorage>()))

@@ -1,12 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
 using IBApi.Connection;
 using IBApi.Executions;
-using IBApi.Messages.Client;
 using IBApi.Messages.Server;
 using IBApi.Orders;
 using IBApi.Positions;
@@ -16,161 +11,89 @@ namespace IBApi.Accounts
 {
     internal class Account : IAccountInternal
     {
-        public Account(string name, IConnection connection, IApiObjectsFactory objectsFactory)
+        private readonly AccountCurrenciesFields accountCurrenciesFields;
+        private readonly IExecutionStorageInternal executionStorage;
+        private readonly IOrdersStorageInternal ordersStorage;
+        private readonly IPositionsStorageInternal positionsStorage;
+        private ICollection<IDisposable> subscriptions = new List<IDisposable>();
+
+        public Account(string name, IConnection connection, IExecutionStorageInternal executionStorage,
+            IPositionsStorageInternal positionsStorageInternal, IOrdersStorageInternal ordersStorageInternal,
+            AccountCurrenciesFields accountCurrenciesFields)
         {
             CodeContract.Requires(!string.IsNullOrEmpty(name));
             CodeContract.Requires(connection != null);
+            CodeContract.Requires(executionStorage != null);
+            CodeContract.Requires(positionsStorageInternal != null);
+            CodeContract.Requires(ordersStorageInternal != null);
+            CodeContract.Requires(accountCurrenciesFields != null);
 
-            AccountName = name;
-            AccountId = name;
+            this.AccountName = name;
+            this.AccountId = name;
 
-            executionStorage = objectsFactory.CreateExecutionStorage(AccountName);
-            executionStorage.Initialized += OnChildStorageInitialized;
-            positionsStorage = objectsFactory.CreatePositionStorage(AccountName);
-            positionsStorage.Initialized += OnChildStorageInitialized;
-            ordersStorage = objectsFactory.CreateOrdersStorage(AccountName);
-            ordersStorage.Initialized += OnChildStorageInitialized;
+            this.executionStorage = executionStorage;
+            this.positionsStorage = positionsStorageInternal;
+            this.ordersStorage = ordersStorageInternal;
+            this.accountCurrenciesFields = accountCurrenciesFields;
 
-            Subscribe(connection);
-            SendRequest(connection);
+            this.Subscribe(connection);
         }
-
-        public event InitializedEventHandler Initialized = delegate { };
-
-        public bool IsInitialized { get; private set; }
 
         public event AccountChangedEventHandler AccountChanged = delegate { };
 
-        public string AccountName { get; set; }
+        public string AccountName { get; private set; }
 
-        public string AccountId { get; set; }
+        public string AccountId { get; private set; }
 
         public AccountFields AccountFields
         {
-            get { return accountFields[baseCurrencyId]; }
+            get { return this.accountCurrenciesFields.AccountFields; }
         }
 
         public string[] Currencies
         {
-            get { return accountFields.Keys.ToArray(); }
+            get { return this.accountCurrenciesFields.Currencies; }
         }
 
         public AccountFields this[string currency]
         {
-            get { return accountFields[currency]; }
+            get { return this.accountCurrenciesFields[currency]; }
         }
-
 
         public IOrdersStorage OrdersStorage
         {
-            get { return ordersStorage; }
+            get { return this.ordersStorage; }
         }
 
         public IExecutionsStorage ExecutionsStorage
         {
-            get { return executionStorage; }
+            get { return this.executionStorage; }
         }
 
         public IPositionsStorage PositionStorage
         {
-            get { return positionsStorage; }
+            get { return this.positionsStorage; }
         }
 
         public void Dispose()
         {
-            subscriptions.Unsubscribe();
-            executionStorage.Dispose();
-        }
-
-        private void SendRequest(IConnection connection)
-        {
-            connection.SendMessage(new RequestAccountUpdatesMessage(AccountName));
+            this.subscriptions.Unsubscribe();
+            this.executionStorage.Dispose();
         }
 
         private void Subscribe(IConnection connection)
         {
-            subscriptions = new List<IDisposable>
+            this.subscriptions = new List<IDisposable>
             {
-                connection.Subscribe((AccountValueMessage message) => message.AccountName == AccountName,
-                    OnAccountValueMessage),
-                connection.Subscribe((AccountDownloadEndMessage message) => message.AccountName == AccountName,
-                    OnAccountDownloadEndMessage)
+                connection.Subscribe((AccountValueMessage message) => message.AccountName == this.AccountName,
+                    this.OnAccountValueMessage)
             };
         }
 
         private void OnAccountValueMessage(AccountValueMessage message)
         {
-            AccountValue accountValue = AccountValue.FromMessage(message);
-            string currency = IsBaseCurrency(accountValue.Currency) ? baseCurrencyId : accountValue.Currency;
-
-            //Trace.TraceInformation("{0} {1} {2}", accountValue.Currency, accountValue.Key, accountValue.Value);
-
-            PropertyInfo property = accountProperties.SingleOrDefault(prop => prop.Name == accountValue.Key);
-
-            if (property == null)
-            {
-                return;
-            }
-
-            AccountFields accountFieldsInstance = GetAccountFieldsInstance(currency);
-            property.SetValue(accountFieldsInstance,
-                Convert.ChangeType(accountValue.Value, property.PropertyType, CultureInfo.InvariantCulture), null);
-            AccountChanged(this);
+            this.accountCurrenciesFields.Update(AccountValue.FromMessage(message));
+            this.AccountChanged(this);
         }
-
-        private void OnAccountDownloadEndMessage(AccountDownloadEndMessage message)
-        {
-            Trace.TraceInformation("Downloaded account {0}", message.AccountName);
-            positionsStorage.AccountsReceived();
-            ordersStorage.AccountsReceived();
-
-            accountDownloaded = true;
-            CheckInited();
-        }
-
-        private AccountFields GetAccountFieldsInstance(string forCurrency)
-        {
-            AccountFields accountFieldsInstance;
-
-            if (accountFields.TryGetValue(forCurrency, out accountFieldsInstance))
-            {
-                return accountFieldsInstance;
-            }
-
-            accountFieldsInstance = new AccountFields();
-            accountFields[forCurrency] = accountFieldsInstance;
-            return accountFieldsInstance;
-        }
-
-        private void OnChildStorageInitialized()
-        {
-            CheckInited();
-        }
-
-        private void CheckInited()
-        {
-            if (!accountDownloaded || !executionStorage.IsInitialized || !positionsStorage.IsInitialized ||
-                !ordersStorage.IsInitialized)
-            {
-                return;
-            }
-
-            IsInitialized = true;
-            Initialized();
-        }
-
-        private static bool IsBaseCurrency(string currency)
-        {
-            return String.IsNullOrEmpty(currency) || currency == baseCurrencyId;
-        }
-
-        private readonly IDictionary<string, AccountFields> accountFields = new Dictionary<string, AccountFields>();
-        private readonly IExecutionStorageInternal executionStorage;
-        private readonly IOrdersStorageInternal ordersStorage;
-        private readonly IPositionsStorageInternal positionsStorage;
-        private bool accountDownloaded;
-        private ICollection<IDisposable> subscriptions = new List<IDisposable>();
-        private const string baseCurrencyId = "BASE";
-        private static readonly PropertyInfo[] accountProperties = typeof (AccountFields).GetProperties();
     }
 }

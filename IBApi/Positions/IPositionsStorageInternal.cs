@@ -2,8 +2,7 @@
 
 namespace IBApi.Positions
 {
-    internal interface IPositionsStorageInternal : IPositionsStorage, IObjectWithDelayedInitialization, IDisposable
+    internal interface IPositionsStorageInternal : IPositionsStorage, IDisposable
     {
-        void AccountsReceived();
     }
 }

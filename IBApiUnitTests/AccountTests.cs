@@ -23,7 +23,7 @@ namespace IBApiUnitTests
 
             factoryMock = new Mock<IApiObjectsFactory>();
 
-            factoryMock.Setup(factory => factory.CreateExecutionStorage(It.IsAny<string>()))
+            factoryMock.Setup(factory => factory.CreateExecutionStorage(It.IsAny<string>(), TODO))
                 .Returns(executionsStorageMock.Object);
 
             factoryMock.Setup(factory => factory.CreatePositionStorage(It.IsAny<string>()))

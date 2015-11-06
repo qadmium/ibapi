@@ -2,7 +2,7 @@
 
 namespace IBApi.Executions
 {
-    internal interface IExecutionStorageInternal : IExecutionsStorage, IDisposable, IObjectWithDelayedInitialization
+    internal interface IExecutionStorageInternal : IExecutionsStorage, IDisposable
     {
     }
 }

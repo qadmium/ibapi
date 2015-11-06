@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 
 namespace IBApi.Executions
 {
@@ -8,6 +8,6 @@ namespace IBApi.Executions
     {
         event ExecutionAddedEventHandler ExecutionAdded;
 
-        ReadOnlyCollection<Execution> Executions { get; } 
+        IReadOnlyCollection<Execution> Executions { get; } 
     }
 }

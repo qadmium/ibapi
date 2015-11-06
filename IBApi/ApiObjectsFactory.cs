@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Accounts;
 using IBApi.Connection;
 using IBApi.Contracts;
@@ -11,71 +14,90 @@ using IBApi.Quotes;
 
 namespace IBApi
 {
-    sealed class ApiObjectsFactory : IApiObjectsFactory
+    internal sealed class ApiObjectsFactory : IApiObjectsFactory
     {
+        private readonly IConnection connection;
+
         public ApiObjectsFactory(IConnection connection)
         {
             this.connection = connection;
         }
 
-        public IReceiveManagedAccountsListOperation CreateReceiveManagedAccountsListOperation()
+        public Task<string[]> CreateReceiveManagedAccountsListOperation(CancellationToken cancellationToken)
         {
-            return new ReceiveManagedAccountsListOperation();
+            return new ReceiveManagedAccountsListOperation(this.connection, cancellationToken).Result;
         }
 
-        public IAccountsStorage CreateAccountStorage(string[] managedAccountsList)
+        public Task<IAccountsStorage> CreateAccountStorageOperation(string[] managedAccountsList,
+            CancellationToken cancellationToken)
         {
-            return new AccountsStorage(managedAccountsList, connection, this);
+            return
+                new CreateAccountStorageOperation(cancellationToken, this, this.connection, managedAccountsList).Result;
         }
 
-        public IAccountInternal CreateAccount(string accountName)
+        public IAccountsStorage CreateAccountStorage(List<IAccountInternal> accounts)
         {
-            return new Account(accountName, connection, this);
+            return new AccountsStorage(accounts);
         }
 
-        public IOperation CreateWaitForMarketConnectedOperation()
+        public Task<IAccountInternal> CreateAccountOperation(string account, CancellationToken cancellationToken)
         {
-            return new WaitForMarketConnectedOperation();
+            return new CreateAccountOperation(this.connection, this, account, cancellationToken).Result;
+        }
+
+        public IAccountInternal CreateAccount(string accountName, IExecutionStorageInternal executionStorage,
+            IPositionsStorageInternal positionsStorage, IOrdersStorageInternal ordersStorage,
+            AccountCurrenciesFields accountCurrenciesFields)
+        {
+            return new Account(accountName, this.connection, executionStorage, positionsStorage, ordersStorage,
+                accountCurrenciesFields);
+        }
+
+        public Task CreateWaitForMarketConnectedOperation(CancellationToken cancellationToken)
+        {
+            return new WaitForMarketConnectedOperation(this.connection, cancellationToken).Result;
         }
 
         public IClient CreateClient(IAccountsStorage accountsStorage)
         {
-            return new Client(this, connection, accountsStorage);
+            return new Client(this, this.connection, accountsStorage);
         }
 
-        public SyncFindContractOperation CreateSyncFindContractOperation()
+        public Task<IReadOnlyCollection<Contract>> CreateAsyncFindContractOperation(SearchRequest searchRequest,
+            CancellationToken cancellationToken)
         {
-            return new SyncFindContractOperation(connection);
-        }
-
-        public AsyncFindContractOperation CreateAsyncFindContractOperation()
-        {
-            return new AsyncFindContractOperation(connection);
+            return new AsyncFindContractOperation(this.connection, searchRequest, cancellationToken).Task;
         }
 
         public IDisposable CreateQuoteSubscription(IQuoteObserver observer, Contract contract)
         {
-            return new QuoteSubscription(connection, observer, contract);
+            return new QuoteSubscription(this.connection, observer, contract);
         }
 
         public IDisposable CreateMarketDepthSubscription(IMarketDepthObserver observer, Contract contract)
         {
-            return new MarketDepthSubscription(connection, observer, contract);
+            return new MarketDepthSubscription(this.connection, observer, contract);
         }
 
-        public IExecutionStorageInternal CreateExecutionStorage(string accountName)
+        public Task<IExecutionStorageInternal> CreateExecutionStorageOperation(string accountName,
+            CancellationToken cancellationToken)
         {
-            return new ExecutionsStorage(connection, accountName);
+            return new CreateExecutionsStorageOperation(this.connection, cancellationToken, this, accountName).Result;
+        }
+
+        public IExecutionStorageInternal CreateExecutionStorage(string accountName, List<Execution> executions)
+        {
+            return new ExecutionsStorage(this.connection, accountName, executions);
         }
 
         public IPositionsStorageInternal CreatePositionStorage(string accountName)
         {
-            return new PositionsStorage(connection, this, accountName);
+            return new PositionsStorage(this.connection, this, accountName);
         }
 
         public IOrdersStorageInternal CreateOrdersStorage(string accountName)
         {
-            return new OrdersStorage(connection, this, accountName);
+            return new OrdersStorage(this.connection, this, accountName);
         }
 
         public Position CreatePosition()
@@ -85,9 +107,7 @@ namespace IBApi
 
         public Order CreateOrder(int orderId)
         {
-            return new Order(orderId, connection);
+            return new Order(orderId, this.connection);
         }
-
-        private readonly IConnection connection;
     }
 }

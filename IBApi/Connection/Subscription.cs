@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using IBApi.Messages.Server;
 using CodeContract = System.Diagnostics.Contracts.Contract;
 
@@ -6,7 +7,11 @@ namespace IBApi.Connection
 {
     internal sealed class Subscription<T> : ISubscription
     {
-        public Subscription(Func<T, bool> condition, Action<T> callback, Subscriptions subscriptions)
+        private readonly Action<T> callback;
+        private readonly Func<T, bool> condition;
+        private readonly HashSet<ISubscription> subscriptions;
+
+        public Subscription(Func<T, bool> condition, Action<T> callback, HashSet<ISubscription> subscriptions)
         {
             CodeContract.Requires(condition != null);
             CodeContract.Requires(callback != null);
@@ -25,19 +30,15 @@ namespace IBApi.Connection
             }
 
             var typedMessage = (T) message;
-            if (condition(typedMessage))
+            if (this.condition(typedMessage))
             {
-                callback(typedMessage);
+                this.callback(typedMessage);
             }
         }
 
         public void Dispose()
         {
-            subscriptions.Remove(this);
+            this.subscriptions.Remove(this);
         }
-
-        private readonly Func<T, bool> condition;
-        private readonly Action<T> callback;
-        private readonly Subscriptions subscriptions;
     }
 }

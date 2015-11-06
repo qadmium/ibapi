@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using CodeContract = System.Diagnostics.Contracts.Contract;
 
 namespace IBApi.Accounts
 {
     [ContractClassFor(typeof(IAccountsStorage))]
+    // ReSharper disable once InconsistentNaming
     internal abstract class IAccountStorageContract : IAccountsStorage
     {
-        public abstract event InitializedEventHandler Initialized;
-        public bool IsInitialized { get { return false; } }
-
-        public ReadOnlyCollection<IAccount> Accounts
+        public IReadOnlyCollection<IAccount> Accounts
         {
             get
             {
-                Contract.Requires(IsInitialized);
-                Contract.Ensures(Contract.Result<ReadOnlyCollection<IAccount>>() != null);
+                Contract.Ensures(Contract.Result<IReadOnlyCollection<IAccount>>() != null);
                 return null;
             }
         }

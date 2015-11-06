@@ -1,5 +1,4 @@
-﻿using System;
-using IBApi.Executions;
+﻿using IBApi.Executions;
 using IBApi.Orders;
 using IBApi.Positions;
 
@@ -7,7 +6,7 @@ namespace IBApi.Accounts
 {
     public delegate void AccountChangedEventHandler(IAccount account);
 
-    public interface IAccount : IDisposable
+    public interface IAccount
     {
         event AccountChangedEventHandler AccountChanged;
 

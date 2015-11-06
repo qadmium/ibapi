@@ -2,8 +2,7 @@
 
 namespace IBApi.Orders
 {
-    internal interface IOrdersStorageInternal : IOrdersStorage, IObjectWithDelayedInitialization, IDisposable
+    internal interface IOrdersStorageInternal : IOrdersStorage, IDisposable
     {
-        void AccountsReceived();
     }
 }

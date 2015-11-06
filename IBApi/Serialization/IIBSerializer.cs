@@ -1,15 +1,16 @@
 ﻿using System.Diagnostics.Contracts;
-using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Messages;
 
 namespace IBApi.Serialization
 {
-    [ContractClass(typeof(IIBSerializerContract))]
-    internal interface IIBSerializer
+    [ContractClass(typeof(IIbSerializerContract))]
+    internal interface IIbSerializer
     {
-        T ReadMessageWithoutId<T>(Stream stream) where T : IMessage, new();
-        IMessage ReadServerMessage(Stream stream);
-        IMessage ReadClientMessage(Stream stream);
-        void Write(IMessage message, Stream stream);
+        Task<T> ReadMessageWithoutId<T>(FieldsStream stream, CancellationToken cancellationToken) where T : IMessage, new();
+        Task<IMessage> ReadServerMessage(FieldsStream stream, CancellationToken cancellationToken);
+        Task<IMessage> ReadClientMessage(FieldsStream stream, CancellationToken cancellationToken);
+        Task Write(IMessage message, FieldsStream stream, CancellationToken cancellationToken);
     }
 }
