@@ -1,4 +1,7 @@
-﻿using IBApi.Errors;
+﻿using System;
+using System.Threading;
+using IBApi.Errors;
+using IBApi.Exceptions;
 using IBApi.Messages.Server;
 using IBApi.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -8,45 +11,53 @@ namespace IBApiUnitTests
     [TestClass]
     public class WaitForMarketConnectedOperationTests
     {
+        private ConnectionHelper connectionHelper;
+
         [TestInitialize]
         public void Init()
         {
-            connectionHelper = new ConnectionHelper();
+            this.connectionHelper = new ConnectionHelper();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            connectionHelper.Dispose();
+            this.connectionHelper.Dispose();
         }
 
         [TestMethod]
-        public void EnsureThatOperationCompletedOnMarketConnected()
+        public async void EnsureThatOperationCompletedOnMarketConnected()
         {
-            var operation = new WaitForMarketConnectedOperation();
-            operation.Execute(connectionHelper.Connection());
+            var operation = new WaitForMarketConnectedOperation(this.connectionHelper.Connection(), CancellationToken.None);
 
-            connectionHelper.SendMessage(new ErrorMessage{ErrorCode = ErrorCode.MarketFarmConnected, Message = "Connected"});
+            this.connectionHelper.SendMessage(new ErrorMessage
+            {
+                ErrorCode = ErrorCode.MarketFarmConnected,
+                Message = "Connected"
+            });
 
-            Assert.IsTrue(operation.Completed);
-            Assert.IsFalse(operation.Failed);
-            operation.Dispose();
+            await operation.Result;
         }
 
         [TestMethod]
-        public void EnsureThatOperationFailedOnMarketConnected()
+        public async void EnsureThatOperationFailedOnMarketConnected()
         {
-            var operation = new WaitForMarketConnectedOperation();
-            operation.Execute(connectionHelper.Connection());
+            var operation = new WaitForMarketConnectedOperation(this.connectionHelper.Connection(), CancellationToken.None);
 
-            connectionHelper.SendMessage(new ErrorMessage { ErrorCode = ErrorCode.UnknownError, Message = "Fail" });
+            this.connectionHelper.SendMessage(new ErrorMessage {ErrorCode = ErrorCode.UnknownError, Message = "Fail"});
 
-            Assert.IsFalse(operation.Completed);
-            Assert.IsTrue(operation.Failed);
+            try
+            {
+                await operation.Result;
+            }
+            catch (IBException exception)
+            {
+                Assert.AreEqual(ErrorCode.UnknownError, exception.ErrorCode);
+                Assert.AreEqual("Fail", exception.Message);
+                return;
+            }
 
-            operation.Dispose();
+            Assert.Fail("Execption expected but not trown");
         }
-
-        private ConnectionHelper connectionHelper;
     }
 }

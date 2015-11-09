@@ -12,18 +12,20 @@ namespace IBApiUnitTests
     [TestClass]
     public class MarketDepthTests
     {
+        private ConnectionHelper connectionHelper;
+        private Mock<IMarketDepthObserver> observerMock;
+
         [TestInitialize]
         public void Init()
         {
-            connectionHelper = new ConnectionHelper();
-            connectionHelper.Connection().Run();
-            observerMock = new Mock<IMarketDepthObserver>();
+            this.connectionHelper = new ConnectionHelper();
+            this.observerMock = new Mock<IMarketDepthObserver>();
         }
-        
+
         [TestCleanup]
         public void Cleanup()
         {
-            connectionHelper.Dispose();
+            this.connectionHelper.Dispose();
         }
 
         [TestMethod]
@@ -34,7 +36,7 @@ namespace IBApiUnitTests
         [TestMethod]
         public void EnsureThatSubscriptionWorksWithErrors()
         {
-            var marketDepthSubscription = CreateMarketDepthSubscription();
+            var marketDepthSubscription = this.CreateMarketDepthSubscription();
 
             var error = new ErrorMessage
             {
@@ -43,7 +45,7 @@ namespace IBApiUnitTests
                 RequestId = ConnectionHelper.RequestId
             };
 
-            connectionHelper.SendMessage(error);
+            this.connectionHelper.SendMessage(error);
 
             var expectedError = new Error
             {
@@ -52,19 +54,19 @@ namespace IBApiUnitTests
                 RequestId = ConnectionHelper.RequestId
             };
 
-            observerMock.Verify(observer => observer.OnError(expectedError), Times.Once);
+            this.observerMock.Verify(observer => observer.OnError(expectedError), Times.Once);
             marketDepthSubscription.Dispose();
         }
 
         [TestMethod]
         public void EnsureThatSubscriptionSendsUnsubscribeOnlyOnceOnDisposing()
         {
-            var marketDepthSubscription = CreateMarketDepthSubscription();
+            var marketDepthSubscription = this.CreateMarketDepthSubscription();
 
             marketDepthSubscription.Dispose();
             marketDepthSubscription.Dispose();
 
-            connectionHelper.EnsureThatMessageSended(
+            this.connectionHelper.EnsureThatMessageSended(
                 (RequestCancelMarketDepth message) => message.RequestId == ConnectionHelper.RequestId,
                 Times.Once);
         }
@@ -72,11 +74,9 @@ namespace IBApiUnitTests
         private MarketDepthSubscription CreateMarketDepthSubscription()
         {
             var contract = new Contract();
-            var marketDepthSubscription = new MarketDepthSubscription(connectionHelper.Connection(), observerMock.Object, contract);
+            var marketDepthSubscription = new MarketDepthSubscription(this.connectionHelper.Connection(),
+                this.observerMock.Object, contract);
             return marketDepthSubscription;
         }
-
-        private ConnectionHelper connectionHelper;
-        private Mock<IMarketDepthObserver> observerMock;
     }
 }

@@ -12,24 +12,26 @@ namespace IBApiUnitTests
     [TestClass]
     public class QuotesTests
     {
+        private ConnectionHelper connectionHelper;
+        private Mock<IQuoteObserver> observerMock;
+
         [TestInitialize]
         public void Init()
         {
-            connectionHelper = new ConnectionHelper();
-            connectionHelper.Connection().Run();
-            observerMock = new Mock<IQuoteObserver>();
+            this.connectionHelper = new ConnectionHelper();
+            this.observerMock = new Mock<IQuoteObserver>();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            connectionHelper.Dispose();
+            this.connectionHelper.Dispose();
         }
 
         [TestMethod]
         public void EnsureThatSubscriptionWorks()
         {
-            var quoteSucription = CreateQuoteSubscription();
+            var quoteSucription = this.CreateQuoteSubscription();
 
             {
                 var message = new TickPriceMessage
@@ -40,10 +42,10 @@ namespace IBApiUnitTests
                     TickType = TickType.Ask
                 };
 
-                connectionHelper.SendMessage(message);
+                this.connectionHelper.SendMessage(message);
 
                 var expectedQuote = new Quote {AskPrice = 1.05, AskSize = 1};
-                observerMock.Verify(observer => observer.OnQuote(expectedQuote), Times.Once);
+                this.observerMock.Verify(observer => observer.OnQuote(expectedQuote), Times.Once);
             }
 
             {
@@ -55,10 +57,10 @@ namespace IBApiUnitTests
                     TickType = TickType.Bid
                 };
 
-                connectionHelper.SendMessage(message);
+                this.connectionHelper.SendMessage(message);
 
                 var expectedQuote = new Quote {AskPrice = 1.05, AskSize = 1, BidPrice = 2.05, BidSize = 2};
-                observerMock.Verify(observer => observer.OnQuote(expectedQuote), Times.Once);
+                this.observerMock.Verify(observer => observer.OnQuote(expectedQuote), Times.Once);
             }
 
             {
@@ -70,7 +72,7 @@ namespace IBApiUnitTests
                     TickType = TickType.Last
                 };
 
-                connectionHelper.SendMessage(message);
+                this.connectionHelper.SendMessage(message);
 
                 var expectedQuote = new Quote
                 {
@@ -82,17 +84,17 @@ namespace IBApiUnitTests
                     TradeSize = 3
                 };
 
-                observerMock.Verify(observer => observer.OnQuote(expectedQuote), Times.Once);
+                this.observerMock.Verify(observer => observer.OnQuote(expectedQuote), Times.Once);
             }
 
-            observerMock.Verify(observer => observer.OnError(It.IsAny<Error>()), Times.Never);
+            this.observerMock.Verify(observer => observer.OnError(It.IsAny<Error>()), Times.Never);
             quoteSucription.Dispose();
         }
 
         [TestMethod]
         public void EnsureThatSubscriptionWorksWithErrors()
         {
-            var quoteSucription = CreateQuoteSubscription();
+            var quoteSucription = this.CreateQuoteSubscription();
 
             var error = new ErrorMessage
             {
@@ -101,7 +103,7 @@ namespace IBApiUnitTests
                 RequestId = ConnectionHelper.RequestId
             };
 
-            connectionHelper.SendMessage(error);
+            this.connectionHelper.SendMessage(error);
 
             var expectedError = new Error
             {
@@ -110,19 +112,19 @@ namespace IBApiUnitTests
                 RequestId = ConnectionHelper.RequestId
             };
 
-            observerMock.Verify(observer => observer.OnError(expectedError), Times.Once);
+            this.observerMock.Verify(observer => observer.OnError(expectedError), Times.Once);
             quoteSucription.Dispose();
         }
 
         [TestMethod]
         public void EnsureThatSubscriptionSendsUnsubscribeOnlyOnceOnDisposing()
         {
-            var quoteSucription = CreateQuoteSubscription();
+            var quoteSucription = this.CreateQuoteSubscription();
 
             quoteSucription.Dispose();
             quoteSucription.Dispose();
 
-            connectionHelper.EnsureThatMessageSended(
+            this.connectionHelper.EnsureThatMessageSended(
                 (RequestCancelMarketData message) => message.RequestId == ConnectionHelper.RequestId,
                 Times.Once);
         }
@@ -130,11 +132,9 @@ namespace IBApiUnitTests
         private QuoteSubscription CreateQuoteSubscription()
         {
             var contract = new Contract();
-            var quoteSucription = new QuoteSubscription(connectionHelper.Connection(), observerMock.Object, contract);
+            var quoteSucription = new QuoteSubscription(this.connectionHelper.Connection(), this.observerMock.Object,
+                contract);
             return quoteSucription;
         }
-
-        private ConnectionHelper connectionHelper;
-        private Mock<IQuoteObserver> observerMock;
     }
 }

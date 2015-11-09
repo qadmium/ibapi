@@ -1,34 +1,37 @@
-﻿using System;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Contracts;
 using IBApi.Errors;
+using IBApi.Exceptions;
 using IBApi.Messages.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace IBApiUnitTests
 {
     [TestClass]
     public class AsyncFindContractOperationTests
     {
+        private ConnectionHelper connectionHelper;
+
         [TestInitialize]
         public void Init()
         {
-            connectionHelper = new ConnectionHelper();
-            connectionHelper.Connection().Run();
-            observerMock = new Mock<IObserver<Contract>>();
-            operation = CreateOperation();
+            this.connectionHelper = new ConnectionHelper();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            operation.Dispose();
-            connectionHelper.Dispose();
+            this.connectionHelper.Dispose();
         }
 
         [TestMethod]
-        public void EnsureThatObserverReceivesErrorOnErrorMessage()
+        public async void EnsureThatObserverReceivesErrorOnErrorMessage()
         {
+            var task = this.CreateOperation(new SearchRequest());
+
             var error = new ErrorMessage
             {
                 ErrorCode = ErrorCode.DataFarmConnected,
@@ -36,34 +39,43 @@ namespace IBApiUnitTests
                 RequestId = ConnectionHelper.RequestId
             };
 
-            connectionHelper.SendMessage(error);
+            this.connectionHelper.SendMessage(error);
 
-            var expectedError = new Error
+            try
             {
-               Code = error.ErrorCode,
-               Message = error.Message,
-               RequestId = error.RequestId
-            };
+                await task;
+            }
+            catch (IBException exception)
+            {
+                Assert.AreEqual(error.ErrorCode, exception.ErrorCode);
+                Assert.AreEqual(error.Message, exception.Message);
+                return;
+            }
 
-            observerMock.Verify(observer => observer.OnError(new ContractSearchException(expectedError)), Times.Once);
+            Assert.Fail("Exception was expected");
         }
 
         [TestMethod]
-        public void EnsureThatObserverReceivesCompletedOnContractDataEndMessage()
+        public async void EnsureThatObserverReceivesCompletedOnContractDataEndMessage()
         {
+            var task = this.CreateOperation(new SearchRequest());
+
             var message = new ContractDataEndMessage
             {
                 RequestId = ConnectionHelper.RequestId
             };
 
-            connectionHelper.SendMessage(message);
+            this.connectionHelper.SendMessage(message);
 
-            observerMock.Verify(observer => observer.OnCompleted(), Times.Once);
+            var result = await task;
+            Assert.AreEqual(0, result.Count);
         }
 
         [TestMethod]
-        public void EnsureThatObserverReceivesContractOnContractDataMessage()
+        public async void EnsureThatObserverReceivesContractOnContractDataMessage()
         {
+            var task = this.CreateOperation(new SearchRequest());
+
             var message = new ContractDataMessage
             {
                 RequestId = ConnectionHelper.RequestId,
@@ -71,21 +83,17 @@ namespace IBApiUnitTests
                 SecurityType = "STK"
             };
 
-            connectionHelper.SendMessage(message);
+            this.connectionHelper.SendMessage(message);
 
-            observerMock.Verify(observer => observer.OnNext(Contract.FromContractDataMessage(message)), Times.Once);
+            var result = await task;
+            Assert.AreEqual(1, result.Count);
+            Assert.AreEqual(Contract.FromContractDataMessage(message), result.First());
         }
 
-        private AsyncFindContractOperation CreateOperation()
+        private Task<IReadOnlyCollection<Contract>> CreateOperation(SearchRequest request)
         {
-            var result = new AsyncFindContractOperation(connectionHelper.Connection());
-
-            result.Start(observerMock.Object, new SearchRequest { SecurityType = SecurityType.STK });
-            return result;
+            var result = new FindContractOperation(this.connectionHelper.Connection(), request, CancellationToken.None);
+            return result.Task;
         }
-
-        private AsyncFindContractOperation operation;
-        private ConnectionHelper connectionHelper;
-        private Mock<IObserver<Contract>> observerMock;
     }
 }

@@ -66,7 +66,7 @@ namespace IBApi
         public Task<IReadOnlyCollection<Contract>> CreateAsyncFindContractOperation(SearchRequest searchRequest,
             CancellationToken cancellationToken)
         {
-            return new AsyncFindContractOperation(this.connection, searchRequest, cancellationToken).Task;
+            return new FindContractOperation(this.connection, searchRequest, cancellationToken).Task;
         }
 
         public IDisposable CreateQuoteSubscription(IQuoteObserver observer, Contract contract)

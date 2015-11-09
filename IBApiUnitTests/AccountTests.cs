@@ -12,43 +12,39 @@ namespace IBApiUnitTests
     [TestClass]
     public class AccountTests
     {
+        private Account account;
+
+        private ConnectionHelper connectionHelper;
+        private Mock<IExecutionStorageInternal> executionsStorageMock;
+        private Mock<IOrdersStorageInternal> ordersStorageMock;
+        private Mock<IPositionsStorageInternal> positionsStorageMock;
+
         [TestInitialize]
         public void Init()
         {
-            connectionHelper = new ConnectionHelper();
+            this.connectionHelper = new ConnectionHelper();
 
-            executionsStorageMock = new Mock<IExecutionStorageInternal>();
-            positionsStorageMock = new Mock<IPositionsStorageInternal>();
-            ordersStorageMock = new Mock<IOrdersStorageInternal>();
+            this.executionsStorageMock = new Mock<IExecutionStorageInternal>();
+            this.positionsStorageMock = new Mock<IPositionsStorageInternal>();
+            this.ordersStorageMock = new Mock<IOrdersStorageInternal>();
 
-            factoryMock = new Mock<IApiObjectsFactory>();
-
-            factoryMock.Setup(factory => factory.CreateExecutionStorage(It.IsAny<string>(), TODO))
-                .Returns(executionsStorageMock.Object);
-
-            factoryMock.Setup(factory => factory.CreatePositionStorage(It.IsAny<string>()))
-                .Returns(positionsStorageMock.Object);
-
-            factoryMock.Setup(factory => factory.CreateOrdersStorage(It.IsAny<string>()))
-                .Returns(ordersStorageMock.Object);
-
-            connectionHelper.Connection().Run();
-            account = new Account("testaccount", connectionHelper.Connection(), factoryMock.Object);
+            this.account = new Account("testaccount", this.connectionHelper.Connection(), this.executionsStorageMock.Object
+                , this.positionsStorageMock.Object, this.ordersStorageMock.Object, new AccountCurrenciesFields());
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            account.Dispose();
-            connectionHelper.Dispose();
+            this.account.Dispose();
+            this.connectionHelper.Dispose();
         }
 
         [TestMethod]
         public void EnsureThatBaseCurrencyMapsOnAccountFields()
         {
-            Assert.AreEqual(0, account.Currencies.Length);
+            Assert.AreEqual(0, this.account.Currencies.Length);
 
-            connectionHelper.SendMessage(new AccountValueMessage
+            this.connectionHelper.SendMessage(new AccountValueMessage
             {
                 AccountName = "testaccount",
                 Currency = "BASE",
@@ -56,9 +52,9 @@ namespace IBApiUnitTests
                 Value = "100500"
             });
 
-            Assert.AreEqual(100500, account.AccountFields.TotalCashBalance);
+            Assert.AreEqual(100500, this.account.AccountFields.TotalCashBalance);
 
-            connectionHelper.SendMessage(new AccountValueMessage
+            this.connectionHelper.SendMessage(new AccountValueMessage
             {
                 AccountName = "testaccount",
                 Currency = "BASE",
@@ -66,15 +62,15 @@ namespace IBApiUnitTests
                 Value = "500100"
             });
 
-            Assert.AreEqual(500100, account.AccountFields.BuyingPower);
+            Assert.AreEqual(500100, this.account.AccountFields.BuyingPower);
         }
 
         [TestMethod]
         public void EnsureThatNotBaseCurrencyMapsOnCurrencyAccountFields()
         {
-            Assert.AreEqual(0, account.Currencies.Length);
+            Assert.AreEqual(0, this.account.Currencies.Length);
 
-            connectionHelper.SendMessage(new AccountValueMessage
+            this.connectionHelper.SendMessage(new AccountValueMessage
             {
                 AccountName = "testaccount",
                 Currency = "USD",
@@ -82,50 +78,7 @@ namespace IBApiUnitTests
                 Value = "100500"
             });
 
-            Assert.AreEqual(100500, account["USD"].TotalCashBalance);
+            Assert.AreEqual(100500, this.account["USD"].TotalCashBalance);
         }
-
-        [TestMethod]
-        public void EnsureThatAccountInitializedOnAllChildStoragesInitialized()
-        {
-            var initializationCallback = new Mock<InitializedEventHandler>();
-
-            account.Initialized += initializationCallback.Object;
-
-            Assert.IsFalse(account.IsInitialized);
-
-            executionsStorageMock.Setup(executionsStorage => executionsStorage.IsInitialized).Returns(true);
-            executionsStorageMock.Raise(executionsStorage => executionsStorage.Initialized += null);
-
-            Assert.IsFalse(account.IsInitialized);
-
-            positionsStorageMock.Setup(positionsStorage => positionsStorage.IsInitialized).Returns(true);
-            positionsStorageMock.Raise(positionsStorage => positionsStorage.Initialized += null);
-
-            Assert.IsFalse(account.IsInitialized);
-
-            ordersStorageMock.Setup(ordersStorage => ordersStorage.IsInitialized).Returns(true);
-            ordersStorageMock.Raise(ordersStorage => ordersStorage.Initialized += null);
-
-            Assert.IsFalse(account.IsInitialized);
-
-            var message = new AccountDownloadEndMessage
-            {
-                AccountName = "testaccount",
-                Version = 0
-            };
-
-            connectionHelper.SendMessage(message);
-
-            Assert.IsTrue(account.IsInitialized);
-            initializationCallback.Verify(callback => callback(), Times.Once);
-        }
-
-        private ConnectionHelper connectionHelper;
-        private Mock<IApiObjectsFactory> factoryMock;
-        private Mock<IExecutionStorageInternal> executionsStorageMock;
-        private Mock<IPositionsStorageInternal> positionsStorageMock;
-        private Mock<IOrdersStorageInternal> ordersStorageMock;
-        private Account account;
     }
 }

@@ -1,4 +1,5 @@
-﻿using IBApi.Messages.Server;
+﻿using System.Threading;
+using IBApi.Messages.Server;
 using IBApi.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -7,32 +8,30 @@ namespace IBApiUnitTests
     [TestClass]
     public class ReceiveManagedAccountsListOperationTests
     {
+        private ConnectionHelper connectionHelper;
+
         [TestInitialize]
         public void Init()
         {
-            connectionHelper = new ConnectionHelper();
+            this.connectionHelper = new ConnectionHelper();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            connectionHelper.Dispose();
+            this.connectionHelper.Dispose();
         }
 
         [TestMethod]
-        public void EnsureThatOperationCompletedOnAccountListReceived()
+        public async void EnsureThatOperationCompletedOnAccountListReceived()
         {
-            var operation = new ReceiveManagedAccountsListOperation();
-            operation.Execute(connectionHelper.Connection());
+            var operation = new ReceiveManagedAccountsListOperation(this.connectionHelper.Connection(), CancellationToken.None);
 
-            connectionHelper.SendMessage(new ManagedAccountsListMessage{AccountsList = "Acc1,Acc2,Acc3"});
+            this.connectionHelper.SendMessage(new ManagedAccountsListMessage {AccountsList = "Acc1,Acc2,Acc3"});
 
-            Assert.IsTrue(operation.Completed);
-            CollectionAssert.AreEqual(new[] { "Acc1", "Acc2", "Acc3" }, operation.AccountsList);
+            var result = await operation.Result;
 
-            operation.Dispose();
+            CollectionAssert.AreEqual(new[] {"Acc1", "Acc2", "Acc3"}, result);
         }
-
-        private ConnectionHelper connectionHelper;
     }
 }

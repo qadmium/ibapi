@@ -1,52 +1,33 @@
-﻿using IBApi;
+﻿using System.Collections.Generic;
 using IBApi.Executions;
 using IBApi.Messages.Server;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
 
 namespace IBApiUnitTests
 {
     [TestClass]
     public class ExecutionsStorageTests
     {
+        private ConnectionHelper connectionHelper;
+
         [TestInitialize]
         public void Init()
         {
-            connectionHelper = new ConnectionHelper();
-            connectionHelper.Connection().Run();
+            this.connectionHelper = new ConnectionHelper();
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            connectionHelper.Dispose();
-        }
-
-        [TestMethod]
-        public void EnsureThatExecutionsStorageInitializedOnExecutionDataEndMessage()
-        {
-            var executionsStorage = new ExecutionsStorage(connectionHelper.Connection(), "testaccount");
-
-            var initilizationCallback = new Mock<InitializedEventHandler>();
-            executionsStorage.Initialized += initilizationCallback.Object;
-
-            Assert.IsFalse(executionsStorage.IsInitialized);
-            initilizationCallback.Verify(callback => callback(), Times.Never);
-
-            connectionHelper.SendMessage(new ExecutionDataEndMessage {RequestId = ConnectionHelper.RequestId});
-
-            Assert.IsTrue(executionsStorage.IsInitialized);
-            initilizationCallback.Verify(callback => callback(), Times.Once);
-
-            executionsStorage.Dispose();
+            this.connectionHelper.Dispose();
         }
 
         [TestMethod]
         public void EnsureThatStorageCreatesExecutionsOnExecutionDataMessage()
         {
-            var executionsStorage = new ExecutionsStorage(connectionHelper.Connection(), "testaccount");
+            var executionsStorage = new ExecutionsStorage(this.connectionHelper.Connection(), "testaccount", new List<Execution>());
 
-            connectionHelper.SendMessage(new ExecutionDataMessage
+            this.connectionHelper.SendMessage(new ExecutionDataMessage
             {
                 RequestId = ConnectionHelper.RequestId,
                 Account = "testaccount",
@@ -54,9 +35,9 @@ namespace IBApiUnitTests
                 SecurityType = "STK"
             });
 
-            connectionHelper.SendMessage(new ExecutionDataEndMessage { RequestId = ConnectionHelper.RequestId });
+            this.connectionHelper.SendMessage(new ExecutionDataEndMessage {RequestId = ConnectionHelper.RequestId});
 
-            connectionHelper.SendMessage(new ExecutionDataMessage
+            this.connectionHelper.SendMessage(new ExecutionDataMessage
             {
                 RequestId = ConnectionHelper.RequestId,
                 Account = "testaccount",
@@ -68,7 +49,5 @@ namespace IBApiUnitTests
 
             executionsStorage.Dispose();
         }
-
-        private ConnectionHelper connectionHelper;
     }
 }

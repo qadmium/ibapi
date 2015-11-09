@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using IBApi.Connection;
 using IBApi.Errors;
@@ -14,110 +15,85 @@ using Moq;
 
 namespace IBApiUnitTests
 {
-    internal class IbSerializerMock : IIbSerializer, IDisposable
+    internal class IbSerializerMock : IIbSerializer
     {
+        private TaskCompletionSource<IMessage> readTaskCompletionSource = new TaskCompletionSource<IMessage>();
+
         public IbSerializerMock()
         {
-            WritedMessages = new List<IMessage>();
+            this.WritedMessages = new List<IMessage>();
         }
 
-        public T ReadMessageWithoutId<T>(Stream stream) where T : IMessage, new()
+        public List<IMessage> WritedMessages { get; private set; }
+
+        public Task<T> ReadMessageWithoutId<T>(FieldsStream stream, CancellationToken cancellationToken)
+            where T : IMessage, new()
         {
             throw new NotImplementedException();
         }
 
-        public IMessage ReadServerMessage(Stream stream)
+        public async Task<IMessage> ReadServerMessage(FieldsStream stream, CancellationToken cancellationToken)
         {
-            @event.WaitOne();
-
-            if (disconnected)
-            {
-                throw new IOException("Emulated disconnect");
-            }
-
-            Assert.IsNotNull(nextServerMessage);
-            var result = nextServerMessage;
-            nextServerMessage = null;
-            return result;
+            var message = await this.readTaskCompletionSource.Task;
+            this.readTaskCompletionSource = new TaskCompletionSource<IMessage>();
+            return message;
         }
 
-        public IMessage ReadClientMessage(Stream stream)
+        public Task<IMessage> ReadClientMessage(FieldsStream stream, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public void Write(IMessage message, Stream stream)
+#pragma warning disable 1998
+        public async Task Write(IMessage message, FieldsStream stream, CancellationToken cancellationToken)
+#pragma warning restore 1998
         {
-            WritedMessages.Add(message);
+            this.WritedMessages.Add(message);
         }
-
-        public List<IMessage> WritedMessages { get; set; }
 
         public void SendMessageFromServer(IServerMessage message)
         {
-            nextServerMessage = message;
-            @event.Set();
+            this.readTaskCompletionSource.SetResult(message);
         }
-
-        public void EmulateDisconnect()
-        {
-            disconnected = true;
-            @event.Set();
-        }
-
-        public void Dispose()
-        {
-            @event.Dispose();
-        }
-
-        private readonly AutoResetEvent @event = new AutoResetEvent(false);
-        private IServerMessage nextServerMessage;
-        private bool disconnected;
     }
 
     [TestClass]
     public class ConnectionTests
     {
+        private Connection connection;
+        private IbSerializerMock serializerMock;
+        private FieldsStream fieldsStream;
+
         [TestInitialize]
         public void Init()
         {
-            oldSynchronizationContext = SynchronizationContext.Current;
-            SynchronizationContext.SetSynchronizationContext(new WindowsFormsSynchronizationContext());
-
-            streamMock = new Mock<Stream>();
-            streamMock.Setup(stream => stream.CanRead).Returns(true);
-            serializerMock = new IbSerializerMock();
-            connection = new Connection(streamMock.Object, serializerMock);
+            this.serializerMock = new IbSerializerMock();
+            this.connection = new Connection(new FieldsStream(new MemoryStream()), this.serializerMock);
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            connection.Dispose();
-            serializerMock.Dispose();
-            SynchronizationContext.SetSynchronizationContext(oldSynchronizationContext);
+            this.connection.Dispose();
         }
 
         [TestMethod]
         public void EnsureThatConnectionSendsMessages()
         {
-            connection.Run();
-            
-            connection.SendMessage(new RequestAutoOpenOrdersMessage());
+            this.connection.SendMessage(new RequestAutoOpenOrdersMessage());
 
-            Assert.AreEqual(1, serializerMock.WritedMessages.Count);
-            Assert.IsInstanceOfType(serializerMock.WritedMessages[0], typeof(RequestAutoOpenOrdersMessage));
+            Assert.AreEqual(1, this.serializerMock.WritedMessages.Count);
+            Assert.IsInstanceOfType(this.serializerMock.WritedMessages[0], typeof (RequestAutoOpenOrdersMessage));
         }
 
         [TestMethod]
         public void EnsureThatConnectionWillNotSendsMessagesAfterDisposing()
         {
-            connection.Run();
-            connection.Dispose();
+            this.connection.Dispose();
 
-            connection.SendMessage(new RequestAutoOpenOrdersMessage());
+            this.connection.SendMessage(new RequestAutoOpenOrdersMessage());
 
-            Assert.AreEqual(0, serializerMock.WritedMessages.Count);
+            Assert.AreEqual(0, this.serializerMock.WritedMessages.Count);
         }
 
         [TestMethod]
@@ -125,15 +101,12 @@ namespace IBApiUnitTests
         {
             var messageCallback = new Mock<Action<ErrorMessage>>();
 
-            connection.Run();
-
-            connection.Subscribe(message => true, messageCallback.Object, ImmediateScheduler.Instance);
+            this.connection.Subscribe(message => true, messageCallback.Object);
+            this.connection.ReadMessagesAndDispatch();
 
             var sendedMessage = new ErrorMessage {ErrorCode = ErrorCode.DataInactiveButAvailable};
 
-            serializerMock.SendMessageFromServer(sendedMessage);
-
-            Delay();
+            this.serializerMock.SendMessageFromServer(sendedMessage);
 
             messageCallback.Verify(
                 callback => callback(It.Is((ErrorMessage message) => message.ErrorCode == sendedMessage.ErrorCode)),
@@ -143,17 +116,8 @@ namespace IBApiUnitTests
         [TestMethod]
         public void EnsureConnectionReturnsDifferentRequestIds()
         {
-            Assert.IsTrue(connection.NextRequestId() != connection.NextRequestId());
+            // ReSharper disable once EqualExpressionComparison
+            Assert.IsTrue(this.connection.NextRequestId() != this.connection.NextRequestId());
         }
-
-        private static void Delay()
-        {
-            Thread.Sleep(300);
-        }
-
-        private Mock<Stream> streamMock;
-        private Connection connection;
-        private IbSerializerMock serializerMock;
-        private SynchronizationContext oldSynchronizationContext;
     }
 }

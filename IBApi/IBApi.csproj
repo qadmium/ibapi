@@ -162,7 +162,7 @@
     <Compile Include="Messages\Server\ExecutionDataEndMessage.cs" />
     <Compile Include="Messages\Server\ExecutionDataMessage.cs" />
     <Compile Include="ConnectionParams.cs" />
-    <Compile Include="Contracts\AsyncFindContractOperation.cs" />
+    <Compile Include="Contracts\FindContractOperation.cs" />
     <Compile Include="Contracts\ContractSearchException.cs" />
     <Compile Include="Contracts\ContractSearchTimeoutException.cs" />
     <Compile Include="Contracts\SearchRequest.cs" />

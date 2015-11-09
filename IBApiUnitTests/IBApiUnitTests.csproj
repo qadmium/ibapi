@@ -157,13 +157,10 @@
     <Compile Include="ErrorCodeExtensionsTests.cs" />
     <Compile Include="MarketDepthTests.cs" />
     <Compile Include="MarketDepthUpdatesDispatcherTests.cs" />
-    <Compile Include="SyncFindContractOperationTests.cs" />
     <Compile Include="AsyncFindContractOperationTests.cs" />
     <Compile Include="ContractTests.cs" />
     <Compile Include="ReceiveManagedAccountsListOperationTests.cs" />
-    <Compile Include="ConnectOperationTests.cs" />
     <Compile Include="AccountTests.cs" />
-    <Compile Include="AccountsStorageTests.cs" />
     <Compile Include="ExecutionsStorageTests.cs" />
     <Compile Include="PositionTests.cs" />
     <Compile Include="PositionsStorageTests.cs" />
