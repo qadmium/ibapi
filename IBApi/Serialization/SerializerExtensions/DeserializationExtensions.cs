@@ -108,7 +108,7 @@ namespace IBApi.Serialization.SerializerExtensions
 
             for (var i = 0; i < size; i++)
             {
-                result.Add(stream.ReadObject(enumerableType, cancellationToken));
+                result.Add(await stream.ReadObject(enumerableType, cancellationToken));
             }
 
             return result;

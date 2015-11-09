@@ -53,6 +53,7 @@ namespace IBApi.Serialization
                 if (this.buffer[this.currentBufferIndex] == char.MinValue)
                 {
                     var result = Encoding.ASCII.GetString(this.buffer, this.startOfFieldIndex, this.ReadedBytes());
+                    this.currentBufferIndex++;
                     this.startOfFieldIndex = this.currentBufferIndex;
                     return result;
                 }

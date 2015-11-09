@@ -13,9 +13,7 @@ namespace IBApi.Serialization
 
         public Task<IMessage> ReadServerMessage(FieldsStream stream, CancellationToken cancellationToken)
         {
-            Contract.Requires(stream != null);           
-            Contract.Ensures(Contract.Result<IMessage>() != null);
-
+            Contract.Requires(stream != null);
             return null;
         }
         public abstract Task<IMessage> ReadClientMessage(FieldsStream stream, CancellationToken cancellationToken);

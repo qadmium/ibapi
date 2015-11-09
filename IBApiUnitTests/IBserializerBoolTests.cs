@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Messages.Client;
 using IBApi.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -37,7 +38,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestDeserializationWithIBBoolNullableTrue()
+        public async Task TestDeserializationWithIBBoolNullableTrue()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);
@@ -74,7 +75,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestDeserializationWithIBBoolNullableFalse()
+        public async Task TestDeserializationWithIBBoolNullableFalse()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);
@@ -110,7 +111,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestDeserializationWithIBBoolNullableNull()
+        public async Task TestDeserializationWithIBBoolNullableNull()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);
@@ -147,7 +148,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestDeserializationWithIBBoolTrue()
+        public async Task TestDeserializationWithIBBoolTrue()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);
@@ -184,7 +185,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestDeserializationWithIBBoolFalse()
+        public async Task TestDeserializationWithIBBoolFalse()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);

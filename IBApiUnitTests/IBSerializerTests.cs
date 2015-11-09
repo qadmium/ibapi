@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Messages.Client;
 using IBApi.Messages.Server;
 using IBApi.Serialization;
@@ -61,7 +62,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestReadWithoutTypeId()
+        public async Task TestReadWithoutTypeId()
         {
             var message = new ServerMessageWithoutTypeId {Field = 42};
             var stream = new MemoryStream();
@@ -78,7 +79,7 @@ namespace IBApiUnitTests
 
         [TestMethod]
         [ExpectedException(typeof (InvalidOperationException))]
-        public async void EnsureExceptionThrownOnUnknownMessage()
+        public async Task EnsureExceptionThrownOnUnknownMessage()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);
@@ -91,7 +92,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestReadWithTypeId()
+        public async Task TestReadWithTypeId()
         {
             var message = new ServerMessageWithTypeId {Field = 42, Field2 = "42"};
             var stream = new MemoryStream();
@@ -106,7 +107,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestSerializeEmptyEnumerable()
+        public async Task TestSerializeEmptyEnumerable()
         {
             var message = new MessageWithEnumerable();
             var stream = new MemoryStream();
@@ -121,7 +122,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestSerializeNonEmptyEnumerable()
+        public async Task TestSerializeNonEmptyEnumerable()
         {
             var message = new MessageWithEnumerable {Container = new[] {1, 2, 3}};
             var stream = new MemoryStream();
@@ -136,7 +137,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestConditionalSerializeNonEmptyEnumerable()
+        public async Task TestConditionalSerializeNonEmptyEnumerable()
         {
             var message = new MessageWithConditionalEnumerable {Ver = 2, Container = new[] {1, 2, 3}};
             var stream = new MemoryStream();
@@ -152,7 +153,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestConditionalSerializeNonEmptyEnumerable2()
+        public async Task TestConditionalSerializeNonEmptyEnumerable2()
         {
             var message = new MessageWithConditionalEnumerable {Ver = 4, Container = new[] {1, 2, 3}};
             var stream = new MemoryStream();
@@ -187,7 +188,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestSerializationWithNullableWithValue()
+        public async Task TestSerializationWithNullableWithValue()
         {
             var message = new MessageWithNullableProperty {Field = 42};
             var stream = new MemoryStream();
@@ -203,7 +204,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestSerializationWithNullableWithoutValue()
+        public async Task TestSerializationWithNullableWithoutValue()
         {
             var message = new MessageWithNullableProperty();
             var stream = new MemoryStream();
@@ -321,8 +322,8 @@ namespace IBApiUnitTests
         [IBSerializable(1004)]
         private class MessageWithConditionalEnumerable : IServerMessage
         {
-            public IEnumerable<int> Container;
             public int Ver;
+            public IEnumerable<int> Container;
 
             public bool ShouldSerializeContainer()
             {

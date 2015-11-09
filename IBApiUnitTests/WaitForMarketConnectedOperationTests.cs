@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Errors;
 using IBApi.Exceptions;
 using IBApi.Messages.Server;
@@ -26,7 +27,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void EnsureThatOperationCompletedOnMarketConnected()
+        public async Task EnsureThatOperationCompletedOnMarketConnected()
         {
             var operation = new WaitForMarketConnectedOperation(this.connectionHelper.Connection(), CancellationToken.None);
 
@@ -40,7 +41,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void EnsureThatOperationFailedOnMarketConnected()
+        public async Task EnsureThatOperationFailedOnMarketConnected()
         {
             var operation = new WaitForMarketConnectedOperation(this.connectionHelper.Connection(), CancellationToken.None);
 

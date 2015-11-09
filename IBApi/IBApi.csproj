@@ -194,8 +194,6 @@
     <Compile Include="Messages\Server\TickPriceMessage.cs" />
     <Compile Include="Messages\Server\TickSizeMessage.cs" />
     <Compile Include="Messages\Server\TickStringMessage.cs" />
-    <Compile Include="Operations\AbstractOperation.cs" />
-    <Compile Include="Operations\AbstractOperationContract.cs" />
     <Compile Include="Operations\IOperation.cs" />
     <Compile Include="IApiObjectsFactory.cs" />
     <Compile Include="ApiObjectsFactory.cs" />

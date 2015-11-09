@@ -1,4 +1,5 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Messages.Server;
 using IBApi.Operations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -23,7 +24,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void EnsureThatOperationCompletedOnAccountListReceived()
+        public async Task EnsureThatOperationCompletedOnAccountListReceived()
         {
             var operation = new ReceiveManagedAccountsListOperation(this.connectionHelper.Connection(), CancellationToken.None);
 

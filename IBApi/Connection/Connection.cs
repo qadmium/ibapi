@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Diagnostics.Contracts;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using IBApi.Messages.Client;
 using IBApi.Messages.Server;
@@ -95,7 +96,7 @@ namespace IBApi.Connection
 
         private void DispatchMessage(IServerMessage message)
         {
-            foreach (var subscription in this.subscriptions)
+            foreach (var subscription in this.subscriptions.ToList())
             {
                 subscription.OnMessage(message);
             }

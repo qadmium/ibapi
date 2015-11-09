@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Messages.Client;
 using IBApi.Serialization;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -38,7 +39,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestDeserializationWithIBDateTimeWithDate()
+        public async Task TestDeserializationWithIBDateTimeWithDate()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);
@@ -74,7 +75,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void TestDeserializationWithIBDateTimeNull()
+        public async Task TestDeserializationWithIBDateTimeNull()
         {
             var stream = new MemoryStream();
             var fieldsStream = new FieldsStream(stream);

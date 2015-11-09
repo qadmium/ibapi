@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using IBApi.Connection;
 using IBApi.Messages.Client;
@@ -41,7 +42,7 @@ namespace IBApiUnitTests
 
         public void SendMessageToClient(IServerMessage message)
         {
-            foreach (var subscription in this.subscriptions)
+            foreach (var subscription in this.subscriptions.ToList())
             {
                 subscription.OnMessage(message);
             }

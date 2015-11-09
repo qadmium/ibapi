@@ -28,7 +28,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void EnsureThatObserverReceivesErrorOnErrorMessage()
+        public async Task EnsureThatObserverReceivesErrorOnErrorMessage()
         {
             var task = this.CreateOperation(new SearchRequest());
 
@@ -56,7 +56,7 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void EnsureThatObserverReceivesCompletedOnContractDataEndMessage()
+        public async Task EnsureThatObserverReceivesCompletedOnContractDataEndMessage()
         {
             var task = this.CreateOperation(new SearchRequest());
 
@@ -72,22 +72,30 @@ namespace IBApiUnitTests
         }
 
         [TestMethod]
-        public async void EnsureThatObserverReceivesContractOnContractDataMessage()
+        public async Task EnsureThatObserverReceivesContractOnContractDataMessage()
         {
             var task = this.CreateOperation(new SearchRequest());
 
-            var message = new ContractDataMessage
+            this.connectionHelper.SendMessage(new ContractDataMessage
             {
                 RequestId = ConnectionHelper.RequestId,
                 Symbol = "MSFT",
                 SecurityType = "STK"
-            };
+            });
 
-            this.connectionHelper.SendMessage(message);
+            this.connectionHelper.SendMessage(new ContractDataEndMessage
+            {
+                RequestId = ConnectionHelper.RequestId,
+            });
 
             var result = await task;
             Assert.AreEqual(1, result.Count);
-            Assert.AreEqual(Contract.FromContractDataMessage(message), result.First());
+            Assert.AreEqual(Contract.FromContractDataMessage(new ContractDataMessage
+            {
+                RequestId = ConnectionHelper.RequestId,
+                Symbol = "MSFT",
+                SecurityType = "STK"
+            }), result.First());
         }
 
         private Task<IReadOnlyCollection<Contract>> CreateOperation(SearchRequest request)
