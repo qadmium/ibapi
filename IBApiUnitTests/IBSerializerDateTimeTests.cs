@@ -12,7 +12,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IBApiUnitTests
 {
     [TestClass]
-    public class IBSerializerDateTimeTests
+    public class IbSerializerDateTimeTests
     {
         private readonly IBSerializer serializer = new IBSerializer(Assembly.GetExecutingAssembly());
 

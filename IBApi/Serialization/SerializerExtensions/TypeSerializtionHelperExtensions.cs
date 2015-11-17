@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Reflection;
 
@@ -10,17 +11,20 @@ namespace IBApi.Serialization.SerializerExtensions
     {
         public static bool ShouldSerializeAsDateTime(this FieldInfo field)
         {
+            Contract.Requires(field != null);
             return field.FieldType == typeof(DateTime) || field.FieldType == typeof(DateTime?);
         }
             
         public static bool ShouldSerializeAsBool(this FieldInfo field)
         {
+            Contract.Requires(field != null);
             return field.FieldType == typeof(bool) || field.FieldType == typeof(bool?);
         }
 
         public static bool ShouldSerializeAsEnum(this FieldInfo field)
         {
-            return field.FieldType.IsEnum;
+            Contract.Requires(field != null);
+            return field.FieldType.IsEnum || Nullable.GetUnderlyingType(field.FieldType).IsEnum;
         }
 
         public static bool ShouldSerializeAsEnumerable(this FieldInfo field)
@@ -31,6 +35,9 @@ namespace IBApi.Serialization.SerializerExtensions
 
         public static bool ShouldSerializeForThisObject(this FieldInfo field, object obj)
         {
+            Contract.Requires(field != null);
+            Contract.Requires(obj != null);
+
             var method = obj.GetType().GetMethod("ShouldSerialize" + field.Name);
 
             if (method == null)
@@ -43,6 +50,7 @@ namespace IBApi.Serialization.SerializerExtensions
 
         public static IEnumerable<FieldInfo> GetSerializableFields(this IReflect forType)
         {
+            Contract.Requires(forType != null);
             return forType.GetFields(BindingFlags.Instance | BindingFlags.Public).Where(fieldInfo => !fieldInfo.IsNotSerialized);
         }
     }

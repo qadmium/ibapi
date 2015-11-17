@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -79,6 +80,11 @@ namespace IBApi.Serialization.SerializerExtensions
 
         private static byte[] SerializeAsEnum(object value)
         {
+            if (value == null)
+            {
+                return EmptyString();
+            }
+
             return SerializePrimitive((int) value);
         }
 

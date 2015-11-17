@@ -146,12 +146,12 @@
   </Choose>
   <ItemGroup>
     <Compile Include="ConnectionHelper.cs" />
-    <Compile Include="IBSerializerTests.cs" />
+    <Compile Include="IbSerializerTests.cs" />
     <Compile Include="MoqExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="IBserializerBoolTests.cs" />
-    <Compile Include="IBSerializerDateTimeTests.cs" />
-    <Compile Include="IBSerializerEnumTests.cs" />
+    <Compile Include="IbSerializerBoolTests.cs" />
+    <Compile Include="IbSerializerDateTimeTests.cs" />
+    <Compile Include="IbSerializerEnumTests.cs" />
     <Compile Include="QuotesTests.cs" />
     <Compile Include="MessagesHelperExtensionsTests.cs" />
     <Compile Include="ErrorCodeExtensionsTests.cs" />
