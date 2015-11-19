@@ -7,7 +7,6 @@ namespace IBApi.Messages.Server
     struct NextValidIdMessage : IServerMessage
     {
         public int Version;
-
         public int OrderId;
     }
 }

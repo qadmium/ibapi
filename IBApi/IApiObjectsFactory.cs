@@ -10,7 +10,7 @@ using IBApi.Positions;
 
 namespace IBApi
 {
-    internal interface IApiObjectsFactory
+    internal interface IApiObjectsFactory : IDisposable
     {
         Task<string[]> CreateReceiveManagedAccountsListOperation(CancellationToken cancellationToken);
         Task<IAccountsStorage> CreateAccountStorageOperation(string[] managedAccountsList, CancellationToken cancellationToken);
@@ -29,6 +29,6 @@ namespace IBApi
         IPositionsStorageInternal CreatePositionStorage(string accountName);
         IOrdersStorageInternal CreateOrdersStorage(string accountName);
         Position CreatePosition();
-        Order CreateOrder(int orderId);
+        Order CreateOrder(int orderId, string account);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace IBApi
 {
@@ -7,6 +8,8 @@ namespace IBApi
     {
         public static void Unsubscribe(this ICollection<IDisposable> subscriptions)
         {
+            Contract.Requires(subscriptions != null);
+
             foreach (var subscription in subscriptions)
             {
                 subscription.Dispose();

@@ -20,9 +20,9 @@ namespace IBApi.Messages.Server
         public string LocalSymbol;
         public string MarketName;
         public string TradingClass;
-        public long ContractId;
+        public int ContractId;
         public double MinTick;
-        public double? Multiplier;
+        public string Multiplier;
         public string OrderTypes;
         public string ValidExchanges;
         public int PriceMagnifier;

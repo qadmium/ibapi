@@ -14,7 +14,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace IBApiUnitTests
 {
     [TestClass]
-    public class IBSerializerTests
+    public class IbSerializerTests
     {
         private readonly IBSerializer serializer = new IBSerializer(Assembly.GetExecutingAssembly());
 

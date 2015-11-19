@@ -14,18 +14,15 @@ namespace IBApi
     internal sealed class Client : IClient
     {
         private readonly IAccountsStorage accountsStorage;
-        private readonly IConnection connection;
         private readonly IApiObjectsFactory objectsFactory;
 
-        public Client(IApiObjectsFactory objectsFactory, IConnection connection, IAccountsStorage accountsStorage)
+        public Client(IApiObjectsFactory objectsFactory, IAccountsStorage accountsStorage)
         {
             CodeContract.Requires(objectsFactory != null);
-            CodeContract.Requires(connection != null);
             CodeContract.Requires(accountsStorage != null);
             CodeContract.Requires(accountsStorage.Accounts.Count() != 0);
 
             this.objectsFactory = objectsFactory;
-            this.connection = connection;
             this.accountsStorage = accountsStorage;
         }
 
@@ -52,7 +49,7 @@ namespace IBApi
         public void Dispose()
         {
             Trace.TraceInformation("Disposing client");
-            this.connection.Dispose();
+            this.objectsFactory.Dispose();
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -25,7 +26,11 @@ namespace IBApi.Accounts
 
         public AccountFields this[string currency]
         {
-            get { return this.accountFields[currency]; }
+            get
+            {
+                Contract.Requires(currency != null);
+                return this.accountFields[currency];
+            }
         }
 
         public void Update(AccountValue accountValue)
@@ -58,6 +63,8 @@ namespace IBApi.Accounts
 
         private AccountFields GetAccountFieldsInstance(string forCurrency)
         {
+            Contract.Requires(forCurrency != null);
+
             AccountFields accountFieldsInstance;
 
             if (this.accountFields.TryGetValue(forCurrency, out accountFieldsInstance))

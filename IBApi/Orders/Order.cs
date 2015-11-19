@@ -9,8 +9,25 @@ namespace IBApi.Orders
 {
     internal sealed class Order : IOrder, IDisposable
     {
+        private IDisposable subscription;
+
+        public Order(int id, string account, IConnection connection)
+        {
+            CodeContract.Requires(connection != null);
+
+            this.Id = id;
+            this.Subscribe(connection);
+            this.Account = account;
+        }
+
+        public void Dispose()
+        {
+            this.subscription.Dispose();
+        }
+
         public event OrderChangedEventHandler OrderChanged = delegate { };
 
+        public string Account { get; private set; }
         public int Id { get; private set; }
         public Contract Contract { get; private set; }
         public OrderState State { get; private set; }
@@ -29,58 +46,47 @@ namespace IBApi.Orders
         public string Route { get; private set; }
         public int? DisplaySize { get; private set; }
 
-        public Order(int id, IConnection connection)
-        {
-            Id = id;
-            Subscribe(connection);
-        }
-
         private void Subscribe(IConnection connection)
         {
-            subscription = connection.Subscribe((OrderStatusMessage message) => message.OrderId == Id, OnStatusUpdate);
+            CodeContract.Requires(connection != null);
+            this.subscription = connection.Subscribe((OrderStatusMessage message) => message.OrderId == this.Id,
+                this.OnStatusUpdate);
         }
 
         public void Update(OpenOrderMessage message)
         {
-            CodeContract.Requires(message.OrderId == Id);
+            CodeContract.Requires(message.OrderId == this.Id);
 
-            State = message.Status.ToOrderState();
-            Action = message.OrderAction.ToOrderAction();
-            Type = message.OrderType.ToOrderType();
-            LimitPrice = message.LimitPrice;
-            StopPrice = message.AuxPrice;
-            Quantity = message.TotalQuantity;
-            PermId = message.PermId;
-            ParentId = message.ParentId;
-            ClientId = message.ClientId;
-            Contract = Contract.FromOpenOrderMessage(message);
-            Route = message.Exchange;
-            DisplaySize = message.DisplaySize;
+            this.State = message.Status.ToOrderState();
+            this.Action = message.OrderAction.ToOrderAction();
+            this.Type = message.OrderType.ToOrderType();
+            this.LimitPrice = message.LimitPrice;
+            this.StopPrice = message.AuxPrice;
+            this.Quantity = message.TotalQuantity;
+            this.PermId = message.PermId;
+            this.ParentId = message.ParentId;
+            this.ClientId = message.ClientId;
+            this.Contract = Contract.FromOpenOrderMessage(message);
+            this.Route = message.Exchange;
+            this.DisplaySize = message.DisplaySize;
 
-            OrderChanged(this);
-        }
-
-        public void Dispose()
-        {
-            subscription.Dispose();
+            this.OrderChanged(this);
         }
 
         private void OnStatusUpdate(OrderStatusMessage message)
         {
-            CodeContract.Requires(message.OrderId == Id);
+            CodeContract.Requires(message.OrderId == this.Id);
 
-            State = message.Status.ToOrderState();
-            FilledQuantity = message.Filled;
-            RemainingQuantity = message.Remaining;
-            AverageFillPrice = message.AverageFillPrice;
-            PermId = message.PermId;
-            ParentId = message.ParentId;
-            LastFillPrice = message.LastFillPrice;
-            ClientId = message.ClientId;
+            this.State = message.Status.ToOrderState();
+            this.FilledQuantity = message.Filled;
+            this.RemainingQuantity = message.Remaining;
+            this.AverageFillPrice = message.AverageFillPrice;
+            this.PermId = message.PermId;
+            this.ParentId = message.ParentId;
+            this.LastFillPrice = message.LastFillPrice;
+            this.ClientId = message.ClientId;
 
-            OrderChanged(this);
+            this.OrderChanged(this);
         }
-
-        private IDisposable subscription;
     }
 }

@@ -8,6 +8,7 @@ namespace IBApi.Orders
     {
         event OrderChangedEventHandler OrderChanged;
 
+        string Account { get; }
         int Id { get; }
         Contract Contract { get; }
         OrderState State { get; }

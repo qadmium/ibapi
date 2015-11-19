@@ -15,7 +15,7 @@ namespace IBApi.Messages.Client
         public DateTime? Expiry;
         public double? Strike;
         public string Right;
-        public double? Multiplier;
+        public string Multiplier;
         public string Exchange;
         public string Currency;
         public string LocalSymbol;

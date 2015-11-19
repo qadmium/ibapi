@@ -77,6 +77,12 @@ namespace IBApi.Serialization
             }
 
             var readedBytes = await this.stream.ReadAsync(this.buffer, this.dataEndIndex, prefetchSize, cancellationToken);
+
+            if (readedBytes == 0)
+            {
+                throw new IOException("End of network stream");
+            }
+
             this.dataEndIndex += readedBytes;
         }
 

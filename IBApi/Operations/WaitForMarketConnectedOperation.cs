@@ -14,6 +14,7 @@ namespace IBApi.Operations
     {
         public WaitForMarketConnectedOperation(IConnection connection, CancellationToken cancellationToken)
         {
+            Contract.Requires(connection != null);
             Contract.Requires(!cancellationToken.IsCancellationRequested);
 
             this.cancellationToken = cancellationToken;

@@ -20,7 +20,7 @@ namespace IBApi.Positions
         {
             System.Diagnostics.Contracts.Contract.Requires(connection != null);
             System.Diagnostics.Contracts.Contract.Requires(objectsFactory != null);
-            System.Diagnostics.Contracts.Contract.Requires(accountName != null);
+            System.Diagnostics.Contracts.Contract.Requires(!string.IsNullOrEmpty(accountName));
             this.objectsFactory = objectsFactory;
             this.accountName = accountName;
             this.Subscribe(connection);
@@ -44,6 +44,7 @@ namespace IBApi.Positions
 
         private void Subscribe(IConnection connection)
         {
+            System.Diagnostics.Contracts.Contract.Requires(connection != null);
             this.subscription =
                 connection.Subscribe((PortfolioValueMessage message) => message.AccountName == this.accountName,
                     this.OnPositionUpdate);
@@ -57,12 +58,12 @@ namespace IBApi.Positions
 
             if (this.positions.TryGetValue(positionContract, out position))
             {
-                position.Update(message);
+                position.Update(message, this.accountName);
                 return;
             }
 
             position = this.objectsFactory.CreatePosition();
-            position.Update(message);
+            position.Update(message, this.accountName);
             this.positions[positionContract] = position;
             this.PositionAdded(position);
         }

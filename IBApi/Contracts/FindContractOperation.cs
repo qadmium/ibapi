@@ -43,6 +43,7 @@ namespace IBApi.Contracts
 
         private void Subscribe(int requestId, IConnection connection)
         {
+            CodeContract.Requires(connection != null);
             this.subscriptions = new List<IDisposable>
             {
                 connection.Subscribe((ContractDataMessage message) => message.RequestId == requestId,
@@ -55,6 +56,7 @@ namespace IBApi.Contracts
 
         private static void SendRequest(SearchRequest request, int requestId, IConnection connection)
         {
+            CodeContract.Requires(connection != null);
             var message = RequestContractDetailsMessage.Create(request);
             message.RequestId = requestId;
             connection.SendMessage(message);

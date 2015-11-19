@@ -25,7 +25,7 @@ namespace IBApi
             await Handshake(connectionParams.ClientId, fieldsStream, serializer, cancellationToken);
 
             var connection = new Connection.Connection(fieldsStream, serializer);
-            var factory = new ApiObjectsFactory(connection);
+            var factory = new ApiObjectsFactory(connection, new OrdersIdsDispenser(connection));
             var waitForMarketConnected = factory.CreateWaitForMarketConnectedOperation(cancellationToken);
             var waitForAccountsList = factory.CreateReceiveManagedAccountsListOperation(cancellationToken);
 
@@ -52,10 +52,10 @@ namespace IBApi
         {
             Trace.TraceInformation("Handshaking");
 
-            await clientSerializer.Write(new VersionMessage {Version = 46}, stream, cancellationToken);
+            await clientSerializer.Write(new VersionMessage {Version = 63}, stream, cancellationToken);
             await clientSerializer.ReadMessageWithoutId<AcknowledgementMessage>(stream, cancellationToken);
             await clientSerializer.ReadMessageWithoutId<TimeMessage>(stream, cancellationToken);
-            await clientSerializer.Write(new IdMessage {ClientId = clientId}, stream, cancellationToken);
+            await clientSerializer.Write(new StartApiMessage {ClientId = clientId, Version = 1}, stream, cancellationToken);
 
             Trace.TraceInformation("Handshake done");
         }

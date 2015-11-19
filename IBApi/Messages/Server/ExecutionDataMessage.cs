@@ -15,9 +15,11 @@ namespace IBApi.Messages.Server
         public DateTime? Expiry;
         public double Strike;
         public string Right;
+        public string Multiplier;
         public string Exchange;
         public string Currency;
         public string LocalSymbol;
+        public string TradingClass;
         public string ExecutionId;
         public string ExecutionTime;
         public string Account;
@@ -30,5 +32,8 @@ namespace IBApi.Messages.Server
         public int Liquidation;
         public int CumQty;
         public double AveragePrice;
+        public string OrderRef;
+        public string EvRule;
+        public double? EvMultiplier;
     }
 }

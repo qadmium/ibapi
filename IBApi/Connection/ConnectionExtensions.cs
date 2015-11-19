@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using IBApi.Errors;
 using IBApi.Messages.Server;
 
@@ -9,6 +10,8 @@ namespace IBApi.Connection
         public static IDisposable SubscribeForRequestErrors(this IConnection connection, int requestId,
             Action<Error> onError)
         {
+            Contract.Requires(connection != null);
+
             return
                 connection.Subscribe((ErrorMessage message) => message.RequestId == requestId,
                     errorMessage => onError(new Error
@@ -22,6 +25,8 @@ namespace IBApi.Connection
         public static IDisposable SubscribeForErrors(this IConnection connection, Func<Error, bool> whatErrors,
             Action<Error> onError)
         {
+            Contract.Requires(connection != null);
+
             return
                 connection.Subscribe<ErrorMessage>(
                     errorMessage =>

@@ -17,10 +17,15 @@ namespace IBApi
     internal sealed class ApiObjectsFactory : IApiObjectsFactory
     {
         private readonly IConnection connection;
+        private readonly IOrdersIdsDispenser ordersIdsDispenser;
 
-        public ApiObjectsFactory(IConnection connection)
+        public ApiObjectsFactory(IConnection connection, IOrdersIdsDispenser ordersIdsDispenser)
         {
+            System.Diagnostics.Contracts.Contract.Requires(connection != null);
+            System.Diagnostics.Contracts.Contract.Requires(ordersIdsDispenser != null);
+
             this.connection = connection;
+            this.ordersIdsDispenser = ordersIdsDispenser;
         }
 
         public Task<string[]> CreateReceiveManagedAccountsListOperation(CancellationToken cancellationToken)
@@ -50,6 +55,7 @@ namespace IBApi
             AccountCurrenciesFields accountCurrenciesFields)
         {
             return new Account(accountName, this.connection, executionStorage, positionsStorage, ordersStorage,
+                this.ordersIdsDispenser,
                 accountCurrenciesFields);
         }
 
@@ -60,7 +66,7 @@ namespace IBApi
 
         public IClient CreateClient(IAccountsStorage accountsStorage)
         {
-            return new Client(this, this.connection, accountsStorage);
+            return new Client(this, accountsStorage);
         }
 
         public Task<IReadOnlyCollection<Contract>> CreateAsyncFindContractOperation(SearchRequest searchRequest,
@@ -105,9 +111,15 @@ namespace IBApi
             return new Position();
         }
 
-        public Order CreateOrder(int orderId)
+        public Order CreateOrder(int orderId, string account)
         {
-            return new Order(orderId, this.connection);
+            return new Order(orderId, account, this.connection);
+        }
+
+        public void Dispose()
+        {
+            this.ordersIdsDispenser.Dispose();
+            this.connection.Dispose();
         }
     }
 }

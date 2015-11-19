@@ -1,5 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Connection;
 using IBApi.Executions;
 using IBApi.Messages.Server;
@@ -15,10 +16,12 @@ namespace IBApi.Accounts
         private readonly IExecutionStorageInternal executionStorage;
         private readonly IOrdersStorageInternal ordersStorage;
         private readonly IPositionsStorageInternal positionsStorage;
-        private ICollection<IDisposable> subscriptions = new List<IDisposable>();
+        private readonly IDisposable subscription;
+        private readonly IOrdersIdsDispenser ordersIdsDispenser;
 
         public Account(string name, IConnection connection, IExecutionStorageInternal executionStorage,
             IPositionsStorageInternal positionsStorageInternal, IOrdersStorageInternal ordersStorageInternal,
+            IOrdersIdsDispenser ordersIdsDispenser,
             AccountCurrenciesFields accountCurrenciesFields)
         {
             CodeContract.Requires(!string.IsNullOrEmpty(name));
@@ -27,6 +30,7 @@ namespace IBApi.Accounts
             CodeContract.Requires(positionsStorageInternal != null);
             CodeContract.Requires(ordersStorageInternal != null);
             CodeContract.Requires(accountCurrenciesFields != null);
+            CodeContract.Requires(ordersIdsDispenser != null);
 
             this.AccountName = name;
             this.AccountId = name;
@@ -35,8 +39,11 @@ namespace IBApi.Accounts
             this.positionsStorage = positionsStorageInternal;
             this.ordersStorage = ordersStorageInternal;
             this.accountCurrenciesFields = accountCurrenciesFields;
+            this.ordersIdsDispenser = ordersIdsDispenser;
 
-            this.Subscribe(connection);
+            this.subscription =
+                connection.Subscribe((AccountValueMessage message) => message.AccountName == this.AccountName,
+                    this.OnAccountValueMessage);
         }
 
         public event AccountChangedEventHandler AccountChanged = delegate { };
@@ -75,19 +82,17 @@ namespace IBApi.Accounts
             get { return this.positionsStorage; }
         }
 
-        public void Dispose()
+        public async Task<int> PlaceOrder(CancellationToken cancellationToken)
         {
-            this.subscriptions.Unsubscribe();
-            this.executionStorage.Dispose();
+            var orderId = await this.ordersIdsDispenser.NextOrderId(cancellationToken);
+            
+            return orderId;
         }
 
-        private void Subscribe(IConnection connection)
+        public void Dispose()
         {
-            this.subscriptions = new List<IDisposable>
-            {
-                connection.Subscribe((AccountValueMessage message) => message.AccountName == this.AccountName,
-                    this.OnAccountValueMessage)
-            };
+            this.subscription.Dispose();
+            this.executionStorage.Dispose();
         }
 
         private void OnAccountValueMessage(AccountValueMessage message)

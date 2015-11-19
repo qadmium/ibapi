@@ -24,7 +24,8 @@ namespace IBApi.Serialization.SerializerExtensions
         public static bool ShouldSerializeAsEnum(this FieldInfo field)
         {
             Contract.Requires(field != null);
-            return field.FieldType.IsEnum || Nullable.GetUnderlyingType(field.FieldType).IsEnum;
+            return field.FieldType.IsEnum || 
+                (Nullable.GetUnderlyingType(field.FieldType) != null && Nullable.GetUnderlyingType(field.FieldType).IsEnum);
         }
 
         public static bool ShouldSerializeAsEnumerable(this FieldInfo field)

@@ -66,6 +66,7 @@ namespace IBApi.Connection
 
         public async void ReadMessagesAndDispatch()
         {
+            Trace.TraceInformation("Started reading messages");
             try
             {
                 var token = this.cts.Token;

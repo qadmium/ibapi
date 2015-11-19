@@ -38,7 +38,7 @@ namespace IBApi.Contracts
         public double? Strike { get; set; }
         public bool? Call { get; set; }
         public string LocalSymbol { get; set; }
-        public long ContractId { get; set; }
+        public int ContractId { get; set; }
 
         public AdditionalContractInfo AdditionalContractInfo;
 
@@ -202,7 +202,7 @@ namespace IBApi.Contracts
 
     public struct AdditionalContractInfo
     {
-        public double? Multiplier { get; set; }
+        public string Multiplier { get; set; }
         public string Exchange { get; set; }
         public string PrimaryExchange { get; set; }
         public string Currency { get; set; }

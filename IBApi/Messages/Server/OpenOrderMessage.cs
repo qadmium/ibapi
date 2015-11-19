@@ -17,15 +17,17 @@ namespace IBApi.Messages.Server
         public DateTime? Expiry;
         public double Strike;
         public string Right;
+        public string Multiplier;
         public string Exchange;
         public string Currency;
         public string LocalSymbol;
+        public string TradingClass;
 
         public string OrderAction;
         public int TotalQuantity;
         public string OrderType;
-        public double LimitPrice;
-        public double AuxPrice;
+        public double? LimitPrice;
+        public double? AuxPrice;
         public string Tif;
         public string OCAGroup;
         public string Account;
@@ -35,7 +37,7 @@ namespace IBApi.Messages.Server
         public int ClientId;
         public int PermId;
 
-        public int OutsideRTH;
+        public bool OutsideRTH;
         public int Hidden;
 
         public double DiscretionaryAmt;
@@ -57,6 +59,7 @@ namespace IBApi.Messages.Server
         public string SettlingFirm;
         public int ShortSaleSlot;
         public string DesignatedLocation;
+        public int ExemptCode;
         public int AuctionStrategy;
         public double? StartingPrice;
         public double? StockRefPrice;
@@ -78,16 +81,130 @@ namespace IBApi.Messages.Server
         public int? VolatilityType;
         public string DeltaNeutralOrderType;
         public double? DeltaNeutralAuxPrice;
+
+        public int DeltaNeutralConId;
+        public bool ShouldSerializeDeltaNeutralConId()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+        public string DeltaNeutralSettlingFirm;
+        public bool ShouldSerializeDeltaNeutralSettlingFirm()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+        public string DeltaNeutralClearingAccount;
+        public bool ShouldSerializeDeltaNeutralClearingAccount()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+        public string DeltaNeutralClearingIntent;
+        public bool ShouldSerializeDeltaNeutralClearingIntent()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+
+        public string DeltaNeutralOpenClose;
+
+        public bool ShouldSerializeDeltaNeutralOpenClose()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+
+        public bool DeltaNeutralShortSale;
+
+        public bool ShouldSerializeDeltaNeutralShortSale()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+
+        public int DeltaNeutralShortSaleSlot;
+
+        public bool ShouldSerializeDeltaNeutralShortSaleSlot()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+
+        public string DeltaNeutralDesignatedLocation;
+
+        public bool ShouldSerializeDeltaNeutralDesignatedLocation()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+
         public bool? ContinuousUpdate;
         public int? ReferencePriceType;
         public double? TrailStopPrice;
+        public double? TrailPercent;
         public double? BasisPoints;
         public int? BasisPointsType;
         public string ComboLegsDescription;
 
+        public IEnumerable<ComboLeg> ComboLegs;
+        public IEnumerable<OrderComboLeg> OrderComboLegs;
+        public IEnumerable<TagValue> SmartComboRoutingParams;
+
         public int? ScaleInitLevelSize;
         public int? ScaleSubsLevelSize;
         public double? ScalePriceIncrement;
+
+        public double? ScalePriceAdjustValue;
+
+        public bool ShouldSerializeScalePriceAdjustValue()
+        {
+            return this.ScalePriceIncrement.HasValue && this.ScalePriceIncrement.Value > 0;
+        }
+
+        public int? ScalePriceAdjustInterval;
+
+        public bool ShouldSerializeScalePriceAdjustInterval()
+        {
+            return this.ScalePriceIncrement.HasValue && this.ScalePriceIncrement.Value > 0;
+        }
+
+        public double? ScaleProfitOffset;
+
+        public bool ShouldSerializeScaleProfitOffset()
+        {
+            return this.ScalePriceIncrement.HasValue && this.ScalePriceIncrement.Value > 0;
+        }
+
+        public bool? ScaleAutoReset;
+
+        public bool ShouldSerializeScaleAutoReset()
+        {
+            return this.ScalePriceIncrement.HasValue && this.ScalePriceIncrement.Value > 0;
+        }
+
+        public int? ScaleInitPosition;
+
+        public bool ShouldSerializeScaleInitPosition()
+        {
+            return this.ScalePriceIncrement.HasValue && this.ScalePriceIncrement.Value > 0;
+        }
+
+        public int? ScaleInitFillQty;
+
+        public bool ShouldSerializeScaleInitFillQty()
+        {
+            return this.ScalePriceIncrement.HasValue && this.ScalePriceIncrement.Value > 0;
+        }
+
+        public bool? ScaleRandomPercent;
+
+        public bool ShouldSerializeScaleRandomPercent()
+        {
+            return this.ScalePriceIncrement.HasValue && this.ScalePriceIncrement.Value > 0;
+        }
+
+        public string HedgeType;
+        public string HedgeParam;
+
+        public bool ShouldSerializeHedgeParam()
+        {
+            return !string.IsNullOrEmpty(this.HedgeType);
+        }
+
+        public bool? OptOutSmartRouting;
 
         public string ClearingAccount;
         public string ClearingIntent;
@@ -105,7 +222,7 @@ namespace IBApi.Messages.Server
 
         public string AlgoStrategy;
 
-        public IEnumerable<KeyValuePair<string, string>> AlgoParams;
+        public IEnumerable<TagValue> AlgoParams;
 
         public bool ShouldSerializeAlgoParams()
         {

@@ -53,11 +53,13 @@ namespace IBApi.Operations
 
         private void SendRequest(IConnection connection)
         {
+            Contract.Requires(connection != null);
             connection.SendMessage(new RequestAccountUpdatesMessage(this.account));
         }
 
         private void Subscribe(IConnection connection)
         {
+            Contract.Requires(connection != null);
             this.subscriptions = new List<IDisposable>
             {
                 connection.Subscribe((AccountValueMessage message) => message.AccountName == this.account,

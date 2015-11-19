@@ -17,6 +17,7 @@ namespace IBApi.Operations
 
         public ReceiveManagedAccountsListOperation(IConnection connection, CancellationToken cancellationToken)
         {
+            Contract.Requires(connection != null);
             Contract.Requires(!cancellationToken.IsCancellationRequested);
             this.cancellationToken = cancellationToken;
             this.cancellationToken.Register(() =>

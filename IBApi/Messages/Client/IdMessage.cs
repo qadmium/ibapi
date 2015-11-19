@@ -1,7 +1,7 @@
 ﻿
 namespace IBApi.Messages.Client
 {
-    internal class IdMessage : IClientMessage
+    internal struct IdMessage : IClientMessage
     {
         public int ClientId;
     }

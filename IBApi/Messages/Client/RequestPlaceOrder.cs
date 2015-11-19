@@ -85,6 +85,40 @@ namespace IBApi.Messages.Client
         public double? StartingPrice;
         public double? StockRefPrice;
         public double? Delta;
+        public double? StockRangeLower;
+        public double? StockRangeUpper;
+        public bool OverridePercentageConstraints;
+        public double? Volatility;
+        public VolatilityType? VolatilityType;
+        public string DeltaNeutralOrderType;
+        public double? DeltaNeutralAuxPrice;
+
+        public int DeltaNeutralConId;
+        public bool ShouldSerializeDeltaNeutralConId()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+        public string DeltaNeutralSettlingFirm;
+        public bool ShouldSerializeDeltaNeutralSettlingFirm()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+        public string DeltaNeutralClearingAccount;
+        public bool ShouldSerializeDeltaNeutralClearingAccount()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+        public string DeltaNeutralClearingIntent;
+        public bool ShouldSerializeDeltaNeutralClearingIntent()
+        {
+            return !string.IsNullOrEmpty(this.DeltaNeutralOrderType);
+        }
+    }
+
+    internal enum VolatilityType
+    {
+        Daily = 1,
+        Annual = 2
     }
 
     internal enum AuctionStrategy

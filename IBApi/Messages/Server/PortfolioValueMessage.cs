@@ -16,11 +16,13 @@ namespace IBApi.Messages.Server
         public double Strike;
         public string Right;
 
-        public double? Multiplier;
+        public string Multiplier;
         public string PrimaryExchange;
 
-        public string Contract;
+        public string Currency;
         public string LocalSymbol;
+
+        public string TradingClass;
 
         public int Position;
         public double MarketPrice;

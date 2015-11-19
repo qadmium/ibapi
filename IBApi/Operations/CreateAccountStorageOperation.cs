@@ -18,6 +18,8 @@ namespace IBApi.Operations
             IConnection connection,
             string[] managedAccountsList)
         {
+            Contract.Requires(factory != null);
+            Contract.Requires(connection != null);
             Contract.Requires(managedAccountsList != null && managedAccountsList.Length > 0);
 
             SendAutoOpenOrdersRequest(connection);
@@ -49,6 +51,9 @@ namespace IBApi.Operations
 
         private static void SendAutoOpenOrdersRequest(IConnection connection)
         {
+            Contract.Requires(connection != null);
+
+
             var request = RequestAutoOpenOrdersMessage.Default;
             connection.SendMessage(request);
         }

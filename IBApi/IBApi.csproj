@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>IBApi</RootNamespace>
     <AssemblyName>IBApi</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
@@ -143,9 +143,17 @@
     <Compile Include="Accounts\IAccountsStorage.cs" />
     <Compile Include="Accounts\AccountValue.cs" />
     <Compile Include="Accounts\IAccountStorageContract.cs" />
+    <Compile Include="IOrdersIdsDispenser.cs" />
+    <Compile Include="Messages\Client\Origin.cs" />
+    <Compile Include="Messages\Client\RequestNextIdMessage.cs" />
+    <Compile Include="Messages\Client\RequestPlaceOrder.cs" />
+    <Compile Include="Messages\Client\StartApiMessage.cs" />
+    <Compile Include="Messages\Client\TriggerMethod.cs" />
+    <Compile Include="Messages\Server\CommissionsReportMessage.cs" />
     <Compile Include="Operations\CreateAccountOperation.cs" />
     <Compile Include="Operations\CreateAccountStorageOperation.cs" />
     <Compile Include="Operations\CreateExecutionsStorageOperation.cs" />
+    <Compile Include="OrdersIdsDispenser.cs" />
     <Compile Include="Serialization\FieldsStream.cs" />
     <Compile Include="Connection\IConnectionContract.cs" />
     <Compile Include="Connection\ISubscription.cs" />

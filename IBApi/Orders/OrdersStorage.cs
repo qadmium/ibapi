@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using IBApi.Connection;
 using IBApi.Messages.Server;
@@ -16,6 +17,9 @@ namespace IBApi.Orders
 
         public OrdersStorage(IConnection connection, IApiObjectsFactory objectsFactory, string accountName)
         {
+            Contract.Requires(connection != null);
+            Contract.Requires(objectsFactory != null);
+
             this.objectsFactory = objectsFactory;
             this.accountName = accountName;
 
@@ -40,6 +44,7 @@ namespace IBApi.Orders
 
         private void Subscribe(IConnection connection)
         {
+            Contract.Requires(connection != null);
             this.subscription = connection.Subscribe((OpenOrderMessage message) => message.Account == this.accountName,
                 this.OnNewOrder);
         }
@@ -54,7 +59,7 @@ namespace IBApi.Orders
                 return;
             }
 
-            order = this.objectsFactory.CreateOrder(message.OrderId);
+            order = this.objectsFactory.CreateOrder(message.OrderId, this.accountName);
             order.Update(message);
             this.orders[message.OrderId] = order;
             this.OrderAdded(order);
