@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using IBApi.Messages.Client;
 using IBApi.Serialization;
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(10)]
+    [IbSerializable(10)]
     [DebuggerDisplay("Symbol = {Symbol}, Currency = {Currency}, LocalSymbol = {LocalSymbol}, Type = {SecurityType}")]
     struct ContractDataMessage : IServerMessage
     {
@@ -36,5 +38,8 @@ namespace IBApi.Messages.Server
         public string TimeZoneId;
         public string TradingHours;
         public string LiquidHours;
+        public string EvRule;
+        public double? EvMultiplier;
+        public IEnumerable<TagValue> SecIdList;
     }
 }

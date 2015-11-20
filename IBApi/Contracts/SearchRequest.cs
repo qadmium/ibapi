@@ -2,6 +2,7 @@
 {
     public struct SearchRequest
     {
+        public int? NumberOfResults { get; set; }
         public long ContractId { get; set; }
         public string Currency { get; set; }
         public string Exchange { get; set; }

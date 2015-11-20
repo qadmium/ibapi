@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
+using System.Threading.Tasks;
+using IBApi;
 using IBApi.Connection;
 using IBApi.Messages.Client;
 using IBApi.Messages.Server;
@@ -21,11 +24,6 @@ namespace IBApiUnitTests
         public void SendMessage(IClientMessage message)
         {
             this.sendMessageVerifier.Object(message);
-        }
-
-        public int NextRequestId()
-        {
-            return ConnectionHelper.RequestId;
         }
 
         public IDisposable Subscribe<T>(Func<T, bool> condition, Action<T> callback)
@@ -59,6 +57,13 @@ namespace IBApiUnitTests
     {
         public const int RequestId = 1;
         private readonly ConnectionMock connectionMock = new ConnectionMock();
+        private readonly Mock<IIdsDispenser> dispenser = new Mock<IIdsDispenser>();
+
+        public ConnectionHelper()
+        {
+            this.dispenser.Setup(dispenser => dispenser.NextId(It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(RequestId));
+        }
 
         public void Dispose()
         {
@@ -68,6 +73,11 @@ namespace IBApiUnitTests
         public IConnection Connection()
         {
             return this.connectionMock;
+        }
+
+        public IIdsDispenser Dispenser()
+        {
+            return this.dispenser.Object;
         }
 
         public void SendMessage(IServerMessage message)

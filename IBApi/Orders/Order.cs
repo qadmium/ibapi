@@ -2,7 +2,7 @@
 using IBApi.Connection;
 using IBApi.Contracts;
 using IBApi.Messages.Server;
-using IBApi.Orders.OrderStateExtensions;
+using IBApi.Orders.OrderExtensions;
 using CodeContract = System.Diagnostics.Contracts.Contract;
 
 namespace IBApi.Orders

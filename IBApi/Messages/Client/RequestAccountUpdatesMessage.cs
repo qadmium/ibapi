@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(6)]
+    [IbSerializable(6)]
     internal struct RequestAccountUpdatesMessage : IClientMessage
     {
         public RequestAccountUpdatesMessage(string accountName)

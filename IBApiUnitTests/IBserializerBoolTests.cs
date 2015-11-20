@@ -199,7 +199,7 @@ namespace IBApiUnitTests
             Assert.AreEqual(message, result);
         }
 
-        [IBSerializable(1007)]
+        [IbSerializable(1007)]
         private class MessageWithIBBoolNullable : IClientMessage
         {
             public bool? Field;
@@ -225,7 +225,7 @@ namespace IBApiUnitTests
             }
         }
 
-        [IBSerializable(1008)]
+        [IbSerializable(1008)]
         private class MessageWithIBBool : IClientMessage
         {
             public bool Field;

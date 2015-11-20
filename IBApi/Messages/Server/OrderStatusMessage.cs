@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(3)]
+    [IbSerializable(3)]
     public struct OrderStatusMessage : IServerMessage
     {
         public int Version;

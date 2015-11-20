@@ -5,7 +5,7 @@ using IBApi.Serialization;
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(5)]
+    [IbSerializable(5)]
     struct OpenOrderMessage : IServerMessage
     {
         public int Version;

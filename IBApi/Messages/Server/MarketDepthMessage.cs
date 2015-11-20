@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(12)]
+    [IbSerializable(12)]
     internal struct MarketDepthMessage : IServerMessage
     {
         public int Version;

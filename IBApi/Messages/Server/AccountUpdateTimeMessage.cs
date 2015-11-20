@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(8)]
+    [IbSerializable(8)]
     struct AccountUpdateTimeMessage : IServerMessage
     {
         public int Version;

@@ -4,7 +4,7 @@ using IBApi.Serialization;
 namespace IBApi.Messages.Server
 {
 
-    [IBSerializable(7)]
+    [IbSerializable(7)]
     struct PortfolioValueMessage : IServerMessage
     {
         public int Version;

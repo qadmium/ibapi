@@ -112,12 +112,5 @@ namespace IBApiUnitTests
                 callback => callback(It.Is((ErrorMessage message) => message.ErrorCode == sendedMessage.ErrorCode)),
                 Times.Once);
         }
-
-        [TestMethod]
-        public void EnsureConnectionReturnsDifferentRequestIds()
-        {
-            // ReSharper disable once EqualExpressionComparison
-            Assert.IsTrue(this.connection.NextRequestId() != this.connection.NextRequestId());
-        }
     }
 }

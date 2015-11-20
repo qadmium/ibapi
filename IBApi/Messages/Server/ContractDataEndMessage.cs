@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(52)]
+    [IbSerializable(52)]
     struct ContractDataEndMessage : IServerMessage
     {
         public int Version;

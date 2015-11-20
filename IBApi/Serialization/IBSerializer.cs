@@ -73,7 +73,7 @@ namespace IBApi.Serialization
             Contract.Requires(assembly != null);
             return assembly
                 .GetTypes()
-                .Where(type => Attribute.IsDefined(type, typeof (IBSerializable)))
+                .Where(type => Attribute.IsDefined(type, typeof (IbSerializable)))
                 .ToArray();
         }
 
@@ -81,7 +81,7 @@ namespace IBApi.Serialization
         {
             return this.assemblyTypes
                 .Where(type => typeof (T).IsAssignableFrom(type))
-                .Single(type => type.GetCustomAttributes(false).OfType<IBSerializable>().Single().IBTypeId == typeId);
+                .Single(type => type.GetCustomAttributes(false).OfType<IbSerializable>().Single().IbTypeId == typeId);
         }
     }
 }

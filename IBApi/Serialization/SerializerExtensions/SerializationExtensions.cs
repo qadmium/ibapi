@@ -43,13 +43,13 @@ namespace IBApi.Serialization.SerializerExtensions
 
         private static byte[] SerializeTypeId(this object obj)
         {
-            if (!Attribute.IsDefined(obj.GetType(), typeof(IBSerializable)))
+            if (!Attribute.IsDefined(obj.GetType(), typeof(IbSerializable)))
             {
                 return NoValue();
             }
 
-            var typeIdAttribute = obj.GetType().GetCustomAttributes(false).OfType<IBSerializable>().Single();
-            var buffer = typeIdAttribute.IBTypeId.SerializePrimitive();
+            var typeIdAttribute = obj.GetType().GetCustomAttributes(false).OfType<IbSerializable>().Single();
+            var buffer = typeIdAttribute.IbTypeId.SerializePrimitive();
             return buffer;
         }
 
@@ -90,6 +90,11 @@ namespace IBApi.Serialization.SerializerExtensions
 
         private static byte[] SerializeEnumerable(object value)
         {
+            if (value == null)
+            {
+                return 0.SerializePrimitive();
+            }
+
             IEnumerable<byte> result = new List<byte>();
 
             var serializable = (IEnumerable)value;

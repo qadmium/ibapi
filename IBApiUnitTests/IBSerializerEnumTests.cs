@@ -84,7 +84,7 @@ namespace IBApiUnitTests
             Three
         }
 
-        [IBSerializable(2007)]
+        [IbSerializable(2007)]
         private class MessageWithEnum : IClientMessage, IEquatable<MessageWithEnum>
         {
             public TestEnum Field;
@@ -115,7 +115,7 @@ namespace IBApiUnitTests
             }
         }
 
-        [IBSerializable(2008)]
+        [IbSerializable(2008)]
         private class MessageWithNullableEnum : IClientMessage, IEquatable<MessageWithNullableEnum>
         {
             public TestEnum? Field;

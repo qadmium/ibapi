@@ -4,6 +4,8 @@
     {
         Limit,
         Market,
+        MarketWithProtection,
+        RequestToQuote,
         Stop,
         StopLimit,
         MarketToLimit,
@@ -12,10 +14,23 @@
         TrailingStop,
         TrailingStopLimit,
         TrailingLimitIfTouched,
+        TrailingMarketIfTouched,
         Relative,
         RetailPriceImprovement,
         MarketOnClose,
+        MarketOnOpen,
         LimitOnClose,
-        PeggedToBenchmark
+        LimitOnOpen,
+        PeggedToBenchmark,
+        PeggedToMarket,
+        PeggedToMidpoint,
+        BoxTop,
+        Vwap,
+        GoodAfterTimeDate,
+        GoodTillDateTime,
+        GoodTillCanceled,
+        ImmediateOrCancel,
+        OneCancelsAll,
+        Volatility
     }
 }

@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(53)]
+    [IbSerializable(53)]
     internal struct OpenOrderEndMessage : IServerMessage
     {
         public int Version;

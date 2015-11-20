@@ -7,7 +7,7 @@
              Width="246" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
              SizeToContent="Height" ResizeMode="NoResize">
     <Border Padding="5">
-        <Grid IsEnabled="{Binding InputControlsEnabled}">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
             
@@ -18,7 +18,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2">
+            <Grid Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" IsEnabled="{Binding InputControlsEnabled}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />

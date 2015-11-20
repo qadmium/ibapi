@@ -11,19 +11,22 @@ using CodeContract = System.Diagnostics.Contracts.Contract;
 
 namespace IBApi.Contracts
 {
-    internal sealed class FindContractOperation
+    internal sealed class FindContractsOperation
     {
         private readonly List<Contract> result = new List<Contract>();
 
         private readonly TaskCompletionSource<IReadOnlyCollection<Contract>> taskCompletionSource =
             new TaskCompletionSource<IReadOnlyCollection<Contract>>();
 
+        private int resultsToRetireve;
+
         private ICollection<IDisposable> subscriptions;
 
-        public FindContractOperation(IConnection connection, SearchRequest request,
+        public FindContractsOperation(IConnection connection, IIdsDispenser dispenser, SearchRequest request,
             CancellationToken cancellationToken)
         {
             CodeContract.Requires(connection != null);
+            CodeContract.Requires(dispenser != null);
 
             cancellationToken.Register(() =>
             {
@@ -31,9 +34,8 @@ namespace IBApi.Contracts
                 this.taskCompletionSource.SetCanceled();
             });
 
-            var requestId = connection.NextRequestId();
-            this.Subscribe(requestId, connection);
-            SendRequest(request, requestId, connection);
+            this.resultsToRetireve = request.NumberOfResults ?? int.MaxValue;
+            this.Subscribe(connection, dispenser, request, cancellationToken);
         }
 
         public Task<IReadOnlyCollection<Contract>> Task
@@ -41,9 +43,14 @@ namespace IBApi.Contracts
             get { return this.taskCompletionSource.Task; }
         }
 
-        private void Subscribe(int requestId, IConnection connection)
+        private async void Subscribe(IConnection connection, IIdsDispenser dispenser, SearchRequest request,
+            CancellationToken cancellationToken)
         {
             CodeContract.Requires(connection != null);
+            CodeContract.Requires(dispenser != null);
+
+            var requestId = await dispenser.NextId(cancellationToken);
+            
             this.subscriptions = new List<IDisposable>
             {
                 connection.Subscribe((ContractDataMessage message) => message.RequestId == requestId,
@@ -52,6 +59,8 @@ namespace IBApi.Contracts
                     this.OnContractDataEndMessage),
                 connection.SubscribeForRequestErrors(requestId, this.OnError)
             };
+
+            SendRequest(request, requestId, connection);
         }
 
         private static void SendRequest(SearchRequest request, int requestId, IConnection connection)
@@ -65,16 +74,27 @@ namespace IBApi.Contracts
         private void OnContractDataMessage(ContractDataMessage message)
         {
             this.result.Add(Contract.FromContractDataMessage(message));
+            this.resultsToRetireve--;
+            if (this.resultsToRetireve == 0)
+            {
+                this.Finish();
+            }
         }
 
         private void OnContractDataEndMessage(ContractDataEndMessage message)
         {
+            this.Finish();
+        }
+
+        private void Finish()
+        {
+            this.subscriptions.Unsubscribe();
             this.taskCompletionSource.SetResult(this.result.AsReadOnly());
         }
 
         private void OnError(Error error)
         {
-            this.taskCompletionSource.SetException(new IBException(error.Message, error.Code));
+            this.taskCompletionSource.SetException(new IbException(error.Message, error.Code));
         }
     }
 }

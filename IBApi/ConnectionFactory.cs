@@ -25,7 +25,7 @@ namespace IBApi
             await Handshake(connectionParams.ClientId, fieldsStream, serializer, cancellationToken);
 
             var connection = new Connection.Connection(fieldsStream, serializer);
-            var factory = new ApiObjectsFactory(connection, new OrdersIdsDispenser(connection));
+            var factory = new ApiObjectsFactory(connection, new IdsDispenser(connection));
             var waitForMarketConnected = factory.CreateWaitForMarketConnectedOperation(cancellationToken);
             var waitForAccountsList = factory.CreateReceiveManagedAccountsListOperation(cancellationToken);
 

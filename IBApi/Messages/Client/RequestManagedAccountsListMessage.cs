@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(17)]
+    [IbSerializable(17)]
     internal struct RequestManagedAccountsListMessage : IClientMessage
     {
         public static RequestManagedAccountsListMessage Default

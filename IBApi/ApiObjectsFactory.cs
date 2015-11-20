@@ -7,6 +7,7 @@ using IBApi.Connection;
 using IBApi.Contracts;
 using IBApi.Executions;
 using IBApi.MarketDepth;
+using IBApi.Messages.Client;
 using IBApi.Operations;
 using IBApi.Orders;
 using IBApi.Positions;
@@ -17,15 +18,15 @@ namespace IBApi
     internal sealed class ApiObjectsFactory : IApiObjectsFactory
     {
         private readonly IConnection connection;
-        private readonly IOrdersIdsDispenser ordersIdsDispenser;
+        private readonly IIdsDispenser idsDispenser;
 
-        public ApiObjectsFactory(IConnection connection, IOrdersIdsDispenser ordersIdsDispenser)
+        public ApiObjectsFactory(IConnection connection, IIdsDispenser idsDispenser)
         {
             System.Diagnostics.Contracts.Contract.Requires(connection != null);
-            System.Diagnostics.Contracts.Contract.Requires(ordersIdsDispenser != null);
+            System.Diagnostics.Contracts.Contract.Requires(idsDispenser != null);
 
             this.connection = connection;
-            this.ordersIdsDispenser = ordersIdsDispenser;
+            this.idsDispenser = idsDispenser;
         }
 
         public Task<string[]> CreateReceiveManagedAccountsListOperation(CancellationToken cancellationToken)
@@ -54,8 +55,8 @@ namespace IBApi
             IPositionsStorageInternal positionsStorage, IOrdersStorageInternal ordersStorage,
             AccountCurrenciesFields accountCurrenciesFields)
         {
-            return new Account(accountName, this.connection, executionStorage, positionsStorage, ordersStorage,
-                this.ordersIdsDispenser,
+            return new Account(accountName, this.connection, this, executionStorage, positionsStorage, ordersStorage,
+                this.idsDispenser,
                 accountCurrenciesFields);
         }
 
@@ -72,23 +73,25 @@ namespace IBApi
         public Task<IReadOnlyCollection<Contract>> CreateAsyncFindContractOperation(SearchRequest searchRequest,
             CancellationToken cancellationToken)
         {
-            return new FindContractOperation(this.connection, searchRequest, cancellationToken).Task;
+            return new FindContractsOperation(this.connection, this.idsDispenser, searchRequest, cancellationToken).Task;
         }
 
         public IDisposable CreateQuoteSubscription(IQuoteObserver observer, Contract contract)
         {
-            return new QuoteSubscription(this.connection, observer, contract);
+            return new QuoteSubscription(this.connection, this.idsDispenser, observer, contract);
         }
 
         public IDisposable CreateMarketDepthSubscription(IMarketDepthObserver observer, Contract contract)
         {
-            return new MarketDepthSubscription(this.connection, observer, contract);
+            return new MarketDepthSubscription(this.connection, this.idsDispenser, observer, contract);
         }
 
         public Task<IExecutionStorageInternal> CreateExecutionStorageOperation(string accountName,
             CancellationToken cancellationToken)
         {
-            return new CreateExecutionsStorageOperation(this.connection, cancellationToken, this, accountName).Result;
+            return
+                new CreateExecutionsStorageOperation(this.connection, this.idsDispenser, cancellationToken, this,
+                    accountName).Result;
         }
 
         public IExecutionStorageInternal CreateExecutionStorage(string accountName, List<Execution> executions)
@@ -116,9 +119,16 @@ namespace IBApi
             return new Order(orderId, account, this.connection);
         }
 
+        public Task<int> CreatePlaceOrderOperation(RequestPlaceOrderMessage requestPlaceOrderMessage,
+            IOrdersStorageInternal ordersStorage,
+            CancellationToken cancellationToken)
+        {
+            return new PlaceOrderOperation(requestPlaceOrderMessage, this.connection, ordersStorage, cancellationToken).Result;
+        }
+
         public void Dispose()
         {
-            this.ordersIdsDispenser.Dispose();
+            this.idsDispenser.Dispose();
             this.connection.Dispose();
         }
     }

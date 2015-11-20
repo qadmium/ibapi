@@ -60,7 +60,7 @@ namespace IBApi.Operations
             }
 
             Trace.TraceInformation(error.Message);
-            this.taskCompletionSource.SetException(new IBException(error.Message, error.Code));
+            this.taskCompletionSource.SetException(new IbException(error.Message, error.Code));
         }
     }
 }

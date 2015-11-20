@@ -224,7 +224,7 @@ namespace IBApiUnitTests
             public int Field;
         }
 
-        [IBSerializable(1001)]
+        [IbSerializable(1001)]
         private class MessageWithTypeId : IClientMessage
         {
             public int Field;
@@ -258,7 +258,7 @@ namespace IBApiUnitTests
             }
         }
 
-        [IBSerializable(1002)]
+        [IbSerializable(1002)]
         private class ServerMessageWithTypeId : IServerMessage, IComparable<ServerMessageWithTypeId>
         {
             public int Field;
@@ -292,7 +292,7 @@ namespace IBApiUnitTests
             }
         }
 
-        [IBSerializable(1003)]
+        [IbSerializable(1003)]
         private class MessageWithEnumerable : IServerMessage
         {
             public IEnumerable<int> Container;
@@ -319,7 +319,7 @@ namespace IBApiUnitTests
             }
         }
 
-        [IBSerializable(1004)]
+        [IbSerializable(1004)]
         private class MessageWithConditionalEnumerable : IServerMessage
         {
             public int Ver;
@@ -353,7 +353,7 @@ namespace IBApiUnitTests
             }
         }
 
-        [IBSerializable(1005)]
+        [IbSerializable(1005)]
         private class MessageWithStaticProperty : IServerMessage
         {
             public static int SomeProp = 42;
@@ -374,7 +374,7 @@ namespace IBApiUnitTests
             }
         }
 
-        [IBSerializable(1006)]
+        [IbSerializable(1006)]
         private class MessageWithNullableProperty : IServerMessage
         {
             public int? Field;

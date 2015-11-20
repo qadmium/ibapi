@@ -4,9 +4,9 @@ using IBApi.Errors;
 namespace IBApi.Exceptions
 {
     [Serializable]
-    public sealed class IBException : ApplicationException
+    public sealed class IbException : ApplicationException
     {
-        public IBException(string message, ErrorCode errorCode)
+        public IbException(string message, ErrorCode errorCode)
             : base(message)
         {
             ErrorCode = errorCode;

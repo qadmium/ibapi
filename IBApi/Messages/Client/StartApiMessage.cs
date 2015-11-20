@@ -7,7 +7,7 @@ using IBApi.Serialization;
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(71)]
+    [IbSerializable(71)]
     class StartApiMessage : IClientMessage
     {
         public int Version;

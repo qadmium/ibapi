@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(54)]
+    [IbSerializable(54)]
     struct AccountDownloadEndMessage : IServerMessage
     {
         public int Version;

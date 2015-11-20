@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(15)]
+    [IbSerializable(15)]
     internal struct RequestAutoOpenOrdersMessage : IClientMessage
     {
         public static RequestAutoOpenOrdersMessage Default

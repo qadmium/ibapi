@@ -3,7 +3,7 @@
 namespace IBApi.Messages.Server
 {
 
-    [IBSerializable(6)]
+    [IbSerializable(6)]
     struct AccountValueMessage : IServerMessage
     {
         public int Version;

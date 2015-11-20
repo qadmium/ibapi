@@ -51,7 +51,7 @@ namespace IBApiUnitTests
             {
                 await operation.Result;
             }
-            catch (IBException exception)
+            catch (IbException exception)
             {
                 Assert.AreEqual(ErrorCode.UnknownError, exception.ErrorCode);
                 Assert.AreEqual("Fail", exception.Message);

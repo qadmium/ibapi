@@ -9,13 +9,13 @@ using IBApi.Messages.Server;
 
 namespace IBApi
 {
-    internal class OrdersIdsDispenser : IOrdersIdsDispenser
+    internal class IdsDispenser : IIdsDispenser
     {
         private readonly IConnection connection;
         private readonly IDisposable subscription;
         private readonly ConcurrentQueue<TaskCompletionSource<int>> queue = new ConcurrentQueue<TaskCompletionSource<int>>();
 
-        public OrdersIdsDispenser(IConnection connection)
+        public IdsDispenser(IConnection connection)
         {
             Contract.Requires(connection != null);
             this.connection = connection;
@@ -35,7 +35,7 @@ namespace IBApi
             }
         }
 
-        public Task<int> NextOrderId(CancellationToken cancellationToken)
+        public Task<int> NextId(CancellationToken cancellationToken)
         {
             var taskCompletionSource = new TaskCompletionSource<int>();
             cancellationToken.Register(() => taskCompletionSource.SetCanceled());

@@ -5,7 +5,7 @@ using IBApi.Serialization;
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(10)]
+    [IbSerializable(10)]
     internal struct RequestMarketDepthMessage : IClientMessage
     {
         public int Version;

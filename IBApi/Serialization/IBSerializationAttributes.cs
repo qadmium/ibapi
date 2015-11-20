@@ -3,13 +3,13 @@
 namespace IBApi.Serialization
 {
     [AttributeUsage(AttributeTargets.Class | AttributeTargets.Struct)]
-    internal sealed class IBSerializable : Attribute
+    internal sealed class IbSerializable : Attribute
     {
-        public IBSerializable(int typeId)
+        public IbSerializable(int typeId)
         {
-            IBTypeId = typeId;
+            this.IbTypeId = typeId;
         }
 
-        public int IBTypeId { get; private set; }
+        public int IbTypeId { get; private set; }
     }
 }

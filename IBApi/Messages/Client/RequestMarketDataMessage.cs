@@ -13,7 +13,7 @@ namespace IBApi.Messages.Client
         public double Price;
     }
 
-    [IBSerializable(1)]
+    [IbSerializable(1)]
     internal struct RequestMarketDataMessage : IClientMessage
     {
         public int Version;

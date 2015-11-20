@@ -19,7 +19,6 @@ namespace IBApi.Connection
         private readonly FieldsStream stream;
 
         private readonly HashSet<ISubscription> subscriptions = new HashSet<ISubscription>();
-        private int nextRequestId;
 
         public Connection(FieldsStream stream, IIbSerializer serializer)
         {
@@ -39,11 +38,6 @@ namespace IBApi.Connection
 
             Trace.TraceInformation("Sending message: {0}", message);
             this.serializer.Write(message, this.stream, this.cts.Token);
-        }
-
-        public int NextRequestId()
-        {
-            return this.nextRequestId++;
         }
 
         public IDisposable Subscribe<T>(Func<T, bool> condition, Action<T> callback)

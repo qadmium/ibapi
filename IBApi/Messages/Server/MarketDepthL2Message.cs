@@ -9,7 +9,7 @@ namespace IBApi.Messages.Server
         Delete
     }
 
-    [IBSerializable(13)]
+    [IbSerializable(13)]
     internal struct MarketDepthL2Message : IServerMessage
     {
         public int Version;

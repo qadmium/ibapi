@@ -1,4 +1,6 @@
-﻿using System.Threading;
+﻿using System;
+using System.Net.Sockets;
+using System.Threading;
 using Caliburn.Micro;
 using IBApi;
 
@@ -126,12 +128,20 @@ namespace Sample.Connection
 
             this.Connecting = true;
 
-            this.client = await ConnectionFactory.Connect(new ConnectionParams
+            try
             {
-                ClientId = int.Parse(this.ClientId),
-                HostName = this.Hostname,
-                Port = int.Parse(this.Port)
-            }, this.cancellationTokenSource.Token);
+                this.client = await ConnectionFactory.Connect(new ConnectionParams
+                {
+                    ClientId = int.Parse(this.ClientId),
+                    HostName = this.Hostname,
+                    Port = int.Parse(this.Port)
+                }, this.cancellationTokenSource.Token);
+            }
+            catch (SocketException)
+            {
+                this.Connecting = false;
+                return;
+            }
 
             this.OnConnected(this.client);
         }

@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(2)]
+    [IbSerializable(2)]
     struct TickSizeMessage : IServerMessage
     {
         public int Version;

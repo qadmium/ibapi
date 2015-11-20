@@ -3,7 +3,7 @@ using IBApi.Serialization;
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(59)]
+    [IbSerializable(59)]
     class CommissionsReportMessage : IServerMessage
     {
         public int Version;

@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(8)]
+    [IbSerializable(8)]
     internal struct RequestNextIdMessage : IClientMessage
     {
         public int Version;

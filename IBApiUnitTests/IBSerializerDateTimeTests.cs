@@ -89,7 +89,7 @@ namespace IBApiUnitTests
             Assert.AreEqual(message, result);
         }
 
-        [IBSerializable(1009)]
+        [IbSerializable(1009)]
         private class MessageWithIBDateTime : IClientMessage
         {
             public DateTime? Field;

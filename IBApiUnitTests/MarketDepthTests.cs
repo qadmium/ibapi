@@ -75,6 +75,7 @@ namespace IBApiUnitTests
         {
             var contract = new Contract();
             var marketDepthSubscription = new MarketDepthSubscription(this.connectionHelper.Connection(),
+                this.connectionHelper.Dispenser(),
                 this.observerMock.Object, contract);
             return marketDepthSubscription;
         }

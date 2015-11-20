@@ -132,7 +132,8 @@ namespace IBApiUnitTests
         private QuoteSubscription CreateQuoteSubscription()
         {
             var contract = new Contract();
-            var quoteSucription = new QuoteSubscription(this.connectionHelper.Connection(), this.observerMock.Object,
+            var quoteSucription = new QuoteSubscription(this.connectionHelper.Connection(), this.connectionHelper.Dispenser(),
+                this.observerMock.Object,
                 contract);
             return quoteSucription;
         }

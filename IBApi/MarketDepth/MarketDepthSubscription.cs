@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using IBApi.Connection;
 using IBApi.Contracts;
 using IBApi.Errors;
@@ -15,22 +16,22 @@ namespace IBApi.MarketDepth
         private readonly IConnection connection;
         private readonly MarketDepthUpdatesDispatcher marketDepthUpdatesDispatcher;
         private readonly IMarketDepthObserver observer;
-        private readonly int requestId;
         private bool disposed;
+        private int requestId;
         private ICollection<IDisposable> subscriptions;
 
-        public MarketDepthSubscription(IConnection connection, IMarketDepthObserver observer, Contract contract)
+        public MarketDepthSubscription(IConnection connection, IIdsDispenser dispenser, IMarketDepthObserver observer,
+            Contract contract)
         {
             CodeContract.Requires(connection != null);
+            CodeContract.Requires(dispenser != null);
             CodeContract.Requires(observer != null);
 
             this.connection = connection;
             this.observer = observer;
-            this.requestId = connection.NextRequestId();
             this.marketDepthUpdatesDispatcher = new MarketDepthUpdatesDispatcher(observer);
 
-            this.Subscribe();
-            this.SendRequest(contract);
+            this.Subscribe(dispenser, contract);
         }
 
         public void Dispose()
@@ -46,7 +47,7 @@ namespace IBApi.MarketDepth
             this.subscriptions.Unsubscribe();
         }
 
-        private void SendRequest(Contract contract)
+        private void SendRequest(Contract contract, int requestId)
         {
             var request = RequestMarketDepthMessage.FromContract(contract);
             request.RequestId = this.requestId;
@@ -61,14 +62,18 @@ namespace IBApi.MarketDepth
             this.connection.SendMessage(cancelRequest);
         }
 
-        private void Subscribe()
+        private async void Subscribe(IIdsDispenser dispenser, Contract contract)
         {
+            this.requestId = await dispenser.NextId(CancellationToken.None);
+
             this.subscriptions = new List<IDisposable>
             {
                 this.connection.Subscribe((MarketDepthMessage message) => message.RequestId == this.requestId,
                     this.OnMarketDepth),
                 this.connection.SubscribeForRequestErrors(this.requestId, this.OnError)
             };
+
+            this.SendRequest(contract, this.requestId);
         }
 
         private void OnMarketDepth(MarketDepthMessage message)

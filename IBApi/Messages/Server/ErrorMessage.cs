@@ -3,7 +3,7 @@ using IBApi.Serialization;
 
 namespace IBApi.Messages.Server
 {
-    [IBSerializable(4)]
+    [IbSerializable(4)]
     struct ErrorMessage : IServerMessage
     {
         public int Version;

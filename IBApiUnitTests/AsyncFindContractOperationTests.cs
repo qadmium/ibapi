@@ -45,7 +45,7 @@ namespace IBApiUnitTests
             {
                 await task;
             }
-            catch (IBException exception)
+            catch (IbException exception)
             {
                 Assert.AreEqual(error.ErrorCode, exception.ErrorCode);
                 Assert.AreEqual(error.Message, exception.Message);
@@ -100,7 +100,9 @@ namespace IBApiUnitTests
 
         private Task<IReadOnlyCollection<Contract>> CreateOperation(SearchRequest request)
         {
-            var result = new FindContractOperation(this.connectionHelper.Connection(), request, CancellationToken.None);
+            var result = new FindContractsOperation(this.connectionHelper.Connection(), 
+                this.connectionHelper.Dispenser(),
+                request, CancellationToken.None);
             return result.Task;
         }
     }

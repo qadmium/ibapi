@@ -3,7 +3,7 @@
 namespace IBApi.Messages.Server
 {
 
-    [IBSerializable(46)]
+    [IbSerializable(46)]
     internal struct TickStringMessage : IServerMessage
     {
         public int Version;

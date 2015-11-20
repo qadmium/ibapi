@@ -39,6 +39,14 @@ namespace IBApi.Contracts
         public bool? Call { get; set; }
         public string LocalSymbol { get; set; }
         public int ContractId { get; set; }
+        internal string RightString { get {
+            if (this.Call.HasValue)
+            {
+                return this.Call.Value ? "C" : "P";
+            }
+
+            return null;
+        }}
 
         public AdditionalContractInfo AdditionalContractInfo;
 

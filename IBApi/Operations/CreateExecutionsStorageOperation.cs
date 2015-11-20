@@ -18,15 +18,13 @@ namespace IBApi.Operations
         private readonly List<Execution> executions = new List<Execution>();
         private readonly IApiObjectsFactory factory;
 
-        private readonly int requestId;
-
         private readonly TaskCompletionSource<IExecutionStorageInternal> taskCompletionSource =
             new TaskCompletionSource<IExecutionStorageInternal>();
 
         private CancellationToken cancellationToken;
         private List<IDisposable> subscriptions;
 
-        public CreateExecutionsStorageOperation(IConnection connection, CancellationToken cancellationToken,
+        public CreateExecutionsStorageOperation(IConnection connection, IIdsDispenser dispenser, CancellationToken cancellationToken,
             IApiObjectsFactory factory,
             string account)
         {
@@ -43,10 +41,8 @@ namespace IBApi.Operations
                 this.taskCompletionSource.SetCanceled();
             });
             this.account = account;
-            this.requestId = connection.NextRequestId();
 
-            this.Subscribe();
-            this.SendRequest();
+            this.Subscribe(dispenser, cancellationToken);
         }
 
         public Task<IExecutionStorageInternal> Result
@@ -54,21 +50,26 @@ namespace IBApi.Operations
             get { return this.taskCompletionSource.Task; }
         }
 
-        private void Subscribe()
+        private async void Subscribe(IIdsDispenser dispenser, CancellationToken token)
         {
+            var requestId = await dispenser.NextId(token);
+
             this.subscriptions = new List<IDisposable>
             {
-                this.connection.Subscribe((ExecutionDataMessage message) => message.RequestId == this.requestId,
+                this.connection.Subscribe((ExecutionDataMessage message) => message.RequestId == requestId,
                     this.OnExecutionData),
-                this.connection.Subscribe((ExecutionDataEndMessage message) => message.RequestId == this.requestId,
+                this.connection.Subscribe((ExecutionDataEndMessage message) => message.RequestId == requestId,
                     this.OnExecutionDataEnd)
             };
+
+            this.SendRequest(requestId);
         }
 
-        private void SendRequest()
+        private void SendRequest(int requestId)
         {
             var request = RequestExecutionsMessage.Default;
             request.FilterByAccountCode = this.account;
+            request.RequestId = requestId;
 
             this.connection.SendMessage(request);
         }

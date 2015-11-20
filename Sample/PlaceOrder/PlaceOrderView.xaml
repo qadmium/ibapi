@@ -1,0 +1,33 @@
+﻿<Window x:Class="Sample.PlaceOrder.PlaceOrderView"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+            mc:Ignorable="d" 
+            SizeToContent="Height"
+            ResizeMode="NoResize" d:DesignWidth="206">
+    <Border Padding="5">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Row="0" Grid.Column="0">Ticker:</TextBlock>
+            <TextBox Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Name="Ticker" IsEnabled="{Binding ControlsEnabled}"></TextBox>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">Quantity:</TextBlock>
+            <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5,0,0" Name="Quantity" IsEnabled="{Binding ControlsEnabled}"></TextBox>
+            <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">Account:</TextBlock>
+            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,5,0,0" Name="Accounts" IsEnabled="{Binding ControlsEnabled}"></ComboBox>
+            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0">
+                <Button Name="Buy" Margin="5" IsEnabled="{Binding ControlsEnabled}">Buy</Button>
+                <Button Name="Sell" Margin="5" IsEnabled="{Binding ControlsEnabled}">Sell</Button>
+                <Button Name="Cancel" Margin="5">Cancel</Button>
+            </StackPanel>
+        </Grid></Border>
+</Window>

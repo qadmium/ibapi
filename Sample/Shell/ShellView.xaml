@@ -4,11 +4,16 @@
         Title="ShellView" Height="350" Width="525">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <TabControl Name="Items" Grid.Row="0"></TabControl>
-        <StatusBar Grid.Row="1">
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Button Name="PlaceOrder" Margin="5">Place order
+            </Button>
+        </StackPanel>
+        <TabControl Name="Items" Grid.Row="1"></TabControl>
+        <StatusBar Grid.Row="2">
         </StatusBar>
     </Grid>
 </Window>

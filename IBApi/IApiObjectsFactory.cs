@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using IBApi.Accounts;
 using IBApi.Contracts;
 using IBApi.Executions;
+using IBApi.Messages.Client;
 using IBApi.Orders;
 using IBApi.Positions;
 
@@ -30,5 +31,8 @@ namespace IBApi
         IOrdersStorageInternal CreateOrdersStorage(string accountName);
         Position CreatePosition();
         Order CreateOrder(int orderId, string account);
+
+        Task<int> CreatePlaceOrderOperation(RequestPlaceOrderMessage requestPlaceOrderMessage, IOrdersStorageInternal ordersStorage,
+            CancellationToken cancellationToken);
     }
 }

@@ -18,7 +18,8 @@ namespace IBApiUnitTests
         private Mock<IExecutionStorageInternal> executionsStorageMock;
         private Mock<IOrdersStorageInternal> ordersStorageMock;
         private Mock<IPositionsStorageInternal> positionsStorageMock;
-        private Mock<IOrdersIdsDispenser> ordersIdsDispenserMock;
+        private Mock<IIdsDispenser> ordersIdsDispenserMock;
+        private Mock<IApiObjectsFactory> factoryMock;
 
         [TestInitialize]
         public void Init()
@@ -28,9 +29,11 @@ namespace IBApiUnitTests
             this.executionsStorageMock = new Mock<IExecutionStorageInternal>();
             this.positionsStorageMock = new Mock<IPositionsStorageInternal>();
             this.ordersStorageMock = new Mock<IOrdersStorageInternal>();
-            this.ordersIdsDispenserMock = new Mock<IOrdersIdsDispenser>();
+            this.ordersIdsDispenserMock = new Mock<IIdsDispenser>();
+            this.factoryMock = new Mock<IApiObjectsFactory>();
 
-            this.account = new Account("testaccount", this.connectionHelper.Connection(), this.executionsStorageMock.Object
+            this.account = new Account("testaccount", this.connectionHelper.Connection(), this.factoryMock.Object,
+                this.executionsStorageMock.Object
                 , this.positionsStorageMock.Object, this.ordersStorageMock.Object, this.ordersIdsDispenserMock.Object,
                 new AccountCurrenciesFields());
         }

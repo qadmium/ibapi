@@ -3,7 +3,7 @@ using IBApi.Serialization;
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(9)]
+    [IbSerializable(9)]
     internal struct RequestContractDetailsMessage : IClientMessage
     {
         public int Version;
@@ -51,7 +51,7 @@ namespace IBApi.Messages.Client
                 Multiplier = request.Multiplier,
                 Right = !request.Call.HasValue ? string.Empty : request.Call.Value ? "C" : "P",
                 Symbol = request.Symbol,
-                SecurityType = request.SecurityType.ToString(),
+                SecurityType = request.SecurityType.HasValue ? request.SecurityType.ToString() : Contracts.SecurityType.STK.ToString(),
                 SecId = request.SecId,
                 SecIdType = request.SecIdType,
                 Strike = request.Strike ?? 0.0

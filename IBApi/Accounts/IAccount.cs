@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using IBApi.Contracts;
 using IBApi.Executions;
 using IBApi.Orders;
 using IBApi.Positions;
@@ -23,6 +24,6 @@ namespace IBApi.Accounts
         IExecutionsStorage ExecutionsStorage { get; }
         IPositionsStorage PositionStorage { get; }
 
-        Task<int> PlaceMarketOrder(CancellationToken cancellationToken);
+        Task<int> PlaceMarketOrder(Contract contract, int quantity, OrderAction action, CancellationToken cancellationToken);
     }
 }

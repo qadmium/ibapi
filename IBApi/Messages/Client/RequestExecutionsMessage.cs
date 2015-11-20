@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(7)]
+    [IbSerializable(7)]
     internal struct RequestExecutionsMessage : IClientMessage
     {
         public static RequestExecutionsMessage Default

@@ -57,7 +57,7 @@ namespace IBApi.Messages.Server
         NotSet
     }
 
-    [IBSerializable(1)]
+    [IbSerializable(1)]
     internal struct TickPriceMessage : IServerMessage
     {
         public int Version;

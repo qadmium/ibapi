@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using IBApi.Connection;
 using IBApi.Contracts;
 using IBApi.Errors;
@@ -12,64 +13,75 @@ namespace IBApi.Quotes
 {
     internal class QuoteSubscription : IDisposable
     {
-        public QuoteSubscription(IConnection connection, IQuoteObserver observer, Contract contract)
+        private readonly IConnection connection;
+        private readonly IQuoteObserver observer;
+        private int requestId;
+        private ICollection<IDisposable> subscriptions;
+        private bool disposed;
+        private Quote quote;
+
+        public QuoteSubscription(IConnection connection, IIdsDispenser dispenser, IQuoteObserver observer, Contract contract)
         {
             CodeContract.Requires(connection != null);
             CodeContract.Requires(observer != null);
+            CodeContract.Requires(dispenser != null);
 
             this.connection = connection;
             this.observer = observer;
-            requestId = connection.NextRequestId();
 
-            subscriptions = Subscribe();
-            SendRequest(contract);
+            this.Subscribe(contract, dispenser);
         }
 
         public void Dispose()
         {
-            if (disposed)
+            if (this.disposed)
             {
                 return;
             }
 
-            disposed = true;
+            this.disposed = true;
 
-            subscriptions.Unsubscribe();
-            SendCancelRequest();
+            this.subscriptions.Unsubscribe();
+            this.SendCancelRequest();
         }
 
-        private ICollection<IDisposable> Subscribe()
+        private async void Subscribe(Contract contract, IIdsDispenser dispenser)
         {
-            return new List<IDisposable>
+            this.requestId = await dispenser.NextId(CancellationToken.None);
+
+            this.subscriptions = new List<IDisposable>
             {
-                connection.Subscribe((TickPriceMessage message) => message.RequestId == requestId, OnTickPrice),
-                connection.SubscribeForRequestErrors(requestId, OnError),
+                this.connection.Subscribe((TickPriceMessage message) => message.RequestId == this.requestId,
+                    this.OnTickPrice),
+                this.connection.SubscribeForRequestErrors(this.requestId, this.OnError)
             };
+
+            this.SendRequest(contract);
         }
 
         private void SendRequest(Contract contract)
         {
             var request = RequestMarketDataMessage.FromContract(contract);
-            request.RequestId = requestId;
-            connection.SendMessage(request);
+            request.RequestId = this.requestId;
+            this.connection.SendMessage(request);
         }
 
         private void SendCancelRequest()
         {
             var cancelRequest = RequestCancelMarketData.Default;
-            cancelRequest.RequestId = requestId;
-            connection.SendMessage(cancelRequest);
+            cancelRequest.RequestId = this.requestId;
+            this.connection.SendMessage(cancelRequest);
         }
 
         private void OnTickPrice(TickPriceMessage message)
         {
-            UpdateQuote(message);
-            observer.OnQuote(quote);
+            this.UpdateQuote(message);
+            this.observer.OnQuote(this.quote);
         }
 
         private void OnError(Error error)
         {
-            observer.OnError(error);
+            this.observer.OnError(error);
         }
 
         private void UpdateQuote(TickPriceMessage tickPriceMessage)
@@ -77,18 +89,18 @@ namespace IBApi.Quotes
             switch (tickPriceMessage.TickType)
             {
                 case TickType.Bid:
-                    quote.BidPrice = tickPriceMessage.Price;
-                    quote.BidSize = tickPriceMessage.Size;
+                    this.quote.BidPrice = tickPriceMessage.Price;
+                    this.quote.BidSize = tickPriceMessage.Size;
                     return;
 
                 case TickType.Ask:
-                    quote.AskPrice = tickPriceMessage.Price;
-                    quote.AskSize = tickPriceMessage.Size;
+                    this.quote.AskPrice = tickPriceMessage.Price;
+                    this.quote.AskSize = tickPriceMessage.Size;
                     return;
 
                 case TickType.Last:
-                    quote.TradePrice = tickPriceMessage.Price;
-                    quote.TradeSize = tickPriceMessage.Size;
+                    this.quote.TradePrice = tickPriceMessage.Price;
+                    this.quote.TradeSize = tickPriceMessage.Size;
                     return;
             }
         }
@@ -96,14 +108,7 @@ namespace IBApi.Quotes
         [ContractInvariantMethod]
         private void ContractInvariant()
         {
-            CodeContract.Invariant(connection != null);
+            CodeContract.Invariant(this.connection != null);
         }
-
-        private readonly IConnection connection;
-        private readonly IQuoteObserver observer;
-        private readonly int requestId;
-        private readonly ICollection<IDisposable> subscriptions;
-        private bool disposed;
-        private Quote quote;
     }
 }

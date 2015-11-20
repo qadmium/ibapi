@@ -2,7 +2,7 @@
 
 namespace IBApi.Messages.Client
 {
-    [IBSerializable(11)]
+    [IbSerializable(11)]
     public struct RequestCancelMarketDepth : IClientMessage
     {
         public int Version;
