@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 using IBApi.Connection;
 using IBApi.Errors;
 using IBApi.Messages;
@@ -62,7 +61,6 @@ namespace IBApiUnitTests
     {
         private Connection connection;
         private IbSerializerMock serializerMock;
-        private FieldsStream fieldsStream;
 
         [TestInitialize]
         public void Init()

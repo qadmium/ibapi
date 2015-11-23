@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
 using IBApi.Connection;
 using IBApi.Contracts;
 using IBApi.Messages.Server;
@@ -9,12 +11,15 @@ namespace IBApi.Orders
 {
     internal sealed class Order : IOrder, IDisposable
     {
+        private readonly IApiObjectsFactory factory;
         private IDisposable subscription;
 
-        public Order(int id, string account, IConnection connection)
+        public Order(int id, string account, IConnection connection, IApiObjectsFactory factory)
         {
             CodeContract.Requires(connection != null);
+            CodeContract.Requires(factory != null);
 
+            this.factory = factory;
             this.Id = id;
             this.Subscribe(connection);
             this.Account = account;
@@ -45,6 +50,10 @@ namespace IBApi.Orders
         public int ClientId { get; private set; }
         public string Route { get; private set; }
         public int? DisplaySize { get; private set; }
+        public Task WaitForFill(CancellationToken cancellationToken)
+        {
+            return this.factory.CreateWaitForOrderFillOperation(this, cancellationToken);
+        }
 
         private void Subscribe(IConnection connection)
         {

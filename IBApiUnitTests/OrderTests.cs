@@ -1,4 +1,5 @@
-﻿using IBApi.Messages.Server;
+﻿using IBApi;
+using IBApi.Messages.Server;
 using IBApi.Orders;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -10,12 +11,14 @@ namespace IBApiUnitTests
     {
         private ConnectionHelper connectionHelper;
         private Order order;
+        private Mock<IApiObjectsFactory> factoryMock;
 
         [TestInitialize]
         public void Init()
         {
             this.connectionHelper = new ConnectionHelper();
-            this.order = new Order(1, "testaccount", this.connectionHelper.Connection());
+            this.factoryMock = new Mock<IApiObjectsFactory>();
+            this.order = new Order(1, "testaccount", this.connectionHelper.Connection(), this.factoryMock.Object);
         }
 
         [TestCleanup]

@@ -33,7 +33,7 @@ namespace IBApiUnitTests
         public void EnsureThatOrdersStorageRaisesEventOnlyOnNewPosition()
         {
             this.factoryMock.Setup(factory => factory.CreateOrder(It.IsAny<int>(), It.IsAny<string>()))
-                .Returns(new Order(0, "testaccount", this.connectionHelper.Connection()));
+                .Returns(new Order(0, "testaccount", this.connectionHelper.Connection(), this.factoryMock.Object));
 
             var onNewOrderCallback = new Mock<OrderAddedEventHandler>();
             this.ordersStorage.OrderAdded += onNewOrderCallback.Object;

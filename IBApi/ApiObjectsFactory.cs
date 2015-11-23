@@ -116,7 +116,7 @@ namespace IBApi
 
         public Order CreateOrder(int orderId, string account)
         {
-            return new Order(orderId, account, this.connection);
+            return new Order(orderId, account, this.connection, this);
         }
 
         public Task<int> CreatePlaceOrderOperation(RequestPlaceOrderMessage requestPlaceOrderMessage,
@@ -124,6 +124,11 @@ namespace IBApi
             CancellationToken cancellationToken)
         {
             return new PlaceOrderOperation(requestPlaceOrderMessage, this.connection, ordersStorage, cancellationToken).Result;
+        }
+
+        public Task CreateWaitForOrderFillOperation(IOrder order, CancellationToken cancellationToken)
+        {
+            return new WaitForOrderFillOperation(order, cancellationToken).Result;
         }
 
         public void Dispose()

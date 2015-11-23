@@ -34,5 +34,7 @@ namespace IBApi
 
         Task<int> CreatePlaceOrderOperation(RequestPlaceOrderMessage requestPlaceOrderMessage, IOrdersStorageInternal ordersStorage,
             CancellationToken cancellationToken);
+
+        Task CreateWaitForOrderFillOperation(IOrder order, CancellationToken cancellationToken);
     }
 }

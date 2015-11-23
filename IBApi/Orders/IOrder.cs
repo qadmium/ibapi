@@ -1,4 +1,6 @@
-﻿using IBApi.Contracts;
+﻿using System.Threading;
+using System.Threading.Tasks;
+using IBApi.Contracts;
 
 namespace IBApi.Orders
 {
@@ -26,5 +28,7 @@ namespace IBApi.Orders
         int ClientId { get; }
         string Route { get; }
         int? DisplaySize { get; }
+
+        Task WaitForFill(CancellationToken cancellationToken);
     }
 }
