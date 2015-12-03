@@ -10,7 +10,7 @@ namespace IBApi.Positions
         {
         }
 
-        public event PositionChangedEventHandler PositionChanged = delegate { };
+        public event EventHandler<PositionChangedEventArgs> PositionChanged = delegate { };
 
         public Contract Contract { get; private set; }
         public string AccountName { get; private set; }
@@ -38,7 +38,7 @@ namespace IBApi.Positions
             this.OpenPL = message.UnrealizedPNL;
             this.AccountName = accountName;
 
-            this.PositionChanged(this);
+            this.PositionChanged(this, new PositionChangedEventArgs{Position = this});
         }
     }
 }

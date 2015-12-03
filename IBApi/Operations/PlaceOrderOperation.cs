@@ -42,9 +42,9 @@ namespace IBApi.Operations
             this.taskCompletionSource.SetException(new IbException(error.Message, error.Code));
         }
 
-        private void OnOrderAdded(IOrder order)
+        private void OnOrderAdded(object sender, OrderAddedEventArgs eventArgs)
         {
-            if (order.Id != this.orderId)
+            if (eventArgs.Order.Id != this.orderId)
             {
                 return;
             }

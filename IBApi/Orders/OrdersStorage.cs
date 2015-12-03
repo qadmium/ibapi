@@ -26,7 +26,7 @@ namespace IBApi.Orders
             this.Subscribe(connection);
         }
 
-        public event OrderAddedEventHandler OrderAdded = delegate { };
+        public event EventHandler<OrderAddedEventArgs> OrderAdded = delegate { };
 
         public IReadOnlyCollection<IOrder> Orders
         {
@@ -62,7 +62,7 @@ namespace IBApi.Orders
             order = this.objectsFactory.CreateOrder(message.OrderId, this.accountName);
             order.Update(message);
             this.orders[message.OrderId] = order;
-            this.OrderAdded(order);
+            this.OrderAdded(this, new OrderAddedEventArgs{Order = order});
         }
     }
 }

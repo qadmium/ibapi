@@ -1,12 +1,16 @@
-﻿using IBApi.Contracts;
+﻿using System;
+using IBApi.Contracts;
 
 namespace IBApi.Positions
 {
-    public delegate void PositionChangedEventHandler(IPosition position);
+    public class PositionChangedEventArgs : EventArgs
+    {
+        public IPosition Position { get; internal set; }
+    }
 
     public interface IPosition
     {
-        event PositionChangedEventHandler PositionChanged;
+        event EventHandler<PositionChangedEventArgs> PositionChanged;
 
         Contract Contract { get; }
         string AccountName { get; }

@@ -37,9 +37,9 @@ namespace Sample.Orders
             }
         }
 
-        private void OnOrderAdded(IOrder order)
+        private void OnOrderAdded(object sender, OrderAddedEventArgs orderAddedEventArgs)
         {
-            this.Orders.Add(new OrderView(order));
+            this.Orders.Add(new OrderView(orderAddedEventArgs.Order));
         }
     }
 }

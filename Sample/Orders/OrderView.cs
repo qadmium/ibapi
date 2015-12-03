@@ -76,8 +76,10 @@ namespace Sample.Orders
             }
         }
 
-        private void OrderChanged(IOrder order)
+        private void OrderChanged(object sender, OrderChangedEventArgs orderChangedEventArgs)
         {
+            var order = orderChangedEventArgs.Order;
+
             this.Action = order.Action;
             this.Quantity = order.Quantity;
             this.Symbol = order.Contract.Symbol;

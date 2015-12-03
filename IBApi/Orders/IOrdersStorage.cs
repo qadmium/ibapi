@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IBApi.Orders
 {
-    public delegate void OrderAddedEventHandler(IOrder order);
+    public class OrderAddedEventArgs : EventArgs
+    {
+        public IOrder Order { get; internal set; }
+    }
 
     public interface IOrdersStorage
     {
-        event OrderAddedEventHandler OrderAdded;
+        event EventHandler<OrderAddedEventArgs> OrderAdded;
 
         IReadOnlyCollection<IOrder> Orders { get; }  
     }

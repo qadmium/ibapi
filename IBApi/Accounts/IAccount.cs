@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Contracts;
 using IBApi.Executions;
@@ -7,11 +8,14 @@ using IBApi.Positions;
 
 namespace IBApi.Accounts
 {
-    public delegate void AccountChangedEventHandler(IAccount account);
+    public class AccountChangedEventArgs : EventArgs
+    {
+        public IAccount Account { get; internal set; }
+    }
 
     public interface IAccount
     {
-        event AccountChangedEventHandler AccountChanged;
+        event EventHandler<AccountChangedEventArgs> AccountChanged;
 
         string AccountName { get; }
         string AccountId { get; }
@@ -22,7 +26,7 @@ namespace IBApi.Accounts
 
         IOrdersStorage OrdersStorage { get; }
         IExecutionsStorage ExecutionsStorage { get; }
-        IPositionsStorage PositionStorage { get; }
+        IPositionsStorage PositionsStorage { get; }
 
         Task<int> PlaceMarketOrder(Contract contract, int quantity, OrderAction action, CancellationToken cancellationToken);
     }

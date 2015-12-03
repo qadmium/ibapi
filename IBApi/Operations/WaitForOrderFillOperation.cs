@@ -26,7 +26,7 @@ namespace IBApi.Operations
             get { return this.taskCompletionSource.Task; }
         }
 
-        private void OnOrderChanged(IOrder changedOrder)
+        private void OnOrderChanged(object sender, OrderChangedEventArgs eventArgs)
         {
             if (this.order.FilledQuantity == this.order.Quantity)
             {

@@ -12,14 +12,16 @@ namespace IBApi.Orders
     internal sealed class Order : IOrder, IDisposable
     {
         private readonly IApiObjectsFactory factory;
+        private readonly CancellationTokenSource internaCancellationTokenSource;
         private IDisposable subscription;
 
-        public Order(int id, string account, IConnection connection, IApiObjectsFactory factory)
+        public Order(int id, string account, IConnection connection, IApiObjectsFactory factory, CancellationTokenSource internaCancellationTokenSource)
         {
             CodeContract.Requires(connection != null);
             CodeContract.Requires(factory != null);
 
             this.factory = factory;
+            this.internaCancellationTokenSource = internaCancellationTokenSource;
             this.Id = id;
             this.Subscribe(connection);
             this.Account = account;
@@ -30,7 +32,7 @@ namespace IBApi.Orders
             this.subscription.Dispose();
         }
 
-        public event OrderChangedEventHandler OrderChanged = delegate { };
+        public event EventHandler<OrderChangedEventArgs> OrderChanged = delegate { };
 
         public string Account { get; private set; }
         public int Id { get; private set; }
@@ -52,7 +54,10 @@ namespace IBApi.Orders
         public int? DisplaySize { get; private set; }
         public Task WaitForFill(CancellationToken cancellationToken)
         {
-            return this.factory.CreateWaitForOrderFillOperation(this, cancellationToken);
+            using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(this.internaCancellationTokenSource.Token, cancellationToken))
+            {
+                return this.factory.CreateWaitForOrderFillOperation(this, cancellationTokenSource.Token);
+            }
         }
 
         private void Subscribe(IConnection connection)
@@ -79,7 +84,7 @@ namespace IBApi.Orders
             this.Route = message.Exchange;
             this.DisplaySize = message.DisplaySize;
 
-            this.OrderChanged(this);
+            this.OrderChanged(this, new OrderChangedEventArgs{Order = this});
         }
 
         private void OnStatusUpdate(OrderStatusMessage message)
@@ -95,7 +100,7 @@ namespace IBApi.Orders
             this.LastFillPrice = message.LastFillPrice;
             this.ClientId = message.ClientId;
 
-            this.OrderChanged(this);
+            this.OrderChanged(this, new OrderChangedEventArgs { Order = this });
         }
     }
 }

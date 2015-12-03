@@ -1,6 +1,8 @@
-﻿namespace IBApi.Accounts
+﻿using System;
+
+namespace IBApi.Accounts
 {
-    public class AccountFields
+    public class AccountFields : ICloneable
     {
         public bool AccountIsTradeable { get; internal set; }
         public double BuyingPower { get; internal set; }
@@ -17,5 +19,9 @@
         public double FullInitMarginReq { get; internal set; }
         public double FullMaintMarginReq { get; internal set; }
         public double FullAvailableFunds { get; internal set; }
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

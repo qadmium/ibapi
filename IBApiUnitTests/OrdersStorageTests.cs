@@ -1,4 +1,6 @@
-﻿using IBApi;
+﻿using System;
+using System.Threading;
+using IBApi;
 using IBApi.Messages.Server;
 using IBApi.Orders;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -33,9 +35,10 @@ namespace IBApiUnitTests
         public void EnsureThatOrdersStorageRaisesEventOnlyOnNewPosition()
         {
             this.factoryMock.Setup(factory => factory.CreateOrder(It.IsAny<int>(), It.IsAny<string>()))
-                .Returns(new Order(0, "testaccount", this.connectionHelper.Connection(), this.factoryMock.Object));
+                .Returns(new Order(0, "testaccount", this.connectionHelper.Connection(), this.factoryMock.Object,
+                    new CancellationTokenSource()));
 
-            var onNewOrderCallback = new Mock<OrderAddedEventHandler>();
+            var onNewOrderCallback = new Mock<EventHandler<OrderAddedEventArgs>>();
             this.ordersStorage.OrderAdded += onNewOrderCallback.Object;
 
             this.connectionHelper.SendMessage(new OpenOrderMessage
@@ -58,7 +61,7 @@ namespace IBApiUnitTests
                 OrderType = "MKT"
             });
 
-            onNewOrderCallback.Verify(callback => callback(It.IsAny<IOrder>()), Times.Once);
+            onNewOrderCallback.Verify(callback => callback(this.ordersStorage, It.IsAny<OrderAddedEventArgs>()), Times.Once);
 
             Assert.AreEqual(1, this.ordersStorage.Orders.Count);
         }

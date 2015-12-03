@@ -5,7 +5,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Accounts;
-using IBApi.Connection;
 using IBApi.Contracts;
 using CodeContract = System.Diagnostics.Contracts.Contract;
 
@@ -14,9 +13,10 @@ namespace IBApi
     internal sealed class Client : IClient
     {
         private readonly IAccountsStorage accountsStorage;
+        private readonly CancellationTokenSource internalCancelationTokenSource;
         private readonly IApiObjectsFactory objectsFactory;
 
-        public Client(IApiObjectsFactory objectsFactory, IAccountsStorage accountsStorage)
+        public Client(IApiObjectsFactory objectsFactory, IAccountsStorage accountsStorage, CancellationTokenSource internalCancelationTokenSource)
         {
             CodeContract.Requires(objectsFactory != null);
             CodeContract.Requires(accountsStorage != null);
@@ -24,6 +24,7 @@ namespace IBApi
 
             this.objectsFactory = objectsFactory;
             this.accountsStorage = accountsStorage;
+            this.internalCancelationTokenSource = internalCancelationTokenSource;
         }
 
         public IReadOnlyCollection<IAccount> Accounts
@@ -33,7 +34,10 @@ namespace IBApi
 
         public Task<IReadOnlyCollection<Contract>> FindContracts(SearchRequest request, CancellationToken cancellationToken)
         {
-            return this.objectsFactory.CreateAsyncFindContractOperation(request, cancellationToken);
+            using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(this.internalCancelationTokenSource.Token, cancellationToken))
+            {
+                return this.objectsFactory.CreateAsyncFindContractOperation(request, cancellationTokenSource.Token);
+            }
         }
 
         public IDisposable SubscribeQuote(IQuoteObserver observer, Contract contract)

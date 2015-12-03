@@ -28,6 +28,11 @@ namespace Sample.Positions
             this.OnPositionChanged(position);
         }
 
+        private void OnPositionChanged(object sender, PositionChangedEventArgs e)
+        {
+            this.OnPositionChanged(e.Position);
+        }
+
         public string AccountName
         {
             get { return this.accountName; }
@@ -39,14 +44,14 @@ namespace Sample.Positions
             }
         }
 
-        private void OnPositionChanged(IPosition account)
+        private void OnPositionChanged(IPosition position)
         {
-            this.AveragePrice = account.AveragePrice;
-            this.MarketPrice = account.MarketPrice;
-            this.MarketValue = account.MarketValue;
-            this.Quantity = account.Quantity;
-            this.RealizedPL = account.RealizedPL;
-            this.OpenPL = account.OpenPL;
+            this.AveragePrice = position.AveragePrice;
+            this.MarketPrice = position.MarketPrice;
+            this.MarketValue = position.MarketValue;
+            this.Quantity = position.Quantity;
+            this.RealizedPL = position.RealizedPL;
+            this.OpenPL = position.OpenPL;
         }
 
         public double AveragePrice

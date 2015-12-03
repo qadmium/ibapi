@@ -233,7 +233,7 @@ namespace IBApi.Messages.Client
             return !string.IsNullOrEmpty(AlgoStrategy);
         }
 
-        private string AlgoId;
+        public string AlgoId;
         public bool? WhatIf;
         public IEnumerable<TagValue> OrderMiscOptions;
         

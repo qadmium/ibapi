@@ -1,4 +1,5 @@
-﻿using IBApi;
+﻿using System;
+using IBApi;
 using IBApi.Messages.Server;
 using IBApi.Positions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -35,7 +36,7 @@ namespace IBApiUnitTests
         {
             this.factoryMock.Setup(factory => factory.CreatePosition()).Returns(new Position());
 
-            var onNewPositionCallback = new Mock<PositionAddedEventHandler>();
+            var onNewPositionCallback = new Mock<EventHandler<PositionAddedEventArgs>>();
             this.positionStorage.PositionAdded += onNewPositionCallback.Object;
 
             this.connectionHelper.SendMessage(new PortfolioValueMessage
@@ -52,7 +53,7 @@ namespace IBApiUnitTests
                 AccountName = "testaccount"
             });
 
-            onNewPositionCallback.Verify(callback => callback(It.IsAny<IPosition>()), Times.Once);
+            onNewPositionCallback.Verify(callback => callback(this.positionStorage, It.IsAny<PositionAddedEventArgs>()), Times.Once);
 
             Assert.AreEqual(1, this.positionStorage.Positions.Count);
         }

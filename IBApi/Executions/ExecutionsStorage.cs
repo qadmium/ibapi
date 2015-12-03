@@ -26,7 +26,7 @@ namespace IBApi.Executions
             this.Subscribe();
         }
 
-        public event ExecutionAddedEventHandler ExecutionAdded = delegate { };
+        public event EventHandler<ExecutionAddedEventArgs> ExecutionAdded = delegate { };
 
         public IReadOnlyCollection<Execution> Executions
         {
@@ -49,7 +49,7 @@ namespace IBApi.Executions
         {
             var execution = Execution.FromMessage(message, this.accountName);
             this.executions.Add(execution);
-            this.ExecutionAdded(execution);
+            this.ExecutionAdded(this, new ExecutionAddedEventArgs{Execution = execution});
         }
     }
 }

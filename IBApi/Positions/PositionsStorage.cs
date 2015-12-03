@@ -26,9 +26,9 @@ namespace IBApi.Positions
             this.Subscribe(connection);
         }
 
-        public event PositionAddedEventHandler PositionAdded = delegate { };
+        public event EventHandler<PositionAddedEventArgs> PositionAdded = delegate { };
 
-        public ReadOnlyCollection<IPosition> Positions
+        public IReadOnlyCollection<IPosition> Positions
         {
             get
             {
@@ -65,7 +65,7 @@ namespace IBApi.Positions
             position = this.objectsFactory.CreatePosition();
             position.Update(message, this.accountName);
             this.positions[positionContract] = position;
-            this.PositionAdded(position);
+            this.PositionAdded(this, new PositionAddedEventArgs{Position = position});
         }
     }
 }

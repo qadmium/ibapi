@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IBApi.Executions
 {
-    public delegate void ExecutionAddedEventHandler(Execution execution);
+    public sealed class ExecutionAddedEventArgs : EventArgs
+    {
+        public Execution Execution { get; set; }
+    }
 
     public interface IExecutionsStorage
     {
-        event ExecutionAddedEventHandler ExecutionAdded;
+        event EventHandler<ExecutionAddedEventArgs> ExecutionAdded;
 
         IReadOnlyCollection<Execution> Executions { get; } 
     }

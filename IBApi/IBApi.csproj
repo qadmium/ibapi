@@ -138,12 +138,20 @@
     <Compile Include="Accounts\Account.cs" />
     <Compile Include="Accounts\AccountCurrenciesFields.cs" />
     <Compile Include="Accounts\AccountFields.cs" />
+    <Compile Include="Infrastructure\AccountProxy.cs" />
     <Compile Include="Accounts\AccountsStorage.cs" />
     <Compile Include="Accounts\IAccountInternal.cs" />
     <Compile Include="Accounts\IAccountsStorage.cs" />
     <Compile Include="Accounts\AccountValue.cs" />
     <Compile Include="Accounts\IAccountStorageContract.cs" />
+    <Compile Include="Infrastructure\Dispatcher.cs" />
+    <Compile Include="Infrastructure\ExecutionsStorageProxy.cs" />
     <Compile Include="IIdsDispenser.cs" />
+    <Compile Include="Infrastructure\OrdersProxy.cs" />
+    <Compile Include="Infrastructure\OrdersStorageProxy.cs" />
+    <Compile Include="Infrastructure\PositionsProxy.cs" />
+    <Compile Include="Infrastructure\PositionsStorageProxy.cs" />
+    <Compile Include="Infrastructure\ProxiesFactory.cs" />
     <Compile Include="Messages\Client\Origin.cs" />
     <Compile Include="Messages\Client\RequestNextIdMessage.cs" />
     <Compile Include="Messages\Client\RequestPlaceOrderMessage.cs" />
@@ -252,6 +260,7 @@
     <Compile Include="Serialization\SerializerExtensions\TypeSerializtionHelperExtensions.cs" />
     <Compile Include="Serialization\SerializerExtensions\SerializationExtensions.cs" />
     <Compile Include="Serialization\SerializerExtensions\DeserializationExtensions.cs" />
+    <Compile Include="SingleThreadSynchronizationContext.cs" />
     <Compile Include="SubscriptionsExtensions.cs" />
   </ItemGroup>
   <ItemGroup />

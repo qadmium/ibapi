@@ -6,6 +6,7 @@ using IBApi.Accounts;
 using IBApi.Connection;
 using IBApi.Contracts;
 using IBApi.Executions;
+using IBApi.Infrastructure;
 using IBApi.MarketDepth;
 using IBApi.Messages.Client;
 using IBApi.Operations;
@@ -19,14 +20,19 @@ namespace IBApi
     {
         private readonly IConnection connection;
         private readonly IIdsDispenser idsDispenser;
+        private readonly CancellationTokenSource internalCancellationTokenSource;
+        private readonly ProxiesFactory proxiesFactory;
 
-        public ApiObjectsFactory(IConnection connection, IIdsDispenser idsDispenser)
+        public ApiObjectsFactory(IConnection connection, IIdsDispenser idsDispenser, Dispatcher dispatcher,
+            CancellationTokenSource internalCancellationTokenSource)
         {
             System.Diagnostics.Contracts.Contract.Requires(connection != null);
             System.Diagnostics.Contracts.Contract.Requires(idsDispenser != null);
 
             this.connection = connection;
             this.idsDispenser = idsDispenser;
+            this.internalCancellationTokenSource = internalCancellationTokenSource;
+            this.proxiesFactory = new ProxiesFactory(dispatcher);
         }
 
         public Task<string[]> CreateReceiveManagedAccountsListOperation(CancellationToken cancellationToken)
@@ -43,7 +49,7 @@ namespace IBApi
 
         public IAccountsStorage CreateAccountStorage(List<IAccountInternal> accounts)
         {
-            return new AccountsStorage(accounts);
+            return new AccountsStorage(accounts, this.proxiesFactory);
         }
 
         public Task<IAccountInternal> CreateAccountOperation(string account, CancellationToken cancellationToken)
@@ -56,7 +62,7 @@ namespace IBApi
             AccountCurrenciesFields accountCurrenciesFields)
         {
             return new Account(accountName, this.connection, this, executionStorage, positionsStorage, ordersStorage,
-                this.idsDispenser,
+                this.idsDispenser, this.internalCancellationTokenSource,
                 accountCurrenciesFields);
         }
 
@@ -67,7 +73,7 @@ namespace IBApi
 
         public IClient CreateClient(IAccountsStorage accountsStorage)
         {
-            return new Client(this, accountsStorage);
+            return new Client(this, accountsStorage, this.internalCancellationTokenSource);
         }
 
         public Task<IReadOnlyCollection<Contract>> CreateAsyncFindContractOperation(SearchRequest searchRequest,
@@ -116,14 +122,16 @@ namespace IBApi
 
         public Order CreateOrder(int orderId, string account)
         {
-            return new Order(orderId, account, this.connection, this);
+            return new Order(orderId, account, this.connection, this, this.internalCancellationTokenSource);
         }
 
         public Task<int> CreatePlaceOrderOperation(RequestPlaceOrderMessage requestPlaceOrderMessage,
             IOrdersStorageInternal ordersStorage,
             CancellationToken cancellationToken)
         {
-            return new PlaceOrderOperation(requestPlaceOrderMessage, this.connection, ordersStorage, cancellationToken).Result;
+            return
+                new PlaceOrderOperation(requestPlaceOrderMessage, this.connection, ordersStorage, cancellationToken)
+                    .Result;
         }
 
         public Task CreateWaitForOrderFillOperation(IOrder order, CancellationToken cancellationToken)
@@ -133,6 +141,7 @@ namespace IBApi
 
         public void Dispose()
         {
+            this.internalCancellationTokenSource.Cancel();
             this.idsDispenser.Dispose();
             this.connection.Dispose();
         }

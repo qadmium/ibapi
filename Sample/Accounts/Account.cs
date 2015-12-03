@@ -61,6 +61,11 @@ namespace Sample.Accounts
             }
         }
 
+        private void OnAccountChanged(object sender, AccountChangedEventArgs e)
+        {
+            this.OnAccountChanged(e.Account);
+        }
+
         private void OnAccountChanged(IAccount account)
         {
             this.TotalCashBalance = account.AccountFields.TotalCashBalance;

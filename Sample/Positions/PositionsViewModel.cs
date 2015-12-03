@@ -17,14 +17,14 @@ namespace Sample.Positions
             this.DisplayName = "Positions";
             this.positions = new BindableCollection<Position>();
 
-            foreach (var position in client.Accounts.SelectMany(accounts => accounts.PositionStorage.Positions))
+            foreach (var position in client.Accounts.SelectMany(accounts => accounts.PositionsStorage.Positions))
             {
                 this.positions.Add(new Position(position));
             }
 
             foreach (var account in client.Accounts)
             {
-                account.PositionStorage.PositionAdded += position => this.positions.Add(new Position(position));
+                account.PositionsStorage.PositionAdded += (sender, eventArgs) => this.positions.Add(new Position(eventArgs.Position));
             }
         }
 

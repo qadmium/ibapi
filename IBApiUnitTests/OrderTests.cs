@@ -1,4 +1,6 @@
-﻿using IBApi;
+﻿using System;
+using System.Threading;
+using IBApi;
 using IBApi.Messages.Server;
 using IBApi.Orders;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -10,15 +12,16 @@ namespace IBApiUnitTests
     public class OrderTests
     {
         private ConnectionHelper connectionHelper;
-        private Order order;
         private Mock<IApiObjectsFactory> factoryMock;
+        private Order order;
 
         [TestInitialize]
         public void Init()
         {
             this.connectionHelper = new ConnectionHelper();
             this.factoryMock = new Mock<IApiObjectsFactory>();
-            this.order = new Order(1, "testaccount", this.connectionHelper.Connection(), this.factoryMock.Object);
+            this.order = new Order(1, "testaccount", this.connectionHelper.Connection(), this.factoryMock.Object,
+                new CancellationTokenSource());
         }
 
         [TestCleanup]
@@ -31,7 +34,7 @@ namespace IBApiUnitTests
         [TestMethod]
         public void EnsureThatOrderRaisesChangeEventOnOpenOrderMessage()
         {
-            var callbackMock = new Mock<OrderChangedEventHandler>();
+            var callbackMock = new Mock<EventHandler<OrderChangedEventArgs>>();
             this.order.OrderChanged += callbackMock.Object;
 
             this.order.Update(new OpenOrderMessage
@@ -42,13 +45,13 @@ namespace IBApiUnitTests
                 OrderType = "MKT"
             });
 
-            callbackMock.Verify(callback => callback(this.order), Times.Once);
+            callbackMock.Verify(callback => callback(this.order, It.IsAny<OrderChangedEventArgs>()), Times.Once);
         }
 
         [TestMethod]
         public void EnsureThatOrderRaisesChangeEventOnOrderStatusMessage()
         {
-            var callbackMock = new Mock<OrderChangedEventHandler>();
+            var callbackMock = new Mock<EventHandler<OrderChangedEventArgs>>();
             this.order.OrderChanged += callbackMock.Object;
 
             this.connectionHelper.SendMessage(new OrderStatusMessage
@@ -56,7 +59,7 @@ namespace IBApiUnitTests
                 OrderId = 1
             });
 
-            callbackMock.Verify(callback => callback(this.order), Times.Once);
+            callbackMock.Verify(callback => callback(this.order, It.IsAny<OrderChangedEventArgs>()), Times.Once);
         }
     }
 }

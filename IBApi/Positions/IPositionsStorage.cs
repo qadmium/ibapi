@@ -1,13 +1,16 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.Generic;
 
 namespace IBApi.Positions
 {
-    public delegate void PositionAddedEventHandler(IPosition position);
-
+    public class PositionAddedEventArgs : EventArgs
+    {
+        public IPosition Position { get; set; }
+    }
     public interface IPositionsStorage
     {
-        event PositionAddedEventHandler PositionAdded;
+        event EventHandler<PositionAddedEventArgs> PositionAdded;
 
-        ReadOnlyCollection<IPosition> Positions { get; }
+        IReadOnlyCollection<IPosition> Positions { get; }
     }
 }

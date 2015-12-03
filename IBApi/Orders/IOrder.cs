@@ -1,14 +1,18 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Contracts;
 
 namespace IBApi.Orders
 {
-    public delegate void OrderChangedEventHandler(IOrder order);
+    public class OrderChangedEventArgs : EventArgs
+    {
+        public IOrder Order { get; set; }
+    }
 
     public interface IOrder
     {
-        event OrderChangedEventHandler OrderChanged;
+        event EventHandler<OrderChangedEventArgs> OrderChanged;
 
         string Account { get; }
         int Id { get; }

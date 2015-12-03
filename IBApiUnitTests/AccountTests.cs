@@ -1,4 +1,5 @@
-﻿using IBApi;
+﻿using System.Threading;
+using IBApi;
 using IBApi.Accounts;
 using IBApi.Executions;
 using IBApi.Messages.Server;
@@ -16,10 +17,10 @@ namespace IBApiUnitTests
 
         private ConnectionHelper connectionHelper;
         private Mock<IExecutionStorageInternal> executionsStorageMock;
+        private Mock<IApiObjectsFactory> factoryMock;
+        private Mock<IIdsDispenser> ordersIdsDispenserMock;
         private Mock<IOrdersStorageInternal> ordersStorageMock;
         private Mock<IPositionsStorageInternal> positionsStorageMock;
-        private Mock<IIdsDispenser> ordersIdsDispenserMock;
-        private Mock<IApiObjectsFactory> factoryMock;
 
         [TestInitialize]
         public void Init()
@@ -35,6 +36,7 @@ namespace IBApiUnitTests
             this.account = new Account("testaccount", this.connectionHelper.Connection(), this.factoryMock.Object,
                 this.executionsStorageMock.Object
                 , this.positionsStorageMock.Object, this.ordersStorageMock.Object, this.ordersIdsDispenserMock.Object,
+                new CancellationTokenSource(),
                 new AccountCurrenciesFields());
         }
 
