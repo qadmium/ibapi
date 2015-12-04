@@ -3,6 +3,7 @@
     public enum ErrorCode
     {
         UnknownError = 0,
+        OrderWarning = 399,
         MarketFarmConnected = 2104,
         DataFarmConnected = 2106,
         DataInactiveButAvailable = 2107

@@ -39,6 +39,11 @@ namespace IBApi.Operations
 
         private void OnError(Error error)
         {
+            if (error.Code == ErrorCode.OrderWarning)
+            {
+                return;
+            }
+
             this.taskCompletionSource.SetException(new IbException(error.Message, error.Code));
         }
 
