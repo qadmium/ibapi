@@ -23,7 +23,7 @@ namespace IBApi.Infrastructure
 
         private void OnPositionChanged(object sender, PositionChangedEventArgs positionChangedEventArgs)
         {
-            this.dispatcher.RaiseEvent(this.positionChangedEvent, this, new PositionAddedEventArgs{Position = this});
+            this.dispatcher.RaiseEvent(this.positionChangedEvent, this, new PositionChangedEventArgs { Position = this });
         }
 
         public event EventHandler<PositionChangedEventArgs> PositionChanged
@@ -69,7 +69,7 @@ namespace IBApi.Infrastructure
 
         public double OpenPL
         {
-            get { return this.dispatcher.Dispatch(() => this.position.OpenPL); } 
+            get { return this.dispatcher.Dispatch(() => this.position.OpenPL); }
         }
     }
 }
