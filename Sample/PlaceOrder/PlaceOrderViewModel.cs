@@ -122,11 +122,23 @@ namespace Sample.PlaceOrder
         {
             this.cancellationTokenSource = new CancellationTokenSource();
 
+            var searchRequest = new SearchRequest{NumberOfResults = 1};
+
+            if (this.Ticker.Length == 7 && this.Ticker[3] == '.')
+            {
+                searchRequest.LocalSymbol = this.Ticker;
+                searchRequest.SecurityType = SecurityType.CASH;
+            }
+            else
+            {
+                searchRequest.Symbol = this.Ticker;
+            }
+
             Contract contract;
 
             try
             {
-                contract = (await this.client.FindContracts(new SearchRequest {Symbol = this.Ticker, NumberOfResults = 1},
+                contract = (await this.client.FindContracts(searchRequest,
                     this.cancellationTokenSource.Token)).First();
             }
             catch (IbException)
