@@ -41,8 +41,7 @@ namespace IBApi.Operations
                 this.taskCompletionSource.SetCanceled();
             });
             this.account = account;
-
-            this.Subscribe(dispenser, cancellationToken);
+            this.Subscribe(dispenser);
         }
 
         public Task<IExecutionStorageInternal> Result
@@ -50,9 +49,9 @@ namespace IBApi.Operations
             get { return this.taskCompletionSource.Task; }
         }
 
-        private async void Subscribe(IIdsDispenser dispenser, CancellationToken token)
+        private void Subscribe(IIdsDispenser dispenser)
         {
-            var requestId = await dispenser.NextId(token);
+            var requestId = dispenser.NextRequestId();
 
             this.subscriptions = new List<IDisposable>
             {

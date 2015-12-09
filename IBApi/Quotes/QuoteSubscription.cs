@@ -45,9 +45,9 @@ namespace IBApi.Quotes
             this.SendCancelRequest();
         }
 
-        private async void Subscribe(Contract contract, IIdsDispenser dispenser)
+        private void Subscribe(Contract contract, IIdsDispenser dispenser)
         {
-            this.requestId = await dispenser.NextId(CancellationToken.None);
+            this.requestId = dispenser.NextRequestId();
 
             this.subscriptions = new List<IDisposable>
             {

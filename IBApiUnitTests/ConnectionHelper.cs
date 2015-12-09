@@ -61,8 +61,11 @@ namespace IBApiUnitTests
 
         public ConnectionHelper()
         {
-            this.dispenser.Setup(dispenser => dispenser.NextId(It.IsAny<CancellationToken>()))
-                .Returns(Task.FromResult(RequestId));
+            this.dispenser.Setup(dispenser => dispenser.NextOrderId())
+                .Returns(RequestId);
+
+            this.dispenser.Setup(dispenser => dispenser.NextRequestId())
+                .Returns(RequestId);
         }
 
         public void Dispose()

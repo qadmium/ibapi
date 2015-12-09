@@ -69,7 +69,7 @@ namespace IBApi.Connection
                     var message = await this.serializer.ReadServerMessage(this.stream, token) as IServerMessage;
                     this.DispatchMessage(message);
 
-                    Trace.TraceInformation("Received message {0}", message);
+                    Trace.TraceInformation("Received message {0}: {1}", message.GetType(), message);
                 }
             }
             catch (IOException e)

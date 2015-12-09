@@ -27,14 +27,19 @@ namespace IBApi.Operations
 
             cancellationToken.Register(() =>
             {
-                this.ordersStorage.OrderAdded -= this.OnOrderAdded;
-                this.subscription.Dispose();
+                this.Unsubscribe();
                 this.taskCompletionSource.SetCanceled();
             });
 
             this.subscription = connection.SubscribeForErrors(error => error.RequestId == this.orderId, this.OnError);
 
             connection.SendMessage(requestPlaceOrderMessage);
+        }
+
+        private void Unsubscribe()
+        {
+            this.ordersStorage.OrderAdded -= this.OnOrderAdded;
+            this.subscription.Dispose();
         }
 
         private void OnError(Error error)
@@ -44,6 +49,7 @@ namespace IBApi.Operations
                 return;
             }
 
+            this.Unsubscribe();
             this.taskCompletionSource.SetException(new IbException(error.Message, error.Code));
         }
 
@@ -54,7 +60,7 @@ namespace IBApi.Operations
                 return;
             }
 
-            this.ordersStorage.OrderAdded -= this.OnOrderAdded;
+            this.Unsubscribe();
             this.taskCompletionSource.SetResult(this.orderId);
         }
 

@@ -35,7 +35,7 @@ namespace IBApi.Contracts
             });
 
             this.resultsToRetireve = request.NumberOfResults ?? int.MaxValue;
-            this.Subscribe(connection, dispenser, request, cancellationToken);
+            this.Subscribe(connection, dispenser, request);
         }
 
         public Task<IReadOnlyCollection<Contract>> Task
@@ -43,13 +43,12 @@ namespace IBApi.Contracts
             get { return this.taskCompletionSource.Task; }
         }
 
-        private async void Subscribe(IConnection connection, IIdsDispenser dispenser, SearchRequest request,
-            CancellationToken cancellationToken)
+        private void Subscribe(IConnection connection, IIdsDispenser dispenser, SearchRequest request)
         {
             CodeContract.Requires(connection != null);
             CodeContract.Requires(dispenser != null);
 
-            var requestId = await dispenser.NextId(cancellationToken);
+            var requestId = dispenser.NextRequestId();
             
             this.subscriptions = new List<IDisposable>
             {

@@ -94,7 +94,7 @@ namespace IBApi.Accounts
         {
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(this.internalCancelationTokenSource.Token, cancellationToken))
             {
-                var orderId = await this.idsDispenser.NextId(cancellationTokenSource.Token);
+                var orderId = this.idsDispenser.NextOrderId();
 
                 var request = RequestPlaceOrderMessage.Default;
                 request.Account = this.AccountId;

@@ -13,5 +13,10 @@ namespace IBApi.Messages.Server
         public ErrorCode ErrorCode;
 
         public string Message;
+
+        public override string ToString()
+        {
+            return string.Format("RequestId: {0}. ErrorCode: {1}. {2}", this.RequestId, this.ErrorCode, this.Message);
+        }
     }
 }

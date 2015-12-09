@@ -62,9 +62,9 @@ namespace IBApi.MarketDepth
             this.connection.SendMessage(cancelRequest);
         }
 
-        private async void Subscribe(IIdsDispenser dispenser, Contract contract)
+        private void Subscribe(IIdsDispenser dispenser, Contract contract)
         {
-            this.requestId = await dispenser.NextId(CancellationToken.None);
+            this.requestId = dispenser.NextRequestId();
 
             this.subscriptions = new List<IDisposable>
             {

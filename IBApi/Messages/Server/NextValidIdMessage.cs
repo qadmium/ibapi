@@ -7,6 +7,11 @@ namespace IBApi.Messages.Server
     struct NextValidIdMessage : IServerMessage
     {
         public int Version;
-        public int OrderId;
+        public int ValidId;
+
+        public override string ToString()
+        {
+            return "ValidId:" + this.ValidId;
+        }
     }
 }
