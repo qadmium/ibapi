@@ -17,6 +17,7 @@ namespace Sample.Connection
         private string hostname;
         private string port;
         private string clientId;
+        private string reason;
 
         public System.Action<IClient> OnConnected { get; set; }
 
@@ -84,6 +85,17 @@ namespace Sample.Connection
             }
         }
 
+        public string Reason
+        {
+            get { return reason; }
+            set
+            {
+                if (value == reason) return;
+                reason = value;
+                NotifyOfPropertyChange(() => Reason);
+            }
+        }
+
         public bool InputControlsEnabled
         {
             get { return this.inputControlsEnabled; }
@@ -137,9 +149,10 @@ namespace Sample.Connection
                     Port = int.Parse(this.Port)
                 }, this.cancellationTokenSource.Token);
             }
-            catch (SocketException)
+            catch (SocketException e)
             {
                 this.Connecting = false;
+                Reason = e.Message;
                 return;
             }
 
