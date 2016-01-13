@@ -11,5 +11,7 @@ namespace IBApi.Connection
 
         IDisposable Subscribe<T>(Func<T, bool> condition, Action<T> callback);
         IDisposable Subscribe<T>(Action<T> callback);
+
+        event EventHandler<DisconnectedEventArgs> OnDisconnect;
     }
 }

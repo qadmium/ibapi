@@ -42,5 +42,7 @@ namespace IBApi
             CodeContract.Ensures(CodeContract.Result<IDisposable>() != null);
             return null;
         }
+
+        public abstract event EventHandler<DisconnectedEventArgs> ConnectionDisconnected;
     }
 }

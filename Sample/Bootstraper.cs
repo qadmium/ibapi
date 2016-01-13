@@ -9,6 +9,7 @@ using Caliburn.Micro;
 using Caliburn.Micro.Autofac;
 using IBApi;
 using Sample.Connection;
+using Sample.MessageBox;
 using Sample.Shell;
 
 namespace Sample
@@ -32,6 +33,7 @@ namespace Sample
         {
             base.ConfigureContainer(builder);
             builder.RegisterInstance(new WindowManager()).As<IWindowManager>();
+            builder.RegisterInstance(new MessageBoxViewModelFactory());
         }
 
         protected override void OnStartup(object sender, StartupEventArgs e)

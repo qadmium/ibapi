@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Accounts;
@@ -21,6 +20,7 @@ namespace IBApi
     {
         private readonly IConnection connection;
         private readonly IIdsDispenser idsDispenser;
+        private readonly Dispatcher dispatcher;
         private readonly CancellationTokenSource internalCancellationTokenSource;
         private readonly ProxiesFactory proxiesFactory;
 
@@ -29,9 +29,11 @@ namespace IBApi
         {
             System.Diagnostics.Contracts.Contract.Requires(connection != null);
             System.Diagnostics.Contracts.Contract.Requires(idsDispenser != null);
+            System.Diagnostics.Contracts.Contract.Requires(dispatcher != null);
 
             this.connection = connection;
             this.idsDispenser = idsDispenser;
+            this.dispatcher = dispatcher;
             this.internalCancellationTokenSource = internalCancellationTokenSource;
             this.proxiesFactory = new ProxiesFactory(dispatcher);
         }
@@ -74,7 +76,7 @@ namespace IBApi
 
         public IClient CreateClient(IAccountsStorage accountsStorage)
         {
-            return new Client(this, accountsStorage, this.internalCancellationTokenSource);
+            return new Client(this, accountsStorage, this.dispatcher, this.connection, this.internalCancellationTokenSource);
         }
 
         public Task<IReadOnlyCollection<Contract>> CreateAsyncFindContractOperation(SearchRequest searchRequest,

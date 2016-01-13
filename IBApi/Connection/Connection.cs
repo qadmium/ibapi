@@ -52,6 +52,8 @@ namespace IBApi.Connection
             return this.Subscribe(message => true, callback);
         }
 
+        public event EventHandler<DisconnectedEventArgs> OnDisconnect = delegate {};
+
         public void Dispose()
         {
             this.cts.Cancel();
@@ -74,11 +76,12 @@ namespace IBApi.Connection
             }
             catch (IOException e)
             {
-                RethrowIfUnexpectedException(e);
+                Trace.TraceError("Unexpected exception: {0}", (Exception) e);
+                this.OnDisconnect(this, new DisconnectedEventArgs{Reason = e.Message});
             }
             catch (ObjectDisposedException e)
             {
-                RethrowIfUnexpectedException(e);
+                this.OnDisconnect(this, new DisconnectedEventArgs { Reason = e.Message });
             }
             catch
             {
@@ -95,12 +98,6 @@ namespace IBApi.Connection
             {
                 subscription.OnMessage(message);
             }
-        }
-
-        private static void RethrowIfUnexpectedException(Exception e)
-        {
-            Trace.TraceError("Unexpected exception: {0}", e);
-            throw e;
         }
 
         [ContractInvariantMethod]

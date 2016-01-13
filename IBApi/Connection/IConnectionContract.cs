@@ -31,5 +31,7 @@ namespace IBApi.Connection
             Contract.Requires(callback != null);
             return null;
         }
+
+        public abstract event EventHandler<DisconnectedEventArgs> OnDisconnect;
     }
 }

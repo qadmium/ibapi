@@ -21,7 +21,7 @@ namespace IBApi
 
         private static Dispatcher SetupDispatcher(CancellationTokenSource apiCancellationTokenSource)
         {
-            var ctx = new SingleThreadSynchronizationContext();
+            var ctx = new SingleThreadSynchronizationContext(apiCancellationTokenSource.Token);
             var dispatcherThread = new Thread(() => { ctx.Run(); });
             dispatcherThread.Start();
 

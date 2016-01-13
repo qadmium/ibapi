@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Threading;
-using System.Threading.Tasks;
 using IBApi;
 using IBApi.Connection;
 using IBApi.Messages.Client;
@@ -35,8 +33,10 @@ namespace IBApiUnitTests
 
         public IDisposable Subscribe<T>(Action<T> callback)
         {
-            return Subscribe((T message) => true, callback);
+            return this.Subscribe((T message) => true, callback);
         }
+
+        public event EventHandler<DisconnectedEventArgs> OnDisconnect = delegate {};
 
         public void SendMessageToClient(IServerMessage message)
         {

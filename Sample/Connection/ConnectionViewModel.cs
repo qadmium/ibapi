@@ -19,7 +19,7 @@ namespace Sample.Connection
         private string clientId;
         private string reason;
 
-        public System.Action<IClient> OnConnected { get; set; }
+        public Action<IClient> OnConnected { get; set; }
 
         public ConnectionViewModel()
         {
@@ -27,7 +27,7 @@ namespace Sample.Connection
             this.Connecting = false;
             this.ClientId = "0";
             this.Hostname = "localhost";
-            this.Port = "7496";
+            this.Port = "7497";
         }
 
         public string Status
@@ -87,12 +87,12 @@ namespace Sample.Connection
 
         public string Reason
         {
-            get { return reason; }
+            get { return this.reason; }
             set
             {
-                if (value == reason) return;
-                reason = value;
-                NotifyOfPropertyChange(() => Reason);
+                if (value == this.reason) return;
+                this.reason = value;
+                this.NotifyOfPropertyChange(() => this.Reason);
             }
         }
 
@@ -152,7 +152,7 @@ namespace Sample.Connection
             catch (SocketException e)
             {
                 this.Connecting = false;
-                Reason = e.Message;
+                this.Reason = e.Message;
                 return;
             }
 
