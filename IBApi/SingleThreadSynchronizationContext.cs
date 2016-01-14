@@ -41,7 +41,9 @@ namespace IBApi
         public void Run()
         {
             foreach (var workItem in this.queue.GetConsumingEnumerable())
+            {
                 workItem.Key(workItem.Value);
+            }
         }
 
         public void Complete()

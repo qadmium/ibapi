@@ -49,7 +49,12 @@ namespace IBApi.Infrastructure
             }
 
             var handlers = this.events.GetOrAdd(@event, o => new ConcurrentDictionary<Delegate, TaskScheduler>());
-            handlers.AddOrUpdate(eventHandler, TaskScheduler.FromCurrentSynchronizationContext(), (h, s) => s);
+            handlers.AddOrUpdate(eventHandler, TaskSchedulerFromCurrentSynchronizationContext(), (h, s) => s);
+        }
+
+        private static TaskScheduler TaskSchedulerFromCurrentSynchronizationContext()
+        {
+            return SynchronizationContext.Current == null ? null : TaskScheduler.FromCurrentSynchronizationContext();
         }
 
         public void RemoveHandler<T>(object @event, EventHandler<T> eventHandler) where T : EventArgs
