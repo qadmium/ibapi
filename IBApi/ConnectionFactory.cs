@@ -64,7 +64,7 @@ namespace IBApi
         {
             Trace.TraceInformation("Opening socket");
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            await Task.Factory.FromAsync(socket.BeginConnect, socket.EndConnect, hostName, port, null);
+            await Task.Factory.FromAsync(socket.BeginConnect(hostName, port, null, null), socket.EndConnect);
             Trace.TraceInformation("Socket opened");
 
             return new NetworkStream(socket, true);
