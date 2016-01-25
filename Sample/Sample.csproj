@@ -67,6 +67,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Accounts\Account.cs" />
+    <Compile Include="Executions\ExecutionsView.xaml.cs">
+      <DependentUpon>ExecutionsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Executions\ExecutionsViewModel.cs" />
+    <Compile Include="Executions\ExecutionView.cs" />
     <Compile Include="MessageBox\MessageBoxView.xaml.cs">
       <DependentUpon>MessageBoxView.xaml</DependentUpon>
     </Compile>
@@ -88,6 +93,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Connection\ConnectionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Executions\ExecutionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
