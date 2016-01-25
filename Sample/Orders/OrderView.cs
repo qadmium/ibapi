@@ -14,6 +14,7 @@ namespace Sample.Orders
         private double? limitPrice;
         private double? stopPrice;
         private OrderState state;
+        private string exchange;
 
         public OrderView(IOrder order)
         {
@@ -87,6 +88,7 @@ namespace Sample.Orders
             this.LimitPrice = order.LimitPrice;
             this.StopPrice = order.StopPrice;
             this.State = order.State;
+            this.Exchange = order.Route;
         }
 
         public OrderState State
@@ -119,6 +121,17 @@ namespace Sample.Orders
                 if (value.Equals(this.limitPrice)) return;
                 this.limitPrice = value;
                 this.NotifyOfPropertyChange(() => this.LimitPrice);
+            }
+        }
+
+        public string Exchange
+        {
+            get { return this.exchange; }
+            set
+            {
+                if (value == this.exchange) return;
+                this.exchange = value;
+                this.NotifyOfPropertyChange(() => this.Exchange);
             }
         }
     }
