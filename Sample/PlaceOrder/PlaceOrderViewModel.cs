@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
 using Caliburn.Micro;
@@ -76,6 +77,8 @@ namespace Sample.PlaceOrder
             }
         }
 
+        [Required]
+        [StringLength(int.MaxValue, MinimumLength = 1)]
         public string Ticker
         {
             get { return this.ticker; }
