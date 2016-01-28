@@ -6,6 +6,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-          <DataGrid Name="Positions"></DataGrid>  
+        <DataGrid Name="Positions" IsReadOnly="True"></DataGrid>  
     </Grid>
 </UserControl>
