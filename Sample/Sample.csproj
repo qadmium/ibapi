@@ -51,7 +51,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Caliburn.Micro.2.0.2\lib\net45\Caliburn.Micro.Platform.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml">
@@ -88,6 +90,11 @@
     <Compile Include="PlaceOrder\PlaceOrderViewModel.cs" />
     <Compile Include="Positions\Position.cs" />
     <Compile Include="Shell\ShellViewModel.cs" />
+    <Compile Include="SymbolSearch\SymbolSearchView.xaml.cs">
+      <DependentUpon>SymbolSearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SymbolSearch\SymbolSearchViewModel.cs" />
+    <Compile Include="SymbolSearch\SymbolView.cs" />
     <Page Include="Accounts\AccountsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -133,6 +140,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Positions\PositionsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SymbolSearch\SymbolSearchView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

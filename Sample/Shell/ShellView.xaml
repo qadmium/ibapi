@@ -9,8 +9,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Button Name="PlaceOrder" Margin="5">Place order
-            </Button>
+            <Button Name="PlaceOrder" Margin="5">Place order</Button>
+            <Button Name="SymbolSearch" Margin="0,5,5,5">Symbol search</Button>
         </StackPanel>
         <TabControl Name="Items" Grid.Row="1"></TabControl>
         <StatusBar Grid.Row="2">

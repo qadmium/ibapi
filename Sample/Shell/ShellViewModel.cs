@@ -6,6 +6,7 @@ using Sample.MessageBox;
 using Sample.Orders;
 using Sample.PlaceOrder;
 using Sample.Positions;
+using Sample.SymbolSearch;
 
 namespace Sample.Shell
 {
@@ -14,15 +15,18 @@ namespace Sample.Shell
         private readonly IClient client;
         private readonly MessageBoxViewModelFactory messageBoxFactory;
         private readonly PlaceOrderViewModel placeOrderView;
+        private readonly SymbolSearchViewModel symbolSearch;
         private readonly IWindowManager windowManager;
 
         public ShellViewModel(IWindowManager windowManager, AccountsViewModel accounts, PositionsViewModel positions,
             OrdersViewModel orders, ExecutionsViewModel executions, IClient client, PlaceOrderViewModel placeOrder,
+            SymbolSearchViewModel symbolSearch,
             MessageBoxViewModelFactory messageBoxFactory)
         {
             this.windowManager = windowManager;
             this.client = client;
             this.placeOrderView = placeOrder;
+            this.symbolSearch = symbolSearch;
             this.messageBoxFactory = messageBoxFactory;
             this.Items.Add(accounts);
             this.Items.Add(positions);
@@ -41,6 +45,11 @@ namespace Sample.Shell
         public void PlaceOrder()
         {
             this.windowManager.ShowDialog(this.placeOrderView);
+        }
+
+        public void SymbolSearch()
+        {
+            this.windowManager.ShowDialog(this.symbolSearch);
         }
 
         protected override void OnDeactivate(bool close)
