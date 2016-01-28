@@ -12,6 +12,13 @@ namespace IBApi.Operations
         public WaitForOrderFillOperation(IOrder order, CancellationToken cancellationToken)
         {
             this.order = order;
+
+            if (this.OrderFilled())
+            {
+                this.taskCompletionSource.SetResult(true);
+                return;
+            }
+
             order.OrderChanged += this.OnOrderChanged;
 
             cancellationToken.Register(() =>
@@ -28,11 +35,16 @@ namespace IBApi.Operations
 
         private void OnOrderChanged(object sender, OrderChangedEventArgs eventArgs)
         {
-            if (this.order.FilledQuantity == this.order.Quantity)
+            if (this.OrderFilled())
             {
                 this.order.OrderChanged -= this.OnOrderChanged;
                 this.taskCompletionSource.SetResult(true);
             }
+        }
+
+        private bool OrderFilled()
+        {
+            return this.order.FilledQuantity == this.order.Quantity;
         }
     }
 }
