@@ -7,10 +7,12 @@
         OrderRejected = 201,
         OrderCanceled = 202,
         OrderWarning = 399,
+        NewAccountDataRequested = 2100,
         MarketFarmConnected = 2104,
         DataFarmConnected = 2106,
         DataInactiveButAvailable = 2107,
-        ClosingOrderQuantity = 2137
+        ClosingOrderQuantity = 2137,
+        CrossCurrencyComboError = 10000
     }
 
     static class ErrorCodeExtensions
@@ -32,6 +34,11 @@
         public static bool IsGeneralError(this ErrorCode ec)
         {
             return !ec.ConnectionStatusRelated();
+        }
+
+        public static bool IsWarning(this ErrorCode ec)
+        {
+            return ec >= ErrorCode.NewAccountDataRequested && ec < ErrorCode.CrossCurrencyComboError;
         }
     }
 }
