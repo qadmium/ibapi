@@ -9,7 +9,8 @@
         OrderWarning = 399,
         MarketFarmConnected = 2104,
         DataFarmConnected = 2106,
-        DataInactiveButAvailable = 2107
+        DataInactiveButAvailable = 2107,
+        ClosingOrderQuantity = 2137
     }
 
     static class ErrorCodeExtensions

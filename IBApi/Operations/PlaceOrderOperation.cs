@@ -44,7 +44,8 @@ namespace IBApi.Operations
 
         private void OnError(Error error)
         {
-            if (error.Code == ErrorCode.OrderWarning)
+            if (error.Code == ErrorCode.OrderWarning
+                || error.Code == ErrorCode.ClosingOrderQuantity)
             {
                 return;
             }
