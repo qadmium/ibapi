@@ -134,12 +134,13 @@ namespace Sample.Connection
             if (this.Connecting)
             {
                 this.cancellationTokenSource.Cancel();
-                this.cancellationTokenSource = new CancellationTokenSource();
                 this.Connecting = false;
                 return;
             }
 
+            this.cancellationTokenSource = new CancellationTokenSource(TimeSpan.FromSeconds(10));
             this.Connecting = true;
+            this.Reason = string.Empty;
 
             try
             {
@@ -149,6 +150,8 @@ namespace Sample.Connection
                     HostName = this.Hostname,
                     Port = int.Parse(this.Port)
                 }, this.cancellationTokenSource.Token);
+
+                this.cancellationTokenSource.Dispose();
             }
             catch (SocketException e)
             {
