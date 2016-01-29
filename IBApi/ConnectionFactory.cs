@@ -42,22 +42,29 @@ namespace IBApi
 
         private static async Task<IClient> ConnectInternal(ConnectionParams connectionParams, CancellationToken cancellationToken, Dispatcher dispatcher, CancellationTokenSource apiCancellationTokenSource)
         {
-            var stream = await SetupConnection(connectionParams.HostName, connectionParams.Port);
-            var fieldsStream = new FieldsStream(stream);
-            var serializer = new IBSerializer();
-            await Handshake(connectionParams.ClientId, fieldsStream, serializer, cancellationToken);
+            try
+            {
+                var stream = await SetupConnection(connectionParams.HostName, connectionParams.Port);
+                var fieldsStream = new FieldsStream(stream);
+                var serializer = new IBSerializer();
+                await Handshake(connectionParams.ClientId, fieldsStream, serializer, cancellationToken);
 
-            var connection = new Connection.Connection(fieldsStream, serializer);
-            var factory = new ApiObjectsFactory(connection, new IdsDispenser(connection), dispatcher, apiCancellationTokenSource);
-            var waitForMarketConnected = factory.CreateWaitForMarketConnectedOperation(cancellationToken);
-            var waitForAccountsList = factory.CreateReceiveManagedAccountsListOperation(cancellationToken);
+                var connection = new Connection.Connection(fieldsStream, serializer);
+                var factory = new ApiObjectsFactory(connection, new IdsDispenser(connection), dispatcher, apiCancellationTokenSource);
+                var waitForMarketConnected = factory.CreateWaitForMarketConnectedOperation(cancellationToken);
+                var waitForAccountsList = factory.CreateReceiveManagedAccountsListOperation(cancellationToken);
 
-            connection.ReadMessagesAndDispatch();
+                connection.ReadMessagesAndDispatch();
 
-            await waitForMarketConnected;
-            var accountStorage = factory.CreateAccountStorageOperation(await waitForAccountsList, cancellationToken);
-
-            return factory.CreateClient(await accountStorage);
+                await waitForMarketConnected;
+                var accountStorage = await factory.CreateAccountStorageOperation(await waitForAccountsList, cancellationToken);
+                return factory.CreateClient(accountStorage);
+            }
+            catch
+            {
+                apiCancellationTokenSource.Cancel();
+                throw;
+            }
         }
 
         private static async Task<NetworkStream> SetupConnection(string hostName, int port)
