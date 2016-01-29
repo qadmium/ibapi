@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 using IBApi;
 
@@ -150,6 +151,12 @@ namespace Sample.Connection
                 }, this.cancellationTokenSource.Token);
             }
             catch (SocketException e)
+            {
+                this.Connecting = false;
+                this.Reason = e.Message;
+                return;
+            }
+            catch (TaskCanceledException e)
             {
                 this.Connecting = false;
                 this.Reason = e.Message;
