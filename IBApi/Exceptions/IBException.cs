@@ -6,12 +6,12 @@ namespace IBApi.Exceptions
     [Serializable]
     public sealed class IbException : ApplicationException
     {
-        public IbException(string message, ErrorCode errorCode)
+        public IbException(string message, ErrorCode? errorCode)
             : base(message)
         {
-            ErrorCode = errorCode;
+            this.ErrorCode = errorCode;
         }
 
-        public ErrorCode ErrorCode { get; private set; }
+        public ErrorCode? ErrorCode { get; private set; }
     }
 }

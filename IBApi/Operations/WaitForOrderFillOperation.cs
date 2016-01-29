@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using IBApi.Exceptions;
 using IBApi.Orders;
 
 namespace IBApi.Operations
@@ -13,9 +14,9 @@ namespace IBApi.Operations
         {
             this.order = order;
 
-            if (this.OrderFilled())
+            if (this.OrderInFinalState())
             {
-                this.taskCompletionSource.SetResult(true);
+                this.SetResult();
                 return;
             }
 
@@ -28,6 +29,18 @@ namespace IBApi.Operations
             });
         }
 
+        private void SetResult()
+        {
+            if (this.order.State == OrderState.Cancelled
+                || this.order.State == OrderState.Rejected)
+            {
+                this.taskCompletionSource.SetException(new IbException(this.order.LastError, this.order.LastErrorCode));
+                return;
+            }
+
+            this.taskCompletionSource.SetResult(true);
+        }
+
         public Task Result
         {
             get { return this.taskCompletionSource.Task; }
@@ -35,16 +48,20 @@ namespace IBApi.Operations
 
         private void OnOrderChanged(object sender, OrderChangedEventArgs eventArgs)
         {
-            if (this.OrderFilled())
+            if (!this.OrderInFinalState())
             {
-                this.order.OrderChanged -= this.OnOrderChanged;
-                this.taskCompletionSource.SetResult(true);
+                return;
             }
+
+            this.order.OrderChanged -= this.OnOrderChanged;
+            this.SetResult();
         }
 
-        private bool OrderFilled()
+        private bool OrderInFinalState()
         {
-            return this.order.FilledQuantity == this.order.Quantity;
+            return this.order.State == OrderState.Filled
+                   || this.order.State == OrderState.Cancelled
+                   || this.order.State == OrderState.Rejected;
         }
     }
 }

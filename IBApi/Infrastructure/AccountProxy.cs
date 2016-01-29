@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Accounts;
-using IBApi.Contracts;
 using IBApi.Executions;
 using IBApi.Orders;
 using IBApi.Positions;
@@ -82,11 +81,10 @@ namespace IBApi.Infrastructure
             get { return this.positionsStorage; }
         }
 
-        public Task<int> PlaceMarketOrder(Contract contract, int quantity, OrderAction action,
-            CancellationToken cancellationToken)
+        public Task<int> PlaceOrder(OrderParams orderParams, CancellationToken cancellationToken)
         {
             return this.dispatcher.Dispatch(
-                    () => this.internalAccount.PlaceMarketOrder(contract, quantity, action, cancellationToken));
+                    () => this.internalAccount.PlaceOrder(orderParams, cancellationToken));
         }
     }
 }

@@ -90,7 +90,7 @@ namespace IBApi.Accounts
             get { return this.positionsesStorage; }
         }
 
-        public async Task<int> PlaceMarketOrder(Contract contract, int quantity, OrderAction action, CancellationToken cancellationToken)
+        public async Task<int> PlaceOrder(OrderParams orderParams, CancellationToken cancellationToken)
         {
             using (var cancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(this.internalCancelationTokenSource.Token, cancellationToken))
             {
@@ -98,23 +98,43 @@ namespace IBApi.Accounts
 
                 var request = RequestPlaceOrderMessage.Default;
                 request.Account = this.AccountId;
-                request.Action = action.ToStringAction();
-                request.TotalQuantity = quantity;
-                request.ContractId = contract.ContractId;
-                request.Symbol = contract.Symbol;
-                request.SecType = contract.SecurityType.ToString();
-                request.Expity = contract.Expiry;
-                request.Strike = contract.Strike;
-                request.Right = contract.RightString;
-                request.Multiplier = contract.AdditionalContractInfo.Multiplier;
-                request.Exchange = contract.AdditionalContractInfo.Exchange;
-                request.PrimaryExchange = contract.AdditionalContractInfo.PrimaryExchange;
-                request.Currency = contract.AdditionalContractInfo.Currency;
-                request.LocalSymbol = contract.LocalSymbol;
-                request.TradingClass = contract.AdditionalContractInfo.TradingClass;
-                request.OrderType = OrderType.Market.ToOrderString();
+                request.Action = orderParams.OrderAction.ToStringAction();
+                request.TotalQuantity = orderParams.Quantity;
+                request.ContractId = orderParams.Contract.ContractId;
+                request.Symbol = orderParams.Contract.Symbol;
+                request.SecType = orderParams.Contract.SecurityType.ToString();
+                request.Expity = orderParams.Contract.Expiry;
+                request.Strike = orderParams.Contract.Strike;
+                request.Right = orderParams.Contract.RightString;
+                request.Multiplier = orderParams.Contract.AdditionalContractInfo.Multiplier;
+                request.Exchange = orderParams.Contract.AdditionalContractInfo.Exchange;
+                request.PrimaryExchange = orderParams.Contract.AdditionalContractInfo.PrimaryExchange;
+                request.Currency = orderParams.Contract.AdditionalContractInfo.Currency;
+                request.LocalSymbol = orderParams.Contract.LocalSymbol;
+                request.TradingClass = orderParams.Contract.AdditionalContractInfo.TradingClass;
+                request.OrderType = orderParams.OrderType.ToOrderString();
                 request.OrderId = orderId;
                 request.Transmit = true;
+
+                if (orderParams.OrderType == OrderType.Limit)
+                {
+                    if (!orderParams.LimitPrice.HasValue)
+                    {
+                        throw new ArgumentException("Limit price not specified for limit order");
+                    }
+
+                    request.LimitPrice = (double)orderParams.LimitPrice.Value;
+                }
+
+                if (orderParams.OrderType == OrderType.Stop)
+                {
+                    if (!orderParams.StopPrice.HasValue)
+                    {
+                        throw new ArgumentException("Stop price not specified for stop order");
+                    }
+
+                    request.AuxPrice = (double)orderParams.StopPrice.Value;
+                }
 
                 return await this.factory.CreatePlaceOrderOperation(request, this.ordersStorage, cancellationTokenSource.Token);
             }

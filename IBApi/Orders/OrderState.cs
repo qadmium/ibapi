@@ -13,6 +13,7 @@
         PendingSubmit,
         PendingCancel,
         Restored,
-        PendingUpdate
+        PendingUpdate,
+        Rejected
     }
 }

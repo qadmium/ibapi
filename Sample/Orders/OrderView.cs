@@ -1,5 +1,6 @@
 ﻿using System.Windows.Controls.Primitives;
 using Caliburn.Micro;
+using IBApi.Errors;
 using IBApi.Orders;
 
 namespace Sample.Orders
@@ -15,6 +16,8 @@ namespace Sample.Orders
         private double? stopPrice;
         private OrderState state;
         private string exchange;
+        private string lastError;
+        private ErrorCode? lastErrorCode;
 
         public OrderView(IOrder order)
         {
@@ -89,6 +92,9 @@ namespace Sample.Orders
             this.StopPrice = order.StopPrice;
             this.State = order.State;
             this.Exchange = order.Route;
+            this.LastError = order.LastError;
+            this.LastErrorCode = order.LastErrorCode;
+
         }
 
         public OrderState State
@@ -132,6 +138,28 @@ namespace Sample.Orders
                 if (value == this.exchange) return;
                 this.exchange = value;
                 this.NotifyOfPropertyChange(() => this.Exchange);
+            }
+        }
+
+        public string LastError
+        {
+            get { return this.lastError; }
+            set
+            {
+                if (value == this.lastError) return;
+                this.lastError = value;
+                this.NotifyOfPropertyChange(() => this.LastError);
+            }
+        }
+
+        public ErrorCode? LastErrorCode
+        {
+            get { return this.lastErrorCode; }
+            set
+            {
+                if (value == this.lastErrorCode) return;
+                this.lastErrorCode = value;
+                this.NotifyOfPropertyChange(() => this.LastErrorCode);
             }
         }
     }

@@ -2,6 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Contracts;
+using IBApi.Errors;
 using IBApi.Orders;
 
 namespace IBApi.Infrastructure
@@ -118,6 +119,16 @@ namespace IBApi.Infrastructure
         public int? DisplaySize
         {
             get { return this.dispatcher.Dispatch(() => this.order.DisplaySize); }
+        }
+
+        public string LastError
+        {
+            get { return this.dispatcher.Dispatch(() => this.order.LastError); }
+        }
+
+        public ErrorCode? LastErrorCode
+        {
+            get { return this.dispatcher.Dispatch(() => this.order.LastErrorCode); }
         }
 
         public Task WaitForFill(CancellationToken cancellationToken)

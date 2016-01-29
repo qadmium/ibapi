@@ -4,6 +4,8 @@
     {
         UnknownError = 0,
         OrderDoesNotMatch = 105,
+        OrderRejected = 201,
+        OrderCanceled = 202,
         OrderWarning = 399,
         MarketFarmConnected = 2104,
         DataFarmConnected = 2106,

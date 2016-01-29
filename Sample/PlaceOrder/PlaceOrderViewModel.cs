@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using Caliburn.Micro;
 using IBApi;
 using IBApi.Contracts;
@@ -21,6 +22,10 @@ namespace Sample.PlaceOrder
         private IObservableCollection<string> accounts;
         private string selectedAccount;
         private bool controlsEnabled;
+        private IObservableCollection<OrderType> orderTypes;
+        private OrderType selectedOrderType;
+        private decimal? limitPrice;
+        private decimal? stopPrice;
 
         public PlaceOrderViewModel(IClient client)
         {
@@ -30,17 +35,37 @@ namespace Sample.PlaceOrder
             this.Accounts = new BindableCollection<string>();
             this.Accounts.AddRange(client.Accounts.Select(account => account.AccountId));
             this.SelectedAccount = client.Accounts.Select(account => account.AccountId).First();
+
+            this.OrderTypes = new BindableCollection<OrderType> {OrderType.Market, OrderType.Limit, OrderType.Stop};
+            this.SelectedOrderType = OrderType.Market;
+
             this.ControlsEnabled = true;
+            this.Quantity = 100;
 
             this.PropertyChanged += this.OnPropertyChanged;
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        public IObservableCollection<OrderType> OrderTypes
         {
-            if (propertyChangedEventArgs.PropertyName == "Ticker")
+            get { return this.orderTypes; }
+            set
             {
-                this.HasErrors = false;
-                this.ErrorsChanged(this, new DataErrorsChangedEventArgs("Ticker"));
+                if (Equals(value, this.orderTypes)) return;
+                this.orderTypes = value;
+                this.NotifyOfPropertyChange(() => this.OrderTypes);
+            }
+        }
+
+        public OrderType SelectedOrderType
+        {
+            get { return this.selectedOrderType; }
+            set
+            {
+                if (value == this.selectedOrderType) return;
+                this.selectedOrderType = value;
+                this.NotifyOfPropertyChange(() => this.SelectedOrderType);
+                this.NotifyOfPropertyChange(() => this.LimitPriceEnabled);
+                this.NotifyOfPropertyChange(() => this.StopPriceEnabled);
             }
         }
 
@@ -66,6 +91,8 @@ namespace Sample.PlaceOrder
             }
         }
 
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Specify quantity greater than 0")]
         public int Quantity
         {
             get { return this.quantity; }
@@ -78,7 +105,7 @@ namespace Sample.PlaceOrder
         }
 
         [Required]
-        [StringLength(int.MaxValue, MinimumLength = 1)]
+        [StringLength(int.MaxValue, MinimumLength = 1, ErrorMessage = "Specify valid ticker")]
         public string Ticker
         {
             get { return this.ticker; }
@@ -98,6 +125,38 @@ namespace Sample.PlaceOrder
                 if (value == this.controlsEnabled) return;
                 this.controlsEnabled = value;
                 this.NotifyOfPropertyChange(() => this.ControlsEnabled);
+            }
+        }
+
+        public bool LimitPriceEnabled
+        {
+            get { return this.ControlsEnabled && this.SelectedOrderType == OrderType.Limit; }
+        }
+
+        public bool StopPriceEnabled
+        {
+            get { return this.ControlsEnabled && this.SelectedOrderType == OrderType.Stop; }
+        }
+
+        public decimal? LimitPrice
+        {
+            get { return this.limitPrice; }
+            set
+            {
+                if (value == this.limitPrice) return;
+                this.limitPrice = value;
+                this.NotifyOfPropertyChange(() => this.LimitPrice);
+            }
+        }
+
+        public decimal? StopPrice
+        {
+            get { return this.stopPrice; }
+            set
+            {
+                if (value == this.stopPrice) return;
+                this.stopPrice = value;
+                this.NotifyOfPropertyChange(() => this.StopPrice);
             }
         }
 
@@ -123,6 +182,18 @@ namespace Sample.PlaceOrder
 
         private async void PlaceOrder(OrderAction action)
         {
+            if (this.SelectedOrderType == OrderType.Limit && !this.LimitPrice.HasValue)
+            {
+                this.SetFieldError(true, "LimitPrice");
+                return;
+            }
+
+            if (this.SelectedOrderType == OrderType.Stop && !this.StopPrice.HasValue)
+            {
+                this.SetFieldError(true, "StopPrice");
+                return;
+            }
+
             this.cancellationTokenSource = new CancellationTokenSource();
 
             var searchRequest = new SearchRequest{NumberOfResults = 1};
@@ -146,19 +217,40 @@ namespace Sample.PlaceOrder
             }
             catch (IbException)
             {
-                this.HasErrors = true;
-                this.ErrorsChanged(this, new DataErrorsChangedEventArgs("Ticker"));
+                this.SetFieldError(true, "Ticker");
                 return;
             }
 
             try
             {
-                await this.client.Accounts.First(account => account.AccountId == this.SelectedAccount)
-                    .PlaceMarketOrder(contract, this.Quantity, action, this.cancellationTokenSource.Token);
+                var orderParams = new OrderParams
+                {
+                    Contract = contract,
+                    LimitPrice = this.LimitPrice,
+                    OrderAction = action,
+                    OrderType = this.SelectedOrderType,
+                    Quantity = this.Quantity,
+                    StopPrice = this.StopPrice,
+                };
+
+                var account = this.client.Accounts.First(acc => acc.AccountId == this.SelectedAccount);
+
+                var orderId = await account.PlaceOrder(orderParams, this.cancellationTokenSource.Token);
+
+                await Task.Delay(TimeSpan.FromSeconds(10));
+
+                await account.OrdersStorage.Orders.Single(order => order.Id == orderId).WaitForFill(this.cancellationTokenSource.Token);
+
             }
             catch (IbException)
             {
             }
+        }
+
+        private void SetFieldError(bool hasError, string propertyName)
+        {
+            this.HasErrors = hasError;
+            this.ErrorsChanged(this, new DataErrorsChangedEventArgs(propertyName));
         }
 
         public IEnumerable GetErrors(string propertyName)
@@ -166,6 +258,34 @@ namespace Sample.PlaceOrder
             if (propertyName == "Ticker")
             {
                 yield return "Wrong ticker";
+            }
+
+            if (propertyName == "LimitPrice")
+            {
+                yield return "Wrong limit price";
+            }
+
+            if (propertyName == "StopPrice")
+            {
+                yield return "Wrong stop price";
+            }
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            if (propertyChangedEventArgs.PropertyName == "Ticker")
+            {
+                this.SetFieldError(false, "Ticker");
+            }
+
+            if (propertyChangedEventArgs.PropertyName == "LimitPrice" || propertyChangedEventArgs.PropertyName == "SelectedOrderType")
+            {
+                this.SetFieldError(false, "LimitPrice");
+            }
+
+            if (propertyChangedEventArgs.PropertyName == "StopPrice" || propertyChangedEventArgs.PropertyName == "SelectedOrderType")
+            {
+                this.SetFieldError(false, "StopPrice");
             }
         }
 

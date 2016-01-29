@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Contracts;
+using IBApi.Errors;
 
 namespace IBApi.Orders
 {
@@ -32,7 +33,8 @@ namespace IBApi.Orders
         int ClientId { get; }
         string Route { get; }
         int? DisplaySize { get; }
-
+        string LastError { get; }
+        ErrorCode? LastErrorCode { get; }
         Task WaitForFill(CancellationToken cancellationToken);
     }
 }

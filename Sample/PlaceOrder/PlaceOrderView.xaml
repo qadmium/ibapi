@@ -13,21 +13,30 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" MinWidth="120"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Row="0" Grid.Column="0">Ticker:</TextBlock>
             <TextBox Grid.Row="0" Grid.Column="1" Margin="5,0,0,0" Name="Ticker" IsEnabled="{Binding ControlsEnabled}"></TextBox>
-            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">Quantity:</TextBlock>
-            <TextBox Grid.Row="1" Grid.Column="1" Margin="5,5,0,0" Name="Quantity" IsEnabled="{Binding ControlsEnabled}"></TextBox>
-            <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">Account:</TextBlock>
-            <ComboBox Grid.Row="2" Grid.Column="1" Margin="5,5,0,0" Name="Accounts" IsEnabled="{Binding ControlsEnabled}"></ComboBox>
-            <StackPanel Orientation="Horizontal" Grid.Row="3" Grid.ColumnSpan="2" Grid.Column="0">
-                <Button Name="Buy" Margin="5" IsEnabled="{Binding ControlsEnabled}">Buy</Button>
-                <Button Name="Sell" Margin="5" IsEnabled="{Binding ControlsEnabled}">Sell</Button>
-                <Button Name="Cancel" Margin="5">Cancel</Button>
+            <TextBlock Grid.Row="1" Grid.Column="0" Margin="0,5,0,0">Type:</TextBlock>
+            <ComboBox Grid.Row="1" Grid.Column="1" Margin="5,5,0,0" Name="OrderTypes" IsEnabled="{Binding ControlsEnabled}"></ComboBox>
+            <TextBlock Grid.Row="2" Grid.Column="0" Margin="0,5,0,0">Quantity:</TextBlock>
+            <TextBox Grid.Row="2" Grid.Column="1" Margin="5,5,0,0" Name="Quantity" IsEnabled="{Binding ControlsEnabled}"></TextBox>
+            <TextBlock Grid.Row="3" Grid.Column="0" Margin="0,5,0,0">Limit price:</TextBlock>
+            <TextBox Grid.Row="3" Grid.Column="1" Margin="5,5,0,0" Name="LimitPrice" IsEnabled="{Binding LimitPriceEnabled}"></TextBox>
+            <TextBlock Grid.Row="4" Grid.Column="0" Margin="0,5,0,0">Stop price:</TextBlock>
+            <TextBox Grid.Row="4" Grid.Column="1" Margin="5,5,0,0" Name="StopPrice" IsEnabled="{Binding StopPriceEnabled}"></TextBox>
+            <TextBlock Grid.Row="5" Grid.Column="0" Margin="0,5,0,0">Account:</TextBlock>
+            <ComboBox Grid.Row="5" Grid.Column="1" Margin="5,5,0,0" Name="Accounts" IsEnabled="{Binding ControlsEnabled}"></ComboBox>
+            <StackPanel Orientation="Horizontal" Grid.Row="6" Grid.ColumnSpan="2" Grid.Column="0">
+                <Button Name="Buy" Margin="5" Padding="6,3,5,3" IsEnabled="{Binding ControlsEnabled}">Buy</Button>
+                <Button Name="Sell" Margin="5" Padding="6,3,5,3" IsEnabled="{Binding ControlsEnabled}">Sell</Button>
+                <Button Name="Cancel" Margin="5" Padding="6,3,5,3">Cancel</Button>
             </StackPanel>
         </Grid></Border>
 </Window>

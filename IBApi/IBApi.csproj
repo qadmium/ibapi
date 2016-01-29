@@ -157,6 +157,7 @@
     <Compile Include="Operations\PlaceOrderOperation.cs" />
     <Compile Include="IdsDispenser.cs" />
     <Compile Include="Operations\WaitForOrderFillOperation.cs" />
+    <Compile Include="Orders\OrderParams.cs" />
     <Compile Include="Serialization\FieldsStream.cs" />
     <Compile Include="Connection\IConnectionContract.cs" />
     <Compile Include="Connection\ISubscription.cs" />
