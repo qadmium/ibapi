@@ -131,6 +131,7 @@
     <Compile Include="Accounts\Account.cs" />
     <Compile Include="Accounts\AccountCurrenciesFields.cs" />
     <Compile Include="Accounts\AccountFields.cs" />
+    <Compile Include="Accounts\IAccountContract.cs" />
     <Compile Include="Infrastructure\AccountProxy.cs" />
     <Compile Include="Accounts\AccountsStorage.cs" />
     <Compile Include="Accounts\IAccountInternal.cs" />

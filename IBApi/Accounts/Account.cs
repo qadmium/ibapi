@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Connection;
-using IBApi.Contracts;
 using IBApi.Executions;
 using IBApi.Messages.Client;
 using IBApi.Messages.Server;
@@ -116,25 +115,19 @@ namespace IBApi.Accounts
                 request.OrderId = orderId;
                 request.Transmit = true;
 
+                // ReSharper disable PossibleInvalidOperationException
+                // Relations between order type and prices fields checked in contracts
                 if (orderParams.OrderType == OrderType.Limit)
                 {
-                    if (!orderParams.LimitPrice.HasValue)
-                    {
-                        throw new ArgumentException("Limit price not specified for limit order");
-                    }
-
+                    
                     request.LimitPrice = (double)orderParams.LimitPrice.Value;
                 }
 
                 if (orderParams.OrderType == OrderType.Stop)
                 {
-                    if (!orderParams.StopPrice.HasValue)
-                    {
-                        throw new ArgumentException("Stop price not specified for stop order");
-                    }
-
                     request.AuxPrice = (double)orderParams.StopPrice.Value;
                 }
+                // ReSharper restore PossibleInvalidOperationException
 
                 return await this.factory.CreatePlaceOrderOperation(request, this.ordersStorage, cancellationTokenSource.Token);
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.Threading;
 using System.Threading.Tasks;
 using IBApi.Executions;
@@ -12,6 +13,7 @@ namespace IBApi.Accounts
         public IAccount Account { get; internal set; }
     }
 
+    [ContractClass(typeof(IAccountContract))]
     public interface IAccount
     {
         event EventHandler<AccountChangedEventArgs> AccountChanged;
