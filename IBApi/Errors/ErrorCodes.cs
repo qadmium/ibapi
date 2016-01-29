@@ -38,7 +38,8 @@
 
         public static bool IsWarning(this ErrorCode ec)
         {
-            return ec >= ErrorCode.NewAccountDataRequested && ec < ErrorCode.CrossCurrencyComboError;
+            return (ec >= ErrorCode.NewAccountDataRequested && ec < ErrorCode.CrossCurrencyComboError)
+                || ec == ErrorCode.OrderWarning;
         }
     }
 }

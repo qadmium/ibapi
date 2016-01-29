@@ -235,11 +235,7 @@ namespace Sample.PlaceOrder
 
                 var account = this.client.Accounts.First(acc => acc.AccountId == this.SelectedAccount);
 
-                var orderId = await account.PlaceOrder(orderParams, this.cancellationTokenSource.Token);
-
-                await Task.Delay(TimeSpan.FromSeconds(10));
-
-                await account.OrdersStorage.Orders.Single(order => order.Id == orderId).WaitForFill(this.cancellationTokenSource.Token);
+                await account.PlaceOrder(orderParams, this.cancellationTokenSource.Token);
 
             }
             catch (IbException)
