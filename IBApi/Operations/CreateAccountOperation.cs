@@ -38,7 +38,7 @@ namespace IBApi.Operations
             this.factory = factory;
             this.account = account;
             this.cancellationToken = cancellationToken;
-            this.cancellationToken.Register(() => this.taskCompletionSource.SetCanceled());
+            this.cancellationToken.Register(() => this.taskCompletionSource.TrySetCanceled());
             this.positionStorage = this.factory.CreatePositionStorage(account);
             this.ordersStorage = this.factory.CreateOrdersStorage(account);
             this.createExecutionsStorage = factory.CreateExecutionStorageOperation(account, cancellationToken);

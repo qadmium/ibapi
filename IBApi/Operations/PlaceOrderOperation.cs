@@ -28,7 +28,7 @@ namespace IBApi.Operations
             cancellationToken.Register(() =>
             {
                 this.Unsubscribe();
-                this.taskCompletionSource.SetCanceled();
+                this.taskCompletionSource.TrySetCanceled();
             });
 
             this.subscription = connection.SubscribeForErrors(error => error.RequestId == this.orderId, this.OnError);

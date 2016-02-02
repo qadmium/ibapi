@@ -31,7 +31,7 @@ namespace IBApi.Contracts
             cancellationToken.Register(() =>
             {
                 this.subscriptions.Unsubscribe();
-                this.taskCompletionSource.SetCanceled();
+                this.taskCompletionSource.TrySetCanceled();
             });
 
             this.resultsToRetireve = request.NumberOfResults ?? int.MaxValue;

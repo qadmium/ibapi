@@ -38,7 +38,7 @@ namespace IBApi.Operations
             this.cancellationToken.Register(() =>
             {
                 this.subscriptions.Unsubscribe();
-                this.taskCompletionSource.SetCanceled();
+                this.taskCompletionSource.TrySetCanceled();
             });
             this.account = account;
             this.Subscribe(dispenser);

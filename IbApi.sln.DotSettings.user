@@ -6,7 +6,7 @@
 &lt;/AssemblyExplorer&gt;</s:String>
 	<s:String x:Key="/Default/Environment/ContinuousTesting/PersistentDataLocation/@EntryValue">C:\TEMP\JetBrains\ContinuousTesting\1ad25332-f778-4bb2-b808-af61dba07c71</s:String>
 	<s:String x:Key="/Default/Environment/ContinuousTesting/ScopeCriterion/@EntryValue">+SNpzQIAAACJbLohMIdivwEAAADlmsKXBgAAAE0AUwBUAGUAcwB0ACQAAAA5ADUARABGADkANAA1ADkALQBEADEANQBDAC0ANAAyAEUAMQAtADgANAAzADcALQBBAEYAOQA1ADEANgA5ADQAOAA1AEUAQwA8AAAASQBCAEEAcABpAFUAbgBpAHQAVABlAHMAdABzAC4ASQBCAFMAZQByAGkAYQBsAGkAegBlAHIARQBuAHUAbQBUAGUAcwB0AHMALgBUAGUAcwB0AEUAbgB1AG0ARABlAHMAZQByAGkAYQBsAGkAegBhAHQAaQBvAG4A</s:String>
-	<s:String x:Key="/Default/Environment/ContinuousTesting/SnapshotLocation/@EntryValue">C:\TEMP\ssm.Vuhyxig.tmp</s:String>
+	<s:String x:Key="/Default/Environment/ContinuousTesting/SnapshotLocation/@EntryValue">C:\Users\Admin\AppData\Local\Temp\ssm.Lekeciz.tmp</s:String>
 	
 	<s:String x:Key="/Default/Environment/ContinuousTesting/Strategy/@EntryValue">RunTests</s:String>
 	<s:String x:Key="/Default/Environment/ContinuousTesting/TriggerMode/@EntryValue">OnSave</s:String></wpf:ResourceDictionary>

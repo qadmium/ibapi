@@ -25,7 +25,7 @@ namespace IBApi.Operations
             cancellationToken.Register(() =>
             {
                 order.OrderChanged -= this.OnOrderChanged;
-                this.taskCompletionSource.SetCanceled();
+                this.taskCompletionSource.TrySetCanceled();
             });
         }
 

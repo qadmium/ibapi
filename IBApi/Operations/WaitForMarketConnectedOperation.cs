@@ -21,7 +21,7 @@ namespace IBApi.Operations
             this.cancellationToken.Register(() =>
             {
                 this.subscriptions.Unsubscribe();
-                this.taskCompletionSource.SetCanceled();
+                this.taskCompletionSource.TrySetCanceled();
             });
             this.subscriptions = new List<IDisposable>
             {

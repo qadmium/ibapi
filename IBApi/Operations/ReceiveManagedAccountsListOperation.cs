@@ -23,7 +23,7 @@ namespace IBApi.Operations
             this.cancellationToken.Register(() =>
             {
                 this.subscription.Dispose();
-                this.taskCompletionSource.SetCanceled();
+                this.taskCompletionSource.TrySetCanceled();
             });
             this.subscription = connection.Subscribe<ManagedAccountsListMessage>(this.OnManagedAccountList);
         }
