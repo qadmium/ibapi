@@ -38,7 +38,6 @@ namespace IBApi.Messages.Client
 
         public static RequestContractDetailsMessage Create(SearchRequest request)
         {
-            
             return new RequestContractDetailsMessage
             {
                 Version = 6,
@@ -51,7 +50,7 @@ namespace IBApi.Messages.Client
                 Multiplier = request.Multiplier,
                 Right = !request.Call.HasValue ? string.Empty : request.Call.Value ? "C" : "P",
                 Symbol = request.Symbol,
-                SecurityType = request.SecurityType.HasValue ? request.SecurityType.ToString() : Contracts.SecurityType.STK.ToString(),
+                SecurityType = request.SecurityType.ToString(),
                 SecId = request.SecId,
                 SecIdType = request.SecIdType,
                 Strike = request.Strike ?? 0.0

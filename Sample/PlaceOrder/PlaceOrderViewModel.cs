@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 using Caliburn.Micro;
 using IBApi;
 using IBApi.Contracts;

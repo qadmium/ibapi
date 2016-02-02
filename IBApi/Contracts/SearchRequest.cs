@@ -13,7 +13,7 @@
         public bool? Call { get; set; }
         public double? Strike { get; set; }
         public string Symbol { get; set; }
-        public SecurityType? SecurityType { get; set; }
+        public SecurityType SecurityType { get; set; }
         public string SecId { get; set; }
         public string SecIdType { get; set; }
     }

@@ -13,6 +13,8 @@
         <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" Grid.ColumnSpan="2">
             <TextBlock>Ticker:</TextBlock>
             <TextBox Name="Ticker" Margin="5,0,0,0" MinWidth="80"></TextBox>
+            <TextBlock Margin="5,0,0,0">Type:</TextBlock>
+            <ComboBox Name="SecurityTypes" Margin="5,0,0,0" MinWidth="80"></ComboBox>
             <TextBlock Margin="5,0,0,0">Currency:</TextBlock>
             <TextBox Name="Currency" Margin="5,0,0,0" MinWidth="80"></TextBox>
             <TextBlock Margin="5,0,0,0">Contracts to search:</TextBlock>

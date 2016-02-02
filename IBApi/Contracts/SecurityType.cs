@@ -3,8 +3,6 @@ namespace IBApi.Contracts
 {
     public enum SecurityType
     {
-        None,
-
         /// <summary>
         /// Stock
         /// </summary>

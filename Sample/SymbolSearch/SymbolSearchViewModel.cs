@@ -8,19 +8,34 @@ using IBApi.Contracts;
 
 namespace Sample.SymbolSearch
 {
-    sealed class SymbolSearchViewModel : Screen
+    internal sealed class SymbolSearchViewModel : Screen
     {
         private readonly IClient client;
-        private string ticker;
         private int contractsToSearch;
-        private IObservableCollection<SymbolView> results = new BindableCollection<SymbolView>();
         private string currency;
+        private IObservableCollection<SymbolView> results = new BindableCollection<SymbolView>();
+        private IObservableCollection<SecurityType> securityTypes;
+        private SecurityType selectedSecurityType;
+        private string ticker;
 
         public SymbolSearchViewModel(IClient client)
         {
             this.client = client;
             this.DisplayName = "Symbol search";
             this.ContractsToSearch = 10;
+
+            this.SecurityTypes = new BindableCollection<SecurityType>
+            {
+                SecurityType.STK,
+                SecurityType.FUT,
+                SecurityType.OPT,
+                SecurityType.FOP,
+                SecurityType.CASH,
+                SecurityType.CMDTY,
+                SecurityType.IND
+            };
+
+            this.SelectedSecurityType = SecurityType.STK;
         }
 
         [Required]
@@ -58,19 +73,56 @@ namespace Sample.SymbolSearch
             }
         }
 
+        public SecurityType SelectedSecurityType
+        {
+            get { return this.selectedSecurityType; }
+            set
+            {
+                if (value == this.selectedSecurityType) return;
+                this.selectedSecurityType = value;
+                this.NotifyOfPropertyChange(() => this.SelectedSecurityType);
+            }
+        }
+
+        public IObservableCollection<SecurityType> SecurityTypes
+        {
+            get { return this.securityTypes; }
+            set
+            {
+                if (Equals(value, this.securityTypes)) return;
+                this.securityTypes = value;
+                this.NotifyOfPropertyChange(() => this.SecurityTypes);
+            }
+        }
+
+        public IObservableCollection<SymbolView> Results
+        {
+            get { return this.results; }
+            set
+            {
+                if (Equals(value, this.results)) return;
+                this.results = value;
+                this.NotifyOfPropertyChange(() => this.Results);
+            }
+        }
+
         public async void Search()
         {
             this.Results.Clear();
-            var request = new SearchRequest{Symbol = this.Ticker, NumberOfResults = this.ContractsToSearch};
+            var request = new SearchRequest
+            {
+                Symbol = this.Ticker, NumberOfResults = this.ContractsToSearch,
+                SecurityType = this.SelectedSecurityType
+            };
 
             if (!string.IsNullOrEmpty(this.Currency))
             {
                 request.Currency = this.Currency;
             }
-            
+
             var contracts = await this.client.FindContracts(request, CancellationToken.None);
 
-            this.Results.AddRange(items: ConvertToResults(contracts));
+            this.Results.AddRange(ConvertToResults(contracts));
         }
 
         private static IEnumerable<SymbolView> ConvertToResults(IEnumerable<Contract> contracts)
@@ -104,17 +156,6 @@ namespace Sample.SymbolSearch
                 UnderCondId = contract.AdditionalContractInfo.UnderCondId,
                 ValidExchanges = contract.AdditionalContractInfo.ValidExchanges
             });
-        }
-
-        public IObservableCollection<SymbolView> Results
-        {
-            get { return this.results; }
-            set
-            {
-                if (Equals(value, this.results)) return;
-                this.results = value;
-                this.NotifyOfPropertyChange(() => this.Results);
-            }
         }
     }
 }
