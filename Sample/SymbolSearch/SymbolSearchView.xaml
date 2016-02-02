@@ -4,18 +4,20 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="502">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5">
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="5" Grid.ColumnSpan="2">
             <TextBlock>Ticker:</TextBlock>
             <TextBox Name="Ticker" Margin="5,0,0,0" MinWidth="80"></TextBox>
+            <TextBlock Margin="5,0,0,0">Currency:</TextBlock>
+            <TextBox Name="Currency" Margin="5,0,0,0" MinWidth="80"></TextBox>
             <TextBlock Margin="5,0,0,0">Contracts to search:</TextBlock>
             <TextBox Name="ContractsToSearch" Margin="5,0,0,0" MinWidth="20"></TextBox>
-            <Button Name="Search" Margin="5,0,0,0">Search</Button>
+            <Button Name="Search" Margin="5,0,0,0" Padding="6,0,5,0">Search</Button>
         </StackPanel>
         <DataGrid Name="Results" Grid.Row="1" Margin="5,0,5,5" IsReadOnly="True" ></DataGrid>
     </Grid>

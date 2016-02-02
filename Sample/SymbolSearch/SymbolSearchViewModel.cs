@@ -14,6 +14,7 @@ namespace Sample.SymbolSearch
         private string ticker;
         private int contractsToSearch;
         private IObservableCollection<SymbolView> results = new BindableCollection<SymbolView>();
+        private string currency;
 
         public SymbolSearchViewModel(IClient client)
         {
@@ -46,10 +47,27 @@ namespace Sample.SymbolSearch
             }
         }
 
+        public string Currency
+        {
+            get { return this.currency; }
+            set
+            {
+                if (value == this.currency) return;
+                this.currency = value;
+                this.NotifyOfPropertyChange(() => this.Currency);
+            }
+        }
+
         public async void Search()
         {
             this.Results.Clear();
             var request = new SearchRequest{Symbol = this.Ticker, NumberOfResults = this.ContractsToSearch};
+
+            if (!string.IsNullOrEmpty(this.Currency))
+            {
+                request.Currency = this.Currency;
+            }
+            
             var contracts = await this.client.FindContracts(request, CancellationToken.None);
 
             this.Results.AddRange(items: ConvertToResults(contracts));
